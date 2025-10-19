@@ -7,6 +7,7 @@ from i18n import i18n
 from src.models import Officer, City, Faction, GameState
 from src.constants import TASKS, TASK_SYNONYMS, ALIASES
 from src import utils
+from src import engine
 
 # =================== Data Models ===================
 # Models have been moved to src/models.py
@@ -109,218 +110,36 @@ def print_status(target: Optional[str] = None):
         else:
             say(i18n.t("errors.no_city"))
 
-# =================== Core Systems ===================
+# =================== Wrapper Functions for Engine ===================
 def tech_attack_bonus(faction: str) -> float:
-    f = STATE.factions[faction]
-    if not f.cities:
-        return 1.0
-    avg_tech = sum(STATE.cities[c].tech for c in f.cities) / len(f.cities)
-    return 1.0 + (avg_tech - 50) / 500.0
+    return engine.tech_attack_bonus(STATE, faction)
 
-def battle(attacker: City, defender: City, atk_size: int) -> Tuple[bool,int]:
-    if atk_size <= 0 or atk_size > attacker.troops:
-        return (False, 0)
-    atk_mult = tech_attack_bonus(attacker.owner)
-    def_mult = tech_attack_bonus(defender.owner) * (1.0 + defender.walls/400.0)
-    # Trait influence from stationed officers (highest L officer considered)
-    atk_offs = officers_in_city(attacker.owner, attacker.name)
-    def_offs = officers_in_city(defender.owner, defender.name)
-    if any("Brave" in o.traits for o in atk_offs): atk_mult *= 1.08
-    if any("Engineer" in o.traits for o in def_offs): def_mult *= 1.08
+def battle(attacker: City, defender: City, atk_size: int) -> Tuple[bool, int]:
+    return engine.battle(STATE, attacker, defender, atk_size)
 
-    atk_power = atk_size * (attacker.morale/100) * random.uniform(0.8,1.2) * atk_mult
-    def_power = (defender.troops + defender.defense*3) * (defender.morale/100) * random.uniform(0.8,1.2) * def_mult
-    ratio = atk_power / max(1, def_power)
-    if ratio > 1.1: attacker_wins = True
-    elif ratio < 0.7: attacker_wins = False
-    else: attacker_wins = random.random() < 0.5
-    a_loss = int(atk_size * random.uniform(0.2, 0.6))
-    d_loss = int(defender.troops * random.uniform(0.25, 0.55))
-    attacker.troops -= a_loss
-    defender.troops = max(0, defender.troops - d_loss)
-    attacker.morale = clamp(attacker.morale + (10 if attacker_wins else -8), 20, 95)
-    defender.morale = clamp(defender.morale + (-12 if attacker_wins else 8), 15, 95)
-    # loyalty nudge for attackers stationed
-    for o in atk_offs:
-        o.loyalty = clamp(o.loyalty + (2 if attacker_wins else -1), 0, 100)
-    for o in def_offs:
-        o.loyalty = clamp(o.loyalty + (2 if not attacker_wins else -1), 0, 100)
-    return attacker_wins, a_loss
+def transfer_city(new_owner: str, city: City) -> None:
+    engine.transfer_city(STATE, new_owner, city)
 
-def transfer_city(new_owner: str, city: City):
-    old_owner = city.owner
-    if city.name in STATE.factions[old_owner].cities:
-        STATE.factions[old_owner].cities.remove(city.name)
-    city.owner = new_owner
-    STATE.factions[new_owner].cities.append(city.name)
-    city.defense = max(40, int(city.defense * 0.8))
-    city.morale = 55
-    STATE.log(i18n.t("game.taken_city", owner=new_owner, city=city.name))
+def assignment_effect(off: Officer, city: City) -> None:
+    engine.assignment_effect(STATE, off, city)
 
-# --- Assignment resolution ---
-def assignment_effect(off: Officer, city: City):
-    if not off.task or not off.task_city or city.name != off.task_city:
-        return
-    energy_cost = 8 if off.task in ("farm","trade","research") else 10
-    off.energy = clamp(off.energy - energy_cost, 0, 100)
+def process_assignments() -> None:
+    engine.process_assignments(STATE)
 
-    mult = trait_mult(off, off.task)
-    if off.task == "farm":
-        stat = off.politics * mult
-        delta = int(1 + stat/25 + random.uniform(0,2))
-        city.agri = clamp(city.agri + delta, 0, 100)
-        city.food += int(30 + stat/3)
-        STATE.log(i18n.t("officer_effect.farm", name=off.name, city=city.name, delta=delta))
-    elif off.task == "trade":
-        stat = ((off.politics + off.charisma)/2) * mult
-        delta = int(1 + stat/30 + random.uniform(0,2))
-        city.commerce = clamp(city.commerce + delta, 0, 100)
-        city.gold += int(40 + stat/3)
-        STATE.log(i18n.t("officer_effect.trade", name=off.name, city=city.name, delta=delta))
-    elif off.task == "research":
-        stat = off.intelligence * mult
-        delta = int(1 + stat/28 + random.uniform(0,2))
-        city.tech = clamp(city.tech + delta, 0, 100)
-        STATE.log(i18n.t("officer_effect.research", name=off.name, city=city.name, delta=delta))
-    elif off.task == "train":
-        stat = off.leadership * mult
-        troops_gain = int(10 + stat/2)
-        morale_gain = int(2 + stat/25)
-        city.morale = clamp(city.morale + morale_gain, 20, 95)
-        city.troops += troops_gain
-        STATE.log(i18n.t("officer_effect.train", name=off.name, city=city.name, troops_gain=troops_gain, morale_gain=morale_gain))
-    elif off.task == "fortify":
-        stat = ((off.leadership + off.politics)/2) * mult
-        delta = int(1 + stat/35 + random.uniform(0,2))
-        city.walls = clamp(city.walls + delta, 0, 100)
-        city.defense = clamp(city.defense + int(delta/2), 40, 95)
-        STATE.log(i18n.t("officer_effect.fortify", name=off.name, city=city.name, delta=delta))
-    elif off.task == "recruit":
-        stat = ((off.charisma + off.politics)/2) * mult
-        batches = int(1 + stat/40)
-        cost_gold = 80 * batches
-        cost_food = 80 * batches
-        if city.gold >= cost_gold and city.food >= cost_food:
-            city.gold -= cost_gold; city.food -= cost_food
-            gains = 70 * batches
-            city.troops += gains
-            STATE.log(i18n.t("officer_effect.recruit_success", name=off.name, city=city.name, gains=gains, gold=cost_gold, food=cost_food))
-        else:
-            STATE.log(i18n.t("officer_effect.recruit_fail", name=off.name, city=city.name))
+def monthly_economy() -> None:
+    engine.monthly_economy(STATE)
 
-    # Loyalty dynamics
-    off.loyalty = clamp(off.loyalty + 1, 0, 100)  # productive month feels good
-    if off.energy <= 10:
-        off.loyalty = clamp(off.loyalty - 2, 0, 100)  # overworked
+def ai_turn(faction_name: str) -> None:
+    engine.ai_turn(STATE, faction_name)
 
-def process_assignments():
-    for off in STATE.officers.values():
-        if off.task and off.task_city:
-            c = STATE.cities.get(off.task_city)
-            if c and c.owner == off.faction: assignment_effect(off, c)
-            else: off.task=None; off.task_city=None; off.busy=False
+def try_defections() -> None:
+    engine.try_defections(STATE)
 
-# --- Monthly economy & taxes ---
-def monthly_economy():
-    for city in STATE.cities.values():
-        gold_gain = int(30 + city.commerce * 0.8)
-        food_gain = int(40 + city.agri * 0.8)
-        city.gold += gold_gain
-        city.food += food_gain
-        upkeep = int(city.troops * 0.12)
-        city.food = max(0, city.food - upkeep)
-        if city.food == 0:
-            desertion = int(city.troops * random.uniform(0.05,0.15))
-            city.troops = max(0, city.troops - desertion)
-            city.morale = clamp(city.morale - 10, 10, 95)
-        city.defense = clamp(city.defense + 1, 40, 95)
+def end_turn() -> None:
+    engine.end_turn(STATE)
 
-    if STATE.month == 1:
-        for city in STATE.cities.values():
-            if city.owner:
-                city.gold += city.commerce * 5
-        STATE.log(i18n.t("game.jan_tax"))
-    if STATE.month == 7:
-        for city in STATE.cities.values():
-            if city.owner:
-                city.food += city.agri * 5
-        STATE.log(i18n.t("game.jul_harvest"))
-
-# --- AI and Loyalty/Defection ---
-def ai_turn(faction_name: str):
-    if faction_name == STATE.player_faction: return
-    f = STATE.factions[faction_name]
-    if not f.cities: return
-    offs = [STATE.officers[n] for n in f.officers]
-    random.shuffle(offs)
-    for off in offs:
-        if off.energy < 25:
-            off.task=None; off.task_city=None; off.busy=False
-            off.energy = clamp(off.energy + 10, 0, 100)
-            continue
-        if not off.task:
-            base_city = STATE.cities[random.choice(f.cities)]
-            off.city = base_city.name
-            choice = random.choice(["farm","trade","research","train","fortify","recruit","attack","rest"])
-            if choice in TASKS:
-                off.task = choice; off.task_city = base_city.name; off.busy=True
-            elif choice == "attack":
-                targets = [nb for nb in STATE.adj.get(base_city.name,[]) if STATE.cities[nb].owner != faction_name]
-                if targets and base_city.troops >= 140:
-                    dst = random.choice(targets)
-                    size = int(base_city.troops * random.uniform(0.3,0.6))
-                    win, _ = battle(base_city, STATE.cities[dst], size)
-                    if win and STATE.cities[dst].troops <= 0:
-                        transfer_city(faction_name, STATE.cities[dst])
-            else:
-                off.energy = clamp(off.energy + 5, 0, 100)
-
-def try_defections():
-    # Simple defection model: player's officers with very low loyalty may defect to an adjacent enemy city.
-    player_officers = [STATE.officers[n] for n in STATE.factions[STATE.player_faction].officers]
-    for off in player_officers:
-        if off.loyalty < 35 and random.random() < 0.10:  # 10% monthly if loyalty dangerously low
-            # find any adjacent enemy city to current city
-            if not off.city: continue
-            adjacents = STATE.adj.get(off.city, [])
-            enemy_cities = [cn for cn in adjacents if STATE.cities[cn].owner != STATE.player_faction]
-            if not enemy_cities: continue
-            dst_city = STATE.cities[random.choice(enemy_cities)]
-            # migrate officer to enemy faction
-            STATE.factions[STATE.player_faction].officers.remove(off.name)
-            off.faction = dst_city.owner
-            STATE.factions[off.faction].officers.append(off.name)
-            off.city = dst_city.name
-            off.task=None; off.task_city=None; off.busy=False
-            off.loyalty = 60  # reset base loyalty to new lord
-            STATE.log(i18n.t("game.defect", name=off.name, new_faction=off.faction))
-
-def end_turn():
-    process_assignments()
-    monthly_economy()
-    for f in list(STATE.factions.keys()):
-        ai_turn(f)
-    try_defections()
-    # Time passes
-    STATE.month += 1
-    if STATE.month > 12:
-        STATE.month = 1
-        STATE.year += 1
-        STATE.log(i18n.t("game.new_year", year=STATE.year))
-    # recovery for idle officers
-    for off in STATE.officers.values():
-        if not off.task:
-            off.energy = clamp(off.energy + 12, 0, 100)
-
-def check_victory():
-    all_player = all(c.owner == STATE.player_faction for c in STATE.cities.values())
-    if all_player:
-        STATE.log(i18n.t("game.unify", faction=STATE.player_faction, year=STATE.year))
-        return True
-    if not STATE.factions[STATE.player_faction].cities:
-        STATE.log(i18n.t("game.fallen"))
-        return True
-    return False
+def check_victory() -> bool:
+    return engine.check_victory(STATE)
 
 # =================== Commands (EN + ZH) ===================
 def show_help():
