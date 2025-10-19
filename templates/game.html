@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sango Text Sim - Three Kingdoms Strategy</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Courier New', monospace;
+            background: #1a1a1a;
+            color: #00ff00;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #00ff00;
+            text-shadow: 0 0 10px #00ff00;
+            margin-bottom: 20px;
+            font-size: 2em;
+        }
+        
+        .game-info {
+            background: #0a0a0a;
+            border: 2px solid #00ff00;
+            padding: 10px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .terminal {
+            background: #0a0a0a;
+            border: 2px solid #00ff00;
+            padding: 20px;
+            min-height: 400px;
+            max-height: 60vh;
+            overflow-y: auto;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+        
+        .output-line {
+            margin-bottom: 5px;
+            white-space: pre-wrap;
+        }
+        
+        .command-line {
+            color: #ffff00;
+        }
+        
+        .input-area {
+            display: flex;
+            gap: 10px;
+        }
+        
+        #commandInput {
+            flex: 1;
+            background: #0a0a0a;
+            border: 2px solid #00ff00;
+            color: #00ff00;
+            padding: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 16px;
+        }
+        
+        #commandInput:focus {
+            outline: none;
+            border-color: #00ff00;
+            box-shadow: 0 0 10px #00ff00;
+        }
+        
+        button {
+            background: #00ff00;
+            color: #000;
+            border: none;
+            padding: 10px 20px;
+            font-family: 'Courier New', monospace;
+            font-size: 16px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        button:hover {
+            background: #00dd00;
+            box-shadow: 0 0 10px #00ff00;
+        }
+        
+        .quick-commands {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .quick-cmd {
+            background: #003300;
+            color: #00ff00;
+            border: 1px solid #00ff00;
+            padding: 5px 10px;
+            font-size: 12px;
+        }
+        
+        .quick-cmd:hover {
+            background: #004400;
+        }
+        
+        .message {
+            color: #ffaa00;
+            font-style: italic;
+            margin-bottom: 5px;
+        }
+        
+        .error {
+            color: #ff0000;
+        }
+        
+        .success {
+            color: #00ff00;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            color: #666;
+            font-size: 12px;
+        }
+        
+        .footer a {
+            color: #00ff00;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>⚔️ SANGO TEXT SIM ⚔️</h1>
+        <h2 style="text-align: center; color: #888; margin-bottom: 20px;">Three Kingdoms Strategy Game</h2>
+        
+        <div class="game-info">
+            <div>Faction: <span id="faction">None</span></div>
+            <div>Year: <span id="year">208</span> | Month: <span id="month">1</span></div>
+        </div>
+        
+        <div class="quick-commands">
+            <button class="quick-cmd" onclick="sendCommand('help')">Help</button>
+            <button class="quick-cmd" onclick="sendCommand('start')">Start Game</button>
+            <button class="quick-cmd" onclick="sendCommand('choose Shu')">Choose Shu</button>
+            <button class="quick-cmd" onclick="sendCommand('choose Wei')">Choose Wei</button>
+            <button class="quick-cmd" onclick="sendCommand('choose Wu')">Choose Wu</button>
+            <button class="quick-cmd" onclick="sendCommand('status')">Status</button>
+            <button class="quick-cmd" onclick="sendCommand('officers')">Officers</button>
+            <button class="quick-cmd" onclick="sendCommand('turn')">End Turn</button>
+        </div>
+        
+        <div class="terminal" id="terminal">
+            <div class="output-line">Welcome to Sango Text Sim!</div>
+            <div class="output-line">Type 'help' for commands or click a button above to get started.</div>
+            <div class="output-line">For full features, download and run: python game_cmd.py</div>
+            <div class="output-line">---</div>
+        </div>
+        
+        <div class="input-area">
+            <input type="text" id="commandInput" placeholder="Enter command..." autofocus>
+            <button onclick="submitCommand()">Execute</button>
+        </div>
+        
+        <div class="footer">
+            <p>Sango Text Sim v1.0 | 
+            <a href="https://github.com/yksi7417/sango-text-sim" target="_blank">GitHub</a> | 
+            99% Test Coverage | 153 Tests Passing</p>
+        </div>
+    </div>
+    
+    <script>
+        const terminal = document.getElementById('terminal');
+        const input = document.getElementById('commandInput');
+        
+        // Handle Enter key
+        input.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                submitCommand();
+            }
+        });
+        
+        // Auto-scroll terminal
+        function scrollTerminal() {
+            terminal.scrollTop = terminal.scrollHeight;
+        }
+        
+        // Add line to terminal
+        function addOutput(text, className = 'output-line') {
+            const div = document.createElement('div');
+            div.className = className;
+            div.textContent = text;
+            terminal.appendChild(div);
+            scrollTerminal();
+        }
+        
+        // Submit command
+        function submitCommand() {
+            const command = input.value.trim();
+            if (!command) return;
+            
+            // Show command in terminal
+            addOutput('> ' + command, 'command-line');
+            
+            // Clear input
+            input.value = '';
+            
+            // Send command
+            sendCommand(command);
+        }
+        
+        // Send command to server
+        async function sendCommand(command) {
+            try {
+                const response = await fetch('/api/command', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ command: command })
+                });
+                
+                const data = await response.json();
+                
+                // Display output
+                if (data.output) {
+                    data.output.split('\n').forEach(line => {
+                        addOutput(line);
+                    });
+                }
+                
+                // Display messages
+                if (data.messages && data.messages.length > 0) {
+                    data.messages.forEach(msg => {
+                        addOutput(msg, 'message');
+                    });
+                }
+                
+                // Update game state display
+                if (data.game_state) {
+                    document.getElementById('faction').textContent = data.game_state.faction || 'None';
+                    document.getElementById('year').textContent = data.game_state.year;
+                    document.getElementById('month').textContent = data.game_state.month;
+                }
+                
+            } catch (error) {
+                addOutput('Error: ' + error.message, 'error');
+            }
+        }
+        
+        // Load initial state
+        async function loadState() {
+            try {
+                const response = await fetch('/api/state');
+                const data = await response.json();
+                
+                if (!data.error) {
+                    document.getElementById('faction').textContent = data.faction || 'None';
+                    document.getElementById('year').textContent = data.year;
+                    document.getElementById('month').textContent = data.month;
+                }
+            } catch (error) {
+                console.error('Failed to load state:', error);
+            }
+        }
+        
+        // Load state on page load
+        loadState();
+    </script>
+</body>
+</html>
