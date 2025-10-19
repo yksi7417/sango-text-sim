@@ -1,78 +1,26 @@
 # game.py — Bilingual Characters & Assignments with Traits & Loyalty
 from adventurelib import when, start, say
 import random, json, os
-from dataclasses import dataclass, field, asdict
+from dataclasses import asdict
 from typing import Dict, List, Optional, Tuple
 from i18n import i18n
+from src.models import Officer, City, Faction, GameState
+from src.constants import TASKS, TASK_SYNONYMS, ALIASES
 
 # =================== Data Models ===================
-@dataclass
-class Officer:
-    name: str
-    faction: str
-    leadership: int
-    intelligence: int
-    politics: int
-    charisma: int
-    energy: int = 100
-    loyalty: int = 70
-    traits: List[str] = field(default_factory=list)
-    city: Optional[str] = None
-    task: Optional[str] = None
-    task_city: Optional[str] = None
-    busy: bool = False
-
-@dataclass
-class City:
-    name: str
-    owner: str
-    gold: int = 500
-    food: int = 800
-    troops: int = 300
-    defense: int = 50
-    morale: int = 60
-    agri: int = 50
-    commerce: int = 50
-    tech: int = 40
-    walls: int = 50
-
-@dataclass
-class Faction:
-    name: str
-    relations: Dict[str,int] = field(default_factory=dict)
-    cities: List[str] = field(default_factory=list)
-    officers: List[str] = field(default_factory=list)
-    ruler: str = ""
-
-@dataclass
-class GameState:
-    year: int = 208
-    month: int = 1
-    factions: Dict[str,Faction] = field(default_factory=dict)
-    cities: Dict[str,City] = field(default_factory=dict)
-    adj: Dict[str,List[str]] = field(default_factory=dict)
-    officers: Dict[str,Officer] = field(default_factory=dict)
-    player_faction: str = "Shu"
-    player_ruler: str = "劉備"
-    difficulty: str = "Normal"
-    messages: List[str] = field(default_factory=list)
-
-    def log(self, msg: str):
-        self.messages.append(msg)
-        say(msg)
+# Models have been moved to src/models.py
 
 STATE = GameState()
 
-TASKS = ["farm","trade","research","train","fortify","recruit"]
-TASK_SYNONYMS = {
-    "farm": ["farm","agriculture","農","農業"],
-    "trade": ["trade","commerce","商","商業"],
-    "research": ["research","tech","科技","科研"],
-    "train": ["train","drill","訓練","練兵"],
-    "fortify": ["fortify","fortress","築城","防禦","加固"],
-    "recruit": ["recruit","conscription","徵兵","募兵"]
-}
-ALIASES = {"to":["to","至","到"],"in":["in","於","在"],"from":["from","自","從"],"with":["with","以"]}
+# Override log method to include say() for adventurelib
+_original_log = STATE.log
+def _log_with_say(msg: str):
+    _original_log(msg)
+    say(msg)
+STATE.log = _log_with_say
+
+# =================== Constants ===================
+# Constants have been moved to src/constants.py
 
 # =================== World Setup ===================
 def add_officer(off: Officer):
