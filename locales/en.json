@@ -1,0 +1,108 @@
+{
+  "game": {
+    "welcome": "Welcome, {ruler} of {faction}! Type 'help' for commands.",
+    "time": "Time: {year}-{month:02d}. Taxes: Commerce in January, Agriculture in July.",
+    "new_year": "--- A new year dawns: {year} ---",
+    "ending": "--- Ending {year}-{month:02d} ---",
+    "begin": "--- {year}-{month:02d} begins ---",
+    "unify": "Glory! {faction} unifies the realm in {year} CE.",
+    "fallen": "Your banner has fallen. The realm slips from your grasp...",
+    "jan_tax": "January commerce taxes collected across the realm.",
+    "jul_harvest": "July harvests fill the granaries across the realm.",
+    "taken_city": "{owner} has taken control of {city}!",
+    "defect": "{name} defects to {new_faction}!"
+  },
+  "lang": {
+    "set": "Language set to {lang}.",
+    "usage": "lang en|zh"
+  },
+  "ui": {
+    "overview": "[{year}-{month:02d}] {faction}: Cities({num}): {cities}",
+    "resources": "Treasury: {gold}  Food: {food}  Troops: {troops}",
+    "relations": "Relations: {rels}",
+    "city_header": "{name} [{owner}] {tag}",
+    "city_stats1": "  Gold:{gold} Food:{food} Troops:{troops} Def:{defense} Morale:{morale}",
+    "city_stats2": "  Agri:{agri} Commerce:{commerce} Tech:{tech} Walls:{walls}",
+    "officers_list_header": "Officers: {names}"
+  },
+  "tasks": {
+    "farm": "Increase Agriculture; boosts July harvests & monthly food.",
+    "trade": "Increase Commerce; boosts January taxes & monthly gold.",
+    "research": "Raise Technology; small combat buffs and unlocks.",
+    "train": "Improve troops and morale.",
+    "fortify": "Improve city walls and defense.",
+    "recruit": "Convert gold+food efficiently into troops."
+  },
+  "traits": {
+    "Brave": "Brave",
+    "Strict": "Strict",
+    "Benevolent": "Benevolent",
+    "Charismatic": "Charismatic",
+    "Scholar": "Scholar",
+    "Engineer": "Engineer",
+    "Merchant": "Merchant"
+  },
+  "officer_effect": {
+    "farm": "{name} improves Agriculture in {city} by +{delta}.",
+    "trade": "{name} boosts Commerce in {city} by +{delta}.",
+    "research": "{name} advances Technology in {city} by +{delta}.",
+    "train": "{name} drills troops in {city}: +{troops_gain} troops, +{morale_gain} morale.",
+    "fortify": "{name} fortifies {city}: Walls +{delta}.",
+    "recruit_success": "{name} recruits {gains} troops in {city} (spent {gold}g/{food}f).",
+    "recruit_fail": "{name} attempted recruiting in {city} but lacked resources."
+  },
+  "errors": {
+    "no_city": "No such city.",
+    "not_yours": "Target city must be yours.",
+    "not_source": "Source must be your city.",
+    "not_adjacent": "Cities are not adjacent.",
+    "not_enough_troops": "Not enough troops in the source city.",
+    "invalid_troops": "Specify a positive number of troops.",
+    "invalid_task": "Task must be one of: farm, trade, research, train, fortify, recruit.",
+    "no_officer": "Officer not found.",
+    "not_your_officer": "You can only command your own officers.",
+    "officer_tired": "{name} is exhausted.",
+    "need_gold": "Need {amount} gold.",
+    "need_gold50": "You lack gold (50) to fund espionage.",
+    "file_missing": "File not found.",
+    "same_city": "You cannot attack the same city."
+  },
+  "spy": {
+    "report": "Spy on {name}: owner={owner}, troops={troops}, def={defense}, morale={morale}, agri={agri}, commerce={commerce}, tech={tech}, walls={walls}"
+  },
+  "cmd_feedback": {
+    "assigned": "{name} assigned to {task} in {city}. ({desc})",
+    "relocated": "{name} relocated to {city}.",
+    "assignment_canceled": "{name}'s assignment canceled.",
+    "marched": "Marched {n} troops from {src} to {dst}.",
+    "attack_launch": "Your {n} troops from {src} launch an attack on {dst}!",
+    "assault_fail": "The assault fails to take {city}.",
+    "reward": "You reward {name} with {gold} gold. Loyalty +{delta} (now {loyalty})."
+  },
+  "help": {
+    "header": "Commands:",
+    "lines": [
+      "status                        - Overview of your faction",
+      "status CITY                   - City details",
+      "officers                      - List your officers (stats, energy, loyalty, traits)",
+      "assign OFFICER to TASK in CITY- farm, trade, research, train, fortify, recruit",
+      "cancel OFFICER                - Cancel an officer's task",
+      "move OFFICER to CITY          - Reassign stationed city",
+      "tasks CITY                    - Show tasks affecting a city",
+      "march N from A to B           - Move troops (attacks if enemy)",
+      "attack CITY from A with N     - Direct assault",
+      "spy CITY                      - Intel (50g)",
+      "negotiate FACTION             - Improve relations (100g)",
+      "reward OFFICER with N         - Spend N gold to raise loyalty",
+      "end                           - Advance one month",
+      "save FILE / load FILE         - Save/load JSON",
+      "choose Wei|Shu|Wu             - Restart",
+      "lang en|zh                    - Switch language"
+    ],
+    "examples": [
+      "assign GuanYu to farm in Chengdu",
+      "reward GuanYu with 200",
+      "assign ZhangFei to train in Hanzhong"
+    ]
+  }
+}

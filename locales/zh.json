@@ -1,0 +1,108 @@
+{
+  "game": {
+    "welcome": "歡迎，{faction}之{ruler}！輸入 'help' 以查看指令。",
+    "time": "時間：{year}年{month:02d}月。稅賦：一月商稅、七月農稅。",
+    "new_year": "--- 新歲伊始：{year} ---",
+    "ending": "--- 結束 {year}年{month:02d}月 ---",
+    "begin": "--- {year}年{month:02d}月 開始 ---",
+    "unify": "威加海內！{faction} 於公元{year}年一統天下。",
+    "fallen": "國破城摧，旗幟盡落……",
+    "jan_tax": "一月商稅徵收完畢。",
+    "jul_harvest": "七月豐收，糧倉漸滿。",
+    "taken_city": "{owner} 奪取了 {city}！",
+    "defect": "{name} 投奔 {new_faction}！"
+  },
+  "lang": {
+    "set": "語言已切換為 {lang}。",
+    "usage": "lang 語言 en|zh"
+  },
+  "ui": {
+    "overview": "[{year}-{month:02d}] {faction}：城池({num})：{cities}",
+    "resources": "金庫：{gold}  糧草：{food}  兵力：{troops}",
+    "relations": "外交關係：{rels}",
+    "city_header": "{name} [{owner}] {tag}",
+    "city_stats1": "  金:{gold} 糧:{food} 兵:{troops} 防:{defense} 士氣:{morale}",
+    "city_stats2": "  農:{agri} 商:{commerce} 科:{tech} 城牆:{walls}",
+    "officers_list_header": "武將：{names}"
+  },
+  "tasks": {
+    "farm": "提升農業；豐收與月糧更高。",
+    "trade": "提升商業；商稅與月金更高。",
+    "research": "提升科技；獲輕微作戰加成。",
+    "train": "操練兵士，提高兵力與士氣。",
+    "fortify": "修築城池工事與防禦。",
+    "recruit": "以更高效率將金糧轉為兵力。"
+  },
+  "traits": {
+    "Brave": "勇猛",
+    "Strict": "嚴整",
+    "Benevolent": "仁德",
+    "Charismatic": "魅力",
+    "Scholar": "學士",
+    "Engineer": "工師",
+    "Merchant": "商賈"
+  },
+  "officer_effect": {
+    "farm": "{name} 於 {city} 改良農政：+{delta}。",
+    "trade": "{name} 於 {city} 興商利市：+{delta}。",
+    "research": "{name} 於 {city} 精研科技：+{delta}。",
+    "train": "{name} 於 {city} 演武操練：兵+{troops_gain}、士氣+{morale_gain}。",
+    "fortify": "{name} 加固 {city}：城牆+{delta}。",
+    "recruit_success": "{name} 於 {city} 徵得兵士 {gains}（耗 {gold}金/{food}糧）。",
+    "recruit_fail": "{name} 於 {city} 嘗試徵兵但資源不足。"
+  },
+  "errors": {
+    "no_city": "沒有此城。",
+    "not_yours": "目標城池需為己方所有。",
+    "not_source": "出發城池需為己方所有。",
+    "not_adjacent": "兩城不相鄰。",
+    "not_enough_troops": "出發城兵力不足。",
+    "invalid_troops": "請輸入正數兵力。",
+    "invalid_task": "任務需為：農業/商業/科研/訓練/築城/徵兵。",
+    "no_officer": "無此武將。",
+    "not_your_officer": "只能指揮己方武將。",
+    "officer_tired": "{name} 精力不濟。",
+    "need_gold": "需要 {amount} 金。",
+    "need_gold50": "資金不足（50）以進行密探。",
+    "file_missing": "找不到檔案。",
+    "same_city": "不可攻擊同一城池。"
+  },
+  "spy": {
+    "report": "密探回報 {name}：主={owner}，兵={troops}，防={defense}，士氣={morale}，農={agri}，商={commerce}，科={tech}，城牆={walls}"
+  },
+  "cmd_feedback": {
+    "assigned": "{name} 受命於 {city} 執行 {task}。（{desc}）",
+    "relocated": "{name} 駐守 {city}。",
+    "assignment_canceled": "{name} 的任務已取消。",
+    "marched": "自 {src} 調兵 {n} 至 {dst}。",
+    "attack_launch": "自 {src} 出兵 {n} 攻擊 {dst}！",
+    "assault_fail": "未能攻克 {city}。",
+    "reward": "賞賜 {name} {gold} 金。忠誠 +{delta}（現 {loyalty}）。"
+  },
+  "help": {
+    "header": "指令：",
+    "lines": [
+      "status / 狀態                      - 我方概況",
+      "status CITY / 狀態 城池            - 城池詳情",
+      "officers / 武將                    - 武將列表（含忠誠、特性）",
+      "assign/指派 OFFICER to/至 任務 in/於 城 - 農/商/科研/訓練/築城/徵兵",
+      "cancel/取消 OFFICER               - 取消任務",
+      "move/移動 OFFICER to/至 城        - 變更駐地",
+      "tasks/任務 城                      - 城池任務",
+      "march/行軍 N from/自 A to/至 B    - 調兵（遇敵則攻）",
+      "attack/攻擊 城 from/自 A with/以 N - 進攻",
+      "spy/偵察 城                         - 情報（50金）",
+      "negotiate/交涉 勢力                - 改善關係（100金）",
+      "reward/賞賜 OFFICER with/以 N      - 花 N 金提升忠誠",
+      "end/結束                           - 推進一月",
+      "save/儲存 / load/讀取              - 存讀檔",
+      "choose/選擇 Wei|Shu|Wu             - 重新開局",
+      "lang/語言 en|zh                    - 切換語言"
+    ],
+    "examples": [
+      "指派 關羽 至 農業 於 Chengdu",
+      "賞賜 關羽 以 200",
+      "指派 張飛 至 訓練 於 Hanzhong"
+    ]
+  }
+}
