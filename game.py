@@ -408,14 +408,12 @@ def show_help():
         say("  " + ex)
 
 @when("help")
-@when("幫助")
 def help_cmd():
     show_help()
 
-@when("lang *args")
-@when("語言 *args")
-def lang_cmd(args):
-    lang = args.strip().lower()
+@when("lang LANGUAGE")
+def lang_cmd(language):
+    lang = language.lower() if language else ""
     if lang not in ("en","zh"):
         say(i18n.t("lang.usage"))
         return
@@ -424,18 +422,15 @@ def lang_cmd(args):
     say(i18n.t("game.time", year=STATE.year, month=STATE.month))
 
 @when("status")
-@when("狀態")
 def status_self():
     print_status()
 
-@when("status *args")
-@when("狀態 *args")
-def status_city_cmd(args):
-    target = args.strip().title()
+@when("status CITY")
+def status_city_cmd(city):
+    target = city.title() if city else ""
     print_status(target)
 
 @when("officers")
-@when("武將")
 def list_officers():
     pf = STATE.factions[STATE.player_faction]
     lines = []
@@ -447,10 +442,9 @@ def list_officers():
         lines.append(f"- {o.name} L{o.leadership} I{o.intelligence} P{o.politics} C{o.charisma}  Energy:{o.energy}  Loyalty:{o.loyalty}  Traits:{trait_str}  City:{o.city}  Task:{t}{tc}")
     say("\n".join(lines))
 
-@when("tasks *args")
-@when("任務 *args")
-def tasks_city(args):
-    city = args.strip().title()
+@when("tasks CITY")
+def tasks_city(city):
+    city = city.title() if city else ""
     if city not in STATE.cities:
         say(i18n.t("errors.no_city"))
         return
@@ -460,24 +454,11 @@ def tasks_city(args):
             lines.append(f"- {o.name} : {o.task}")
     say("\n".join(lines) if lines else ("（無任務）" if i18n.lang=="zh" else "(no tasks)"))
 
-@when("assign *args")
-@when("指派 *args")
-def assign_cmd(args):
-    parts = args.split()
-    def find_any(words, keys):
-        for i,w in enumerate(words):
-            if w in keys:
-                return i
-        return -1
-    idx_to = find_any(parts, ALIASES["to"])
-    idx_in = find_any(parts, ALIASES["in"])
-    if idx_to == -1 or idx_in == -1 or idx_to >= idx_in:
-        say(i18n.t("errors.invalid_task"))
-        say("EN: assign OFFICER to TASK in CITY / ZH: 指派 OFFICER 至 任務 於 城")
-        return
-    officer_name = "".join(parts[:idx_to])
-    task_raw = " ".join(parts[idx_to+1:idx_in])
-    city_name = " ".join(parts[idx_in+1:]).title()
+@when("assign OFFICER to TASK in CITY")
+def assign_cmd(officer, task, city):
+    officer_name = officer
+    task_raw = task
+    city_name = city.title()
 
     task = task_key(task_raw)
     if task is None:
@@ -503,10 +484,9 @@ def assign_cmd(args):
     off.busy = True
     say(i18n.t("cmd_feedback.assigned", name=off.name, task=task, city=city_name, desc=i18n.t(f"tasks.{task}")))
 
-@when("cancel *args")
-@when("取消 *args")
-def cancel_cmd(args):
-    name = args.strip()
+@when("cancel OFFICER")
+def cancel_cmd(officer):
+    name = officer
     off = officer_by_name(name)
     if not off or off.faction != STATE.player_faction:
         say(i18n.t("errors.no_officer"))
@@ -514,21 +494,10 @@ def cancel_cmd(args):
     off.task=None; off.task_city=None; off.busy=False
     say(i18n.t("cmd_feedback.assignment_canceled", name=name))
 
-@when("move *args")
-@when("移動 *args")
-def move_officer_cmd(args):
-    parts = args.split()
-    def find_any(words, keys):
-        for i,w in enumerate(words):
-            if w in keys:
-                return i
-        return -1
-    idx_to = find_any(parts, ALIASES["to"])
-    if idx_to == -1:
-        say("Usage: move/移動 OFFICER to/至 CITY")
-        return
-    officer_name = "".join(parts[:idx_to])
-    city_name = " ".join(parts[idx_to+1:]).title()
+@when("move OFFICER to CITY")
+def move_officer_cmd(officer, city):
+    officer_name = officer
+    city_name = city.title()
     off = officer_by_name(officer_name)
     if not off or off.faction != STATE.player_faction:
         say(i18n.t("errors.no_officer"))
@@ -539,30 +508,11 @@ def move_officer_cmd(args):
     off.city = city_name
     say(i18n.t("cmd_feedback.relocated", name=off.name, city=city_name))
 
-@when("march *args")
-@when("行軍 *args")
-def march_cmd(args):
-    parts = args.split()
-    def find_any(words, keys):
-        for i,w in enumerate(words):
-            if w in keys:
-                return i
-        return -1
-    if not parts:
-        say(i18n.t("errors.invalid_troops"))
-        return
-    try:
-        n = int(parts[0])
-    except:
-        say(i18n.t("errors.invalid_troops"))
-        return
-    idx_from = find_any(parts, ALIASES["from"])
-    idx_to = find_any(parts, ALIASES["to"])
-    if idx_from == -1 or idx_to == -1 or idx_from >= idx_to:
-        say("Usage: march/行軍 N from/自 A to/至 B")
-        return
-    src = " ".join(parts[idx_from+1:idx_to]).title()
-    dst = " ".join(parts[idx_to+1:]).title()
+@when("march NUMBER from SOURCE to DESTINATION", number=int)
+def march_cmd(number, source, destination):
+    n = number
+    src = source.title()
+    dst = destination.title()
     if not ensure_player_city(src):
         say(i18n.t("errors.not_source"))
         return
@@ -588,32 +538,16 @@ def march_cmd(args):
         else:
             say(i18n.t("cmd_feedback.assault_fail", city=dc.name))
 
-@when("attack *args")
-@when("攻擊 *args")
-def attack_cmd(args):
-    parts = args.split()
-    def find_any(words, keys):
-        for i,w in enumerate(words):
-            if w in keys:
-                return i
-        return -1
-    idx_from = find_any(parts, ALIASES["from"])
-    idx_with = find_any(parts, ALIASES["with"])
-    if idx_from == -1 or idx_with == -1 or idx_from >= idx_with:
-        say("Usage: attack/攻擊 CITY from/自 SRC with/以 N")
-        return
-    city_name = " ".join(parts[:idx_from]).title()
-    src = " ".join(parts[idx_from+1:idx_with]).title()
-    try:
-        n = int(parts[idx_with+1])
-    except:
-        say(i18n.t("errors.invalid_troops"))
-        return
+@when("attack TARGET from SOURCE with NUMBER", number=int)
+def attack_cmd(target, source, number):
+    city_name = target.title()
+    src = source.title()
+    n = number
     if not ensure_player_city(src):
         say(i18n.t("errors.not_source"))
         return
-    target = valid_city(city_name)
-    if not target:
+    target_city = valid_city(city_name)
+    if not target_city:
         say(i18n.t("errors.no_city"))
         return
     if src == city_name:
@@ -626,16 +560,15 @@ def attack_cmd(args):
     if n <= 0 or n > src_city.troops:
         say(i18n.t("errors.invalid_troops"))
         return
-    win, _ = battle(src_city, target, n)
-    if win and target.troops <= 0:
-        transfer_city(STATE.player_faction, target)
+    win, _ = battle(src_city, target_city, n)
+    if win and target_city.troops <= 0:
+        transfer_city(STATE.player_faction, target_city)
     else:
-        say(i18n.t("cmd_feedback.assault_fail", city=target.name))
+        say(i18n.t("cmd_feedback.assault_fail", city=target_city.name))
 
-@when("spy *args")
-@when("偵察 *args")
-def spy_cmd(args):
-    city_name = args.strip().title()
+@when("spy CITY")
+def spy_cmd(city):
+    city_name = city.title()
     c = valid_city(city_name)
     if not c:
         say(i18n.t("errors.no_city"))
@@ -648,10 +581,9 @@ def spy_cmd(args):
             return
     say(i18n.t("errors.need_gold50"))
 
-@when("negotiate *args")
-@when("交涉 *args")
-def negotiate_cmd(args):
-    target = args.strip().title()
+@when("negotiate FACTION")
+def negotiate_cmd(faction):
+    target = faction.title()
     if target not in STATE.factions:
         say("No such faction.")
         return
@@ -672,23 +604,10 @@ def negotiate_cmd(args):
     STATE.factions[target].relations[STATE.player_faction] = clamp(STATE.factions[target].relations.get(STATE.player_faction,0) + delta//2, -100, 100)
     say(f"Relations with {target} {delta:+d}.")
 
-@when("reward *args")
-@when("賞賜 *args")
-def reward_cmd(args):
-    # reward OFFICER with N / 賞賜 OFFICER 以 N
-    parts = args.split()
-    # find "with/以" keyword if present
-    try:
-        if "with" in parts:
-            idx = parts.index("with"); name = "".join(parts[:idx]); amount = int(parts[idx+1])
-        elif "以" in parts:
-            idx = parts.index("以"); name = "".join(parts[:idx]); amount = int(parts[idx+1])
-        else:
-            # fallback: last token numeric
-            amount = int(parts[-1]); name = "".join(parts[:-1])
-    except Exception:
-        say("Usage: reward/賞賜 OFFICER with/以 N")
-        return
+@when("reward OFFICER with NUMBER", number=int)
+def reward_cmd(officer, number):
+    name = officer
+    amount = number
     off = officer_by_name(name)
     if not off or off.faction != STATE.player_faction:
         say(i18n.t("errors.no_officer"))
@@ -709,7 +628,6 @@ def reward_cmd(args):
     say(i18n.t("cmd_feedback.reward", name=off.name, gold=amount, delta=delta, loyalty=off.loyalty))
 
 @when("end")
-@when("結束")
 def end_turn_cmd():
     STATE.log(i18n.t("game.ending", year=STATE.year, month=STATE.month))
     end_turn()
@@ -717,10 +635,7 @@ def end_turn_cmd():
     if check_victory():
         say("help / load FILE")
 
-@when("save *args")
-@when("儲存 *args")
-def save_cmd(args):
-    path = args.strip() or "savegame.json"
+def _do_save(path):
     data = asdict(STATE)
     data["cities"] = {k:asdict(v) for k,v in STATE.cities.items()}
     data["factions"] = {k:{"name":f.name,"relations":f.relations,"cities":f.cities,"officers":f.officers,"ruler":f.ruler} for k,f in STATE.factions.items()}
@@ -729,10 +644,15 @@ def save_cmd(args):
         json.dump(data, f, ensure_ascii=False, indent=2)
     say(f"Saved to {path}.")
 
-@when("load *args")
-@when("讀取 *args")
-def load_cmd(args):
-    path = args.strip() or "savegame.json"
+@when("save FILE")
+def save_cmd_with_file(file):
+    _do_save(file)
+
+@when("save")
+def save_cmd():
+    _do_save("savegame.json")
+
+def _do_load(path):
     if not os.path.exists(path):
         say(i18n.t("errors.file_missing"))
         return
@@ -752,10 +672,17 @@ def load_cmd(args):
     STATE.adj = {k:v for k,v in data["adj"].items()}
     say(i18n.t("game.time", year=STATE.year, month=STATE.month))
 
-@when("choose *args")
-@when("選擇 *args")
-def choose_cmd(args):
-    name = args.strip().title()
+@when("load FILE")
+def load_cmd_with_file(file):
+    _do_load(file)
+
+@when("load")
+def load_cmd():
+    _do_load("savegame.json")
+
+@when("choose FACTION")
+def choose_cmd(faction):
+    name = faction.title()
     if name not in ["Wei","Shu","Wu"]:
         say("Wei/Shu/Wu")
         return

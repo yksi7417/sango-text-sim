@@ -82,27 +82,28 @@
   "help": {
     "header": "指令：",
     "lines": [
-      "status / 狀態                      - 我方概況",
-      "status CITY / 狀態 城池            - 城池詳情",
-      "officers / 武將                    - 武將列表（含忠誠、特性）",
-      "assign/指派 OFFICER to/至 任務 in/於 城 - 農/商/科研/訓練/築城/徵兵",
-      "cancel/取消 OFFICER               - 取消任務",
-      "move/移動 OFFICER to/至 城        - 變更駐地",
-      "tasks/任務 城                      - 城池任務",
-      "march/行軍 N from/自 A to/至 B    - 調兵（遇敵則攻）",
-      "attack/攻擊 城 from/自 A with/以 N - 進攻",
-      "spy/偵察 城                         - 情報（50金）",
-      "negotiate/交涉 勢力                - 改善關係（100金）",
-      "reward/賞賜 OFFICER with/以 N      - 花 N 金提升忠誠",
-      "end/結束                           - 推進一月",
-      "save/儲存 / load/讀取              - 存讀檔",
-      "choose/選擇 Wei|Shu|Wu             - 重新開局",
-      "lang/語言 en|zh                    - 切換語言"
+      "注意：請使用英文指令（中文指令已停用）",
+      "status                        - 我方概況",
+      "status CITY                   - 城池詳情",
+      "officers                      - 武將列表（含忠誠、特性）",
+      "assign OFFICER to TASK in CITY - 農/商/科研/訓練/築城/徵兵",
+      "cancel OFFICER                - 取消任務",
+      "move OFFICER to CITY          - 變更駐地",
+      "tasks CITY                    - 城池任務",
+      "march N from A to B           - 調兵（遇敵則攻）",
+      "attack CITY from A with N     - 進攻",
+      "spy CITY                      - 情報（50金）",
+      "negotiate FACTION             - 改善關係（100金）",
+      "reward OFFICER with N         - 花 N 金提升忠誠",
+      "end                           - 推進一月",
+      "save FILE / load FILE         - 存讀檔",
+      "choose Wei|Shu|Wu             - 重新開局",
+      "lang en|zh                    - 切換語言"
     ],
     "examples": [
-      "指派 關羽 至 農業 於 Chengdu",
-      "賞賜 關羽 以 200",
-      "指派 張飛 至 訓練 於 Hanzhong"
+      "assign 關羽 to farm in Chengdu",
+      "reward 關羽 with 200",
+      "assign 張飛 to train in Hanzhong"
     ]
   }
 }
