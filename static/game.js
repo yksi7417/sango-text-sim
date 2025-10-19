@@ -35,12 +35,14 @@ async function initializeGame() {
 function updateStateDisplay() {
     const stateDisplay = document.getElementById('state-display');
     if (!gameState) {
-        stateDisplay.innerHTML = '<p class="loading">No state available</p>';
+        stateDisplay.textContent = 'No state available';
+        stateDisplay.className = 'state-content loading';
         return;
     }
 
     const stateText = formatGameState(gameState);
     stateDisplay.textContent = stateText;
+    stateDisplay.className = 'state-content';
 }
 
 // Format game state for display
