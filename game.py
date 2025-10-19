@@ -9,6 +9,7 @@ from src.constants import TASKS, TASK_SYNONYMS, ALIASES
 from src import utils
 from src import engine
 from src import world
+from src import persistence
 
 # =================== Data Models ===================
 # Models have been moved to src/models.py
@@ -391,14 +392,21 @@ def end_turn_cmd():
     if check_victory():
         say("help / load FILE")
 
+# =================== Save/Load ===================
+# Persistence has been moved to src/persistence.py
+
 def _do_save(path):
-    data = asdict(STATE)
-    data["cities"] = {k:asdict(v) for k,v in STATE.cities.items()}
-    data["factions"] = {k:{"name":f.name,"relations":f.relations,"cities":f.cities,"officers":f.officers,"ruler":f.ruler} for k,f in STATE.factions.items()}
-    data["officers"] = {k:asdict(v) for k,v in STATE.officers.items()}
-    with open(path, "w", encoding="utf-8") as f:
-        json.dump(data, f, ensure_ascii=False, indent=2)
-    say(f"Saved to {path}.")
+    if persistence.save_game(STATE, path):
+        say(f"Saved to {path}.")
+    else:
+        say("Save failed.")
+
+def _do_load(path):
+    error = persistence.load_game(STATE, path)
+    if error:
+        say(i18n.t(error))
+    else:
+        say(i18n.t("game.time", year=STATE.year, month=STATE.month))
 
 @when("save FILE")
 def save_cmd_with_file(file):
@@ -406,27 +414,7 @@ def save_cmd_with_file(file):
 
 @when("save")
 def save_cmd():
-    _do_save("savegame.json")
-
-def _do_load(path):
-    if not os.path.exists(path):
-        say(i18n.t("errors.file_missing"))
-        return
-    with open(path,"r",encoding="utf-8") as f:
-        data = json.load(f)
-    STATE.year = data["year"]
-    STATE.month = data["month"]
-    STATE.player_faction = data["player_faction"]
-    STATE.player_ruler = data["player_ruler"]
-    STATE.difficulty = data.get("difficulty","Normal")
-    STATE.messages = []
-    STATE.cities = {k:City(**v) for k,v in data["cities"].items()}
-    STATE.factions = {}
-    for k, fv in data["factions"].items():
-        STATE.factions[k] = Faction(fv["name"], fv["relations"], fv["cities"], fv.get("officers",[]), fv.get("ruler",""))
-    STATE.officers = {k:Officer(**v) for k,v in data["officers"].items()}
-    STATE.adj = {k:v for k,v in data["adj"].items()}
-    say(i18n.t("game.time", year=STATE.year, month=STATE.month))
+    _do_save(persistence.get_default_save_path())
 
 @when("load FILE")
 def load_cmd_with_file(file):
@@ -434,7 +422,7 @@ def load_cmd_with_file(file):
 
 @when("load")
 def load_cmd():
-    _do_load("savegame.json")
+    _do_load(persistence.get_default_save_path())
 
 @when("choose FACTION")
 def choose_cmd(faction):

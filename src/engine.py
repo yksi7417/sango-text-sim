@@ -234,7 +234,8 @@ def process_assignments(game_state: GameState) -> None:
     Iterates through all officers and applies their assigned tasks
     if they are in a city still owned by their faction.
     """
-    for off in game_state.officers.values():
+    # Create a list of officers to avoid RuntimeError when dict changes size during iteration
+    for off in list(game_state.officers.values()):
         if off.task and off.task_city:
             city = game_state.cities.get(off.task_city)
             if city and city.owner == off.faction:
