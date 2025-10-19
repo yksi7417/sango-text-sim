@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sango Text Sim - Three Kingdoms Strategy</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>三國志 Sango Text Sim</h1>
+            <p class="subtitle">A Three Kingdoms Strategy Game</p>
+        </header>
+
+        <main>
+            <section class="state-panel">
+                <h2>Game State</h2>
+                <div id="state-display" class="state-content">
+                    <p class="loading">Loading initial state...</p>
+                </div>
+            </section>
+
+            <section class="command-panel">
+                <h2>Command Input</h2>
+                <div class="command-form">
+                    <input type="text" id="command-input" placeholder="Enter command (e.g., 'status', 'help')" autocomplete="off">
+                    <button id="send-btn" onclick="sendCommand()">Send</button>
+                </div>
+                <div id="command-response" class="response-area"></div>
+            </section>
+
+            <section class="actions-panel">
+                <h2>Save / Load</h2>
+                <div class="button-group">
+                    <button id="save-btn" onclick="saveGame()">💾 Save Game</button>
+                    <button id="load-btn" onclick="loadGame()">📂 Load Game</button>
+                </div>
+                <div id="save-load-message" class="message-area"></div>
+            </section>
+        </main>
+
+        <footer>
+            <p>Sango Text Sim - Browser Edition | State persisted via cookies</p>
+        </footer>
+    </div>
+
+    <script src="game.js"></script>
+</body>
+</html>
