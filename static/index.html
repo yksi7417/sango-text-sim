@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Sango Text Sim — Web</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <main>
+    <h1>Sango Text Simulator (Web)</h1>
+
+    <section id="controls">
+      <button id="btn-init">Init Game</button>
+      <button id="btn-load">Load from Cookie</button>
+      <button id="btn-save">Save to Cookie</button>
+    </section>
+
+    <section id="game-area">
+      <div id="state-panel">
+        <h2>Game State</h2>
+        <pre id="state">Not initialized</pre>
+      </div>
+
+      <div id="command-panel">
+        <h2>Command</h2>
+        <input id="cmd-input" placeholder="type a command, e.g. status" />
+        <button id="btn-send">Send</button>
+        <div id="output"></div>
+      </div>
+    </section>
+  </main>
+
+  <script src="/static/game.js"></script>
+</body>
+</html>
