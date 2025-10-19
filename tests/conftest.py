@@ -52,8 +52,8 @@ def test_faction():
     return Faction(
         name="Shu",
         relations={"Wei": -20, "Wu": 10, "Shu": 0},
-        cities=["Chengdu", "Hanzhong"],
-        officers=["劉備", "關羽"],
+        cities=["TestCity"],  # Only include city that exists in fixture
+        officers=["TestOfficer"],
         ruler="劉備"
     )
 

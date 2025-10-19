@@ -6,6 +6,7 @@ from typing import Dict, List, Optional, Tuple
 from i18n import i18n
 from src.models import Officer, City, Faction, GameState
 from src.constants import TASKS, TASK_SYNONYMS, ALIASES
+from src import utils
 
 # =================== Data Models ===================
 # Models have been moved to src/models.py
@@ -81,57 +82,32 @@ def init_world(player_choice: Optional[str] = None):
     STATE.log(i18n.t("game.time", year=STATE.year, month=STATE.month))
 
 # =================== Utilities ===================
-def clamp(v, lo, hi): return max(lo, min(hi, v))
+# Utilities have been moved to src/utils.py
 
-def valid_city(name:str) -> Optional[City]: return STATE.cities.get(name)
-def is_adjacent(a:str,b:str)->bool: return b in STATE.adj.get(a, [])
-def ensure_player_city(city:str)->bool:
-    c = valid_city(city); return c is not None and c.owner == STATE.player_faction
-def officer_by_name(name:str) -> Optional[Officer]: return STATE.officers.get(name)
-
-def officers_in_city(faction:str, city_name:str) -> List[Officer]:
-    return [o for o in STATE.officers.values() if o.faction==faction and o.city==city_name]
-
-def trait_mult(off: Officer, task:str) -> float:
-    mult = 1.0
-    if task=="train" and "Strict" in off.traits: mult *= 1.10
-    if task=="farm" and "Benevolent" in off.traits: mult *= 1.10
-    if task=="trade" and "Merchant" in off.traits: mult *= 1.10
-    if task=="research" and "Scholar" in off.traits: mult *= 1.10
-    if task=="fortify" and "Engineer" in off.traits: mult *= 1.10
-    if task=="recruit" and "Charismatic" in off.traits: mult *= 1.10
-    return mult
+# Wrapper functions that pass STATE to utils
+def clamp(v, lo, hi): return utils.clamp(v, lo, hi)
+def valid_city(name): return utils.valid_city(STATE, name)
+def is_adjacent(a, b): return utils.is_adjacent(STATE, a, b)
+def ensure_player_city(city): return utils.ensure_player_city(STATE, city)
+def officer_by_name(name): return utils.officer_by_name(STATE, name)
+def officers_in_city(faction, city_name): return utils.officers_in_city(STATE, faction, city_name)
+def trait_mult(off, task): return utils.trait_mult(off, task)
+def task_key(s): return utils.task_key(s)
 
 def print_status(target: Optional[str] = None):
+    """Display faction overview or city status"""
     if not target:
-        pf = STATE.factions[STATE.player_faction]
-        owned = ", ".join(sorted(pf.cities))
-        treasury = sum(STATE.cities[c].gold for c in pf.cities)
-        granary = sum(STATE.cities[c].food for c in pf.cities)
-        army = sum(STATE.cities[c].troops for c in pf.cities)
-        say(i18n.t("ui.overview", year=STATE.year, month=STATE.month, faction=STATE.player_faction, num=len(pf.cities), cities=owned))
-        say(i18n.t("ui.resources", gold=treasury, food=granary, troops=army))
-        rels = ", ".join(f"{k}:{v:+d}" for k,v in pf.relations.items() if k!=STATE.player_faction)
-        say(i18n.t("ui.relations", rels=rels))
-        return
-    c = valid_city(target)
-    if not c:
-        say(i18n.t("errors.no_city"))
-        return
-    owner_tag = "(You)" if c.owner == STATE.player_faction else ""
-    say(i18n.t("ui.city_header", name=c.name, owner=c.owner, tag=owner_tag))
-    say(i18n.t("ui.city_stats1", gold=c.gold, food=c.food, troops=c.troops, defense=c.defense, morale=c.morale))
-    say(i18n.t("ui.city_stats2", agri=c.agri, commerce=c.commerce, tech=c.tech, walls=c.walls))
-    garrison = [f"{o.name}(Loy{ o.loyalty },{ '/'.join(i18n.t('traits.'+t) for t in o.traits) })" for o in STATE.officers.values() if o.city == c.name]
-    if garrison:
-        say(i18n.t("ui.officers_list_header", names=", ".join(garrison)))
-
-def task_key(s: str) -> Optional[str]:
-    low = s.lower()
-    for key, syns in TASK_SYNONYMS.items():
-        if low in [x.lower() for x in syns]:
-            return key
-    return None
+        overview, resources, relations = utils.format_faction_overview(STATE)
+        say(overview)
+        say(resources)
+        say(relations)
+    else:
+        lines = utils.format_city_status(STATE, target)
+        if lines:
+            for line in lines:
+                say(line)
+        else:
+            say(i18n.t("errors.no_city"))
 
 # =================== Core Systems ===================
 def tech_attack_bonus(faction: str) -> float:
