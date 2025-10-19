@@ -1,0 +1,292 @@
+"""
+World Initialization - Setup game world with cities, factions, and officers.
+
+This module contains functions for initializing the game world:
+- City data templates
+- Officer data templates
+- Faction setup
+- Map adjacency configuration
+"""
+
+import random
+from typing import Optional, Dict
+from .models import Officer, City, Faction, GameState
+from i18n import i18n
+
+
+# City data templates
+CITY_DATA = {
+    "Xuchang": {
+        "owner": "Wei",
+        "gold": 700,
+        "food": 1000,
+        "troops": 420,
+        "defense": 70,
+        "morale": 65,
+        "agri": 60,
+        "commerce": 65,
+        "tech": 55,
+        "walls": 70
+    },
+    "Luoyang": {
+        "owner": "Wei",
+        "gold": 600,
+        "food": 900,
+        "troops": 360,
+        "defense": 60,
+        "morale": 60,
+        "agri": 55,
+        "commerce": 60,
+        "tech": 50,
+        "walls": 62
+    },
+    "Chengdu": {
+        "owner": "Shu",
+        "gold": 650,
+        "food": 980,
+        "troops": 380,
+        "defense": 65,
+        "morale": 72,
+        "agri": 65,
+        "commerce": 58,
+        "tech": 52,
+        "walls": 66
+    },
+    "Hanzhong": {
+        "owner": "Shu",
+        "gold": 560,
+        "food": 820,
+        "troops": 320,
+        "defense": 58,
+        "morale": 63,
+        "agri": 60,
+        "commerce": 52,
+        "tech": 48,
+        "walls": 60
+    },
+    "Jianye": {
+        "owner": "Wu",
+        "gold": 680,
+        "food": 980,
+        "troops": 390,
+        "defense": 66,
+        "morale": 68,
+        "agri": 62,
+        "commerce": 64,
+        "tech": 54,
+        "walls": 65
+    },
+    "Wuchang": {
+        "owner": "Wu",
+        "gold": 560,
+        "food": 820,
+        "troops": 310,
+        "defense": 58,
+        "morale": 61,
+        "agri": 58,
+        "commerce": 55,
+        "tech": 49,
+        "walls": 60
+    }
+}
+
+# Map adjacency configuration
+ADJACENCY_MAP = {
+    "Xuchang": ["Luoyang", "Hanzhong"],
+    "Luoyang": ["Xuchang", "Hanzhong", "Wuchang"],
+    "Hanzhong": ["Luoyang", "Xuchang", "Chengdu"],
+    "Chengdu": ["Hanzhong"],
+    "Jianye": ["Wuchang"],
+    "Wuchang": ["Jianye", "Luoyang"]
+}
+
+# Officer data templates
+OFFICER_DATA = [
+    {
+        "name": "劉備",
+        "faction": "Shu",
+        "leadership": 86,
+        "intelligence": 80,
+        "politics": 88,
+        "charisma": 96,
+        "loyalty": 90,
+        "traits": ["Benevolent", "Charismatic"],
+        "city": "Chengdu"
+    },
+    {
+        "name": "關羽",
+        "faction": "Shu",
+        "leadership": 98,
+        "intelligence": 79,
+        "politics": 92,
+        "charisma": 84,
+        "loyalty": 85,
+        "traits": ["Brave", "Strict"],
+        "city": "Chengdu"
+    },
+    {
+        "name": "張飛",
+        "faction": "Shu",
+        "leadership": 97,
+        "intelligence": 65,
+        "politics": 60,
+        "charisma": 82,
+        "loyalty": 75,
+        "traits": ["Brave"],
+        "city": "Chengdu"
+    },
+    {
+        "name": "曹操",
+        "faction": "Wei",
+        "leadership": 92,
+        "intelligence": 94,
+        "politics": 96,
+        "charisma": 90,
+        "loyalty": 90,
+        "traits": ["Charismatic", "Scholar"],
+        "city": "Xuchang"
+    },
+    {
+        "name": "張遼",
+        "faction": "Wei",
+        "leadership": 94,
+        "intelligence": 78,
+        "politics": 70,
+        "charisma": 76,
+        "loyalty": 80,
+        "traits": ["Brave"],
+        "city": "Luoyang"
+    },
+    {
+        "name": "孫權",
+        "faction": "Wu",
+        "leadership": 86,
+        "intelligence": 80,
+        "politics": 85,
+        "charisma": 92,
+        "loyalty": 88,
+        "traits": ["Charismatic", "Merchant"],
+        "city": "Jianye"
+    },
+    {
+        "name": "周瑜",
+        "faction": "Wu",
+        "leadership": 90,
+        "intelligence": 92,
+        "politics": 88,
+        "charisma": 88,
+        "loyalty": 85,
+        "traits": ["Scholar", "Engineer"],
+        "city": "Jianye"
+    }
+]
+
+# Faction rulers mapping
+FACTION_RULERS = {
+    "Wei": "曹操",
+    "Shu": "劉備",
+    "Wu": "孫權"
+}
+
+
+def add_officer(game_state: GameState, officer: Officer) -> None:
+    """
+    Add an officer to the game state.
+    
+    Args:
+        game_state: Current game state
+        officer: Officer to add
+    """
+    game_state.officers[officer.name] = officer
+    game_state.factions[officer.faction].officers.append(officer.name)
+
+
+def init_world(game_state: GameState, player_choice: Optional[str] = None, seed: Optional[int] = 42) -> None:
+    """
+    Initialize the game world with cities, factions, and officers.
+    
+    Creates:
+    - Three factions (Wei, Shu, Wu) with rulers
+    - Six cities with resources and troops
+    - Seven legendary officers with unique traits
+    - Map adjacency relationships
+    - Initial diplomatic relations
+    
+    Args:
+        game_state: Game state to initialize
+        player_choice: Which faction the player controls (Wei, Shu, or Wu)
+        seed: Random seed for reproducible initialization
+    """
+    if seed is not None:
+        random.seed(seed)
+    
+    factions = ["Wei", "Shu", "Wu"]
+    
+    # Set player faction
+    if player_choice and player_choice in factions:
+        game_state.player_faction = player_choice
+    game_state.player_ruler = FACTION_RULERS[game_state.player_faction]
+    
+    # Create cities
+    cities = {}
+    for city_name, data in CITY_DATA.items():
+        cities[city_name] = City(
+            name=city_name,
+            owner=data["owner"],
+            gold=data["gold"],
+            food=data["food"],
+            troops=data["troops"],
+            defense=data["defense"],
+            morale=data["morale"],
+            agri=data["agri"],
+            commerce=data["commerce"],
+            tech=data["tech"],
+            walls=data["walls"]
+        )
+    
+    # Set adjacency map
+    adj = ADJACENCY_MAP.copy()
+    
+    # Create factions
+    factions_map: Dict[str, Faction] = {f: Faction(name=f) for f in factions}
+    
+    # Assign cities to factions
+    for city in cities.values():
+        factions_map[city.owner].cities.append(city.name)
+    
+    # Set up diplomatic relations and rulers
+    for f in factions:
+        factions_map[f].relations = {
+            g: (0 if f == g else random.randint(-20, 10)) for g in factions
+        }
+        factions_map[f].ruler = FACTION_RULERS[f]
+    
+    # Update game state
+    game_state.cities = cities
+    game_state.adj = adj
+    game_state.factions = factions_map
+    game_state.officers.clear()
+    
+    # Add officers
+    for officer_data in OFFICER_DATA:
+        officer = Officer(
+            name=officer_data["name"],
+            faction=officer_data["faction"],
+            leadership=officer_data["leadership"],
+            intelligence=officer_data["intelligence"],
+            politics=officer_data["politics"],
+            charisma=officer_data["charisma"],
+            loyalty=officer_data["loyalty"],
+            traits=officer_data["traits"],
+            city=officer_data["city"]
+        )
+        add_officer(game_state, officer)
+    
+    # Set initial time
+    game_state.year = 208
+    game_state.month = 1
+    game_state.messages.clear()
+    
+    # Welcome message
+    game_state.log(i18n.t("game.welcome", ruler=game_state.player_ruler, faction=game_state.player_faction))
+    game_state.log(i18n.t("game.time", year=game_state.year, month=game_state.month))

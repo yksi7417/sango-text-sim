@@ -8,6 +8,7 @@ from src.models import Officer, City, Faction, GameState
 from src.constants import TASKS, TASK_SYNONYMS, ALIASES
 from src import utils
 from src import engine
+from src import world
 
 # =================== Data Models ===================
 # Models have been moved to src/models.py
@@ -20,6 +21,18 @@ def _log_with_say(msg: str):
     _original_log(msg)
     say(msg)
 STATE.log = _log_with_say
+
+# =================== World Initialization ===================
+# World initialization has been moved to src/world.py
+
+# Wrapper functions that pass STATE to world
+def add_officer(off: Officer):
+    world.add_officer(STATE, off)
+
+def init_world(player_choice: Optional[str] = None):
+    world.init_world(STATE, player_choice)
+
+# =================== Utilities ===================
 
 # =================== Constants ===================
 # Constants have been moved to src/constants.py
