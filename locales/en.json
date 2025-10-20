@@ -12,6 +12,15 @@
     "taken_city": "{owner} has taken control of {city}!",
     "defect": "{name} defects to {new_faction}!"
   },
+  "officers": {
+    "LiuBei": "Liu Bei",
+    "GuanYu": "Guan Yu",
+    "ZhangFei": "Zhang Fei",
+    "CaoCao": "Cao Cao",
+    "ZhangLiao": "Zhang Liao",
+    "SunQuan": "Sun Quan",
+    "ZhouYu": "Zhou Yu"
+  },
   "lang": {
     "set": "Language set to {lang}.",
     "usage": "lang en|zh"
@@ -100,9 +109,9 @@
       "lang en|zh                    - Switch language"
     ],
     "examples": [
-      "assign GuanYu to farm in Chengdu",
-      "reward GuanYu with 200",
-      "assign ZhangFei to train in Hanzhong"
+      "assign 'Guan Yu' to farm in Chengdu",
+      "reward 'Guan Yu' with 200",
+      "assign 'Zhang Fei' to train in Hanzhong"
     ]
   }
 }

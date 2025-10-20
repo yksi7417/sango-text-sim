@@ -89,13 +89,13 @@ class TestInitWorld:
         
         # Should create 7 officers
         assert len(empty_game_state.officers) == 7
-        assert "劉備" in empty_game_state.officers
-        assert "關羽" in empty_game_state.officers
-        assert "張飛" in empty_game_state.officers
-        assert "曹操" in empty_game_state.officers
-        assert "張遼" in empty_game_state.officers
-        assert "孫權" in empty_game_state.officers
-        assert "周瑜" in empty_game_state.officers
+        assert "LiuBei" in empty_game_state.officers
+        assert "GuanYu" in empty_game_state.officers
+        assert "ZhangFei" in empty_game_state.officers
+        assert "CaoCao" in empty_game_state.officers
+        assert "ZhangLiao" in empty_game_state.officers
+        assert "SunQuan" in empty_game_state.officers
+        assert "ZhouYu" in empty_game_state.officers
     
     def test_init_world_sets_adjacency(self, empty_game_state):
         """World initialization should configure map adjacency."""
@@ -131,23 +131,23 @@ class TestInitWorld:
         assert len(empty_game_state.factions["Wu"].officers) > 0
         
         # Check specific officer assignments
-        assert "劉備" in empty_game_state.factions["Shu"].officers
-        assert "曹操" in empty_game_state.factions["Wei"].officers
-        assert "孫權" in empty_game_state.factions["Wu"].officers
+        assert "LiuBei" in empty_game_state.factions["Shu"].officers
+        assert "CaoCao" in empty_game_state.factions["Wei"].officers
+        assert "SunQuan" in empty_game_state.factions["Wu"].officers
     
     def test_init_world_sets_player_faction(self, empty_game_state):
         """Player faction should be set correctly."""
         world.init_world(empty_game_state, player_choice="Wei")
         
         assert empty_game_state.player_faction == "Wei"
-        assert empty_game_state.player_ruler == "曹操"
+        assert empty_game_state.player_ruler == "CaoCao"
     
     def test_init_world_default_player_faction(self, empty_game_state):
         """Default player faction should be Shu."""
         world.init_world(empty_game_state)
         
         assert empty_game_state.player_faction == "Shu"
-        assert empty_game_state.player_ruler == "劉備"
+        assert empty_game_state.player_ruler == "LiuBei"
     
     def test_init_world_sets_diplomatic_relations(self, empty_game_state):
         """Factions should have diplomatic relations set."""
@@ -235,7 +235,7 @@ class TestOfficerData:
     def test_officer_data_completeness(self):
         """All officers should have complete data."""
         for officer_data in world.OFFICER_DATA:
-            assert "name" in officer_data
+            assert "id" in officer_data
             assert "faction" in officer_data
             assert "leadership" in officer_data
             assert "intelligence" in officer_data

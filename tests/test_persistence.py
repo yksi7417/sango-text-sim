@@ -102,9 +102,9 @@ class TestSaveGame:
         assert "adj" in data
     
     def test_save_game_handles_chinese_characters(self, tmp_path):
-        """Save should handle Chinese characters correctly."""
+        """Save should handle officer IDs correctly."""
         game_state = GameState()
-        world.init_world(game_state)  # Contains Chinese officer names
+        world.init_world(game_state)  # Contains officer IDs like "LiuBei"
         
         filepath = tmp_path / "test_save_chinese.json"
         
@@ -112,10 +112,10 @@ class TestSaveGame:
         
         assert result is True
         
-        # Verify Chinese characters preserved
+        # Verify officer IDs are saved
         with open(filepath, "r", encoding="utf-8") as f:
             content = f.read()
-            assert "劉備" in content or "\\u" in content  # Either direct or unicode escaped
+            assert "LiuBei" in content  # Internal officer ID
     
     def test_save_game_invalid_path(self, populated_game_state):
         """Save with invalid path should return False."""
@@ -213,8 +213,8 @@ class TestLoadGame:
         assert len(loaded_state.officers) == len(original_state.officers)
         
         # Check specific officer
-        assert "劉備" in loaded_state.officers
-        assert loaded_state.officers["劉備"].faction == original_state.officers["劉備"].faction
+        assert "LiuBei" in loaded_state.officers
+        assert loaded_state.officers["LiuBei"].faction == original_state.officers["LiuBei"].faction
     
     def test_load_game_restores_adjacency(self, tmp_path):
         """Loading should restore map adjacency."""
@@ -287,7 +287,7 @@ class TestSaveLoadCycle:
         
         # Modify some values
         original.cities["Chengdu"].gold = 9999
-        original.officers["劉備"].loyalty = 95
+        original.officers["LiuBei"].loyalty = 95
         
         # Save and load
         filepath = tmp_path / "cycle_test.json"
@@ -300,7 +300,7 @@ class TestSaveLoadCycle:
         assert loaded.year == 215
         assert loaded.month == 8
         assert loaded.cities["Chengdu"].gold == 9999
-        assert loaded.officers["劉備"].loyalty == 95
+        assert loaded.officers["LiuBei"].loyalty == 95
     
     def test_multiple_save_load_cycles(self, tmp_path):
         """Multiple save/load cycles should preserve data."""

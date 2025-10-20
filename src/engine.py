@@ -382,7 +382,7 @@ def try_defections(game_state: GameState) -> None:
             off.busy = False
             off.loyalty = 60  # Reset base loyalty to new lord
             
-            game_state.log(i18n.t("game.defect", name=off.name, new_faction=off.faction))
+            game_state.log(i18n.t("game.defect", name=utils.get_officer_name(off.name), new_faction=off.faction))
 
 
 def end_turn(game_state: GameState) -> None:

@@ -34,69 +34,6 @@ def init_world(player_choice: Optional[str] = None):
     world.init_world(STATE, player_choice)
 
 # =================== Utilities ===================
-
-# =================== Constants ===================
-# Constants have been moved to src/constants.py
-
-# =================== World Setup ===================
-def add_officer(off: Officer):
-    STATE.officers[off.name] = off
-    STATE.factions[off.faction].officers.append(off.name)
-
-def init_world(player_choice: Optional[str] = None):
-    random.seed(42)
-    factions = ["Wei", "Shu", "Wu"]
-    rulers = {"Wei":"曹操","Shu":"劉備","Wu":"孫權"}
-
-    if player_choice and player_choice in factions:
-        STATE.player_faction = player_choice
-    STATE.player_ruler = rulers[STATE.player_faction]
-
-    cities = {
-        "Xuchang": City("Xuchang","Wei",gold=700,food=1000,troops=420,defense=70,morale=65,agri=60,commerce=65,tech=55,walls=70),
-        "Luoyang": City("Luoyang","Wei",gold=600,food=900,troops=360,defense=60,morale=60,agri=55,commerce=60,tech=50,walls=62),
-        "Chengdu": City("Chengdu","Shu",gold=650,food=980,troops=380,defense=65,morale=72,agri=65,commerce=58,tech=52,walls=66),
-        "Hanzhong": City("Hanzhong","Shu",gold=560,food=820,troops=320,defense=58,morale=63,agri=60,commerce=52,tech=48,walls=60),
-        "Jianye": City("Jianye","Wu",gold=680,food=980,troops=390,defense=66,morale=68,agri=62,commerce=64,tech=54,walls=65),
-        "Wuchang": City("Wuchang","Wu",gold=560,food=820,troops=310,defense=58,morale=61,agri=58,commerce=55,tech=49,walls=60),
-    }
-    adj = {
-        "Xuchang": ["Luoyang","Hanzhong"],
-        "Luoyang": ["Xuchang","Hanzhong","Wuchang"],
-        "Hanzhong": ["Luoyang","Xuchang","Chengdu"],
-        "Chengdu": ["Hanzhong"],
-        "Jianye": ["Wuchang"],
-        "Wuchang": ["Jianye","Luoyang"],
-    }
-
-    factions_map: Dict[str,Faction] = {f:Faction(f) for f in factions}
-    for c in cities.values():
-        factions_map[c.owner].cities.append(c.name)
-    for f in factions:
-        factions_map[f].relations = {g:(0 if f==g else random.randint(-20,10)) for g in factions}
-        factions_map[f].ruler = rulers[f]
-
-    STATE.cities = cities
-    STATE.adj = adj
-    STATE.factions = factions_map
-    STATE.officers.clear()
-
-    # Officers with traits & initial loyalty
-    add_officer(Officer("劉備","Shu",86,80,88,96, loyalty=90, traits=["Benevolent","Charismatic"], city="Chengdu"))
-    add_officer(Officer("關羽","Shu",98,79,92,84, loyalty=85, traits=["Brave","Strict"], city="Chengdu"))
-    add_officer(Officer("張飛","Shu",97,65,60,82, loyalty=75, traits=["Brave"], city="Chengdu"))
-    add_officer(Officer("曹操","Wei",92,94,96,90, loyalty=90, traits=["Charismatic","Scholar"], city="Xuchang"))
-    add_officer(Officer("張遼","Wei",94,78,70,76, loyalty=80, traits=["Brave"], city="Luoyang"))
-    add_officer(Officer("孫權","Wu",86,80,85,92, loyalty=88, traits=["Charismatic","Merchant"], city="Jianye"))
-    add_officer(Officer("周瑜","Wu",90,92,88,88, loyalty=85, traits=["Scholar","Engineer"], city="Jianye"))
-
-    STATE.year = 208
-    STATE.month = 1
-    STATE.messages.clear()
-    STATE.log(i18n.t("game.welcome", ruler=STATE.player_ruler, faction=STATE.player_faction))
-    STATE.log(i18n.t("game.time", year=STATE.year, month=STATE.month))
-
-# =================== Utilities ===================
 # Utilities have been moved to src/utils.py
 
 # Wrapper functions that pass STATE to utils
@@ -196,7 +133,8 @@ def list_officers():
         t = o.task or "idle"
         tc = f" @ {o.task_city}" if o.task_city else ""
         trait_str = "/".join(i18n.t('traits.'+t) for t in o.traits) if o.traits else "-"
-        lines.append(f"- {o.name} L{o.leadership} I{o.intelligence} P{o.politics} C{o.charisma}  Energy:{o.energy}  Loyalty:{o.loyalty}  Traits:{trait_str}  City:{o.city}  Task:{t}{tc}")
+        display_name = utils.get_officer_name(o.name)
+        lines.append(f"- {display_name} L{o.leadership} I{o.intelligence} P{o.politics} C{o.charisma}  Energy:{o.energy}  Loyalty:{o.loyalty}  Traits:{trait_str}  City:{o.city}  Task:{t}{tc}")
     say("\n".join(lines))
 
 @when("tasks CITY")
@@ -208,7 +146,8 @@ def tasks_city(city):
     lines = []
     for o in STATE.officers.values():
         if o.task_city == city:
-            lines.append(f"- {o.name} : {o.task}")
+            display_name = utils.get_officer_name(o.name)
+            lines.append(f"- {display_name} : {o.task}")
     say("\n".join(lines) if lines else ("（無任務）" if i18n.lang=="zh" else "(no tasks)"))
 
 @when("assign OFFICER to TASK in CITY")
@@ -230,7 +169,7 @@ def assign_cmd(officer, task, city):
         say(i18n.t("errors.not_your_officer"))
         return
     if off.energy < 20:
-        say(i18n.t("errors.officer_tired", name=off.name))
+        say(i18n.t("errors.officer_tired", name=utils.get_officer_name(off.name)))
         return
     if not ensure_player_city(city_name):
         say(i18n.t("errors.not_yours"))
@@ -239,7 +178,7 @@ def assign_cmd(officer, task, city):
     off.task = task
     off.task_city = city_name
     off.busy = True
-    say(i18n.t("cmd_feedback.assigned", name=off.name, task=task, city=city_name, desc=i18n.t(f"tasks.{task}")))
+    say(i18n.t("cmd_feedback.assigned", name=utils.get_officer_name(off.name), task=task, city=city_name, desc=i18n.t(f"tasks.{task}")))
 
 @when("cancel OFFICER")
 def cancel_cmd(officer):
@@ -249,7 +188,7 @@ def cancel_cmd(officer):
         say(i18n.t("errors.no_officer"))
         return
     off.task=None; off.task_city=None; off.busy=False
-    say(i18n.t("cmd_feedback.assignment_canceled", name=name))
+    say(i18n.t("cmd_feedback.assignment_canceled", name=utils.get_officer_name(name)))
 
 @when("move OFFICER to CITY")
 def move_officer_cmd(officer, city):
@@ -263,7 +202,7 @@ def move_officer_cmd(officer, city):
         say(i18n.t("errors.not_yours"))
         return
     off.city = city_name
-    say(i18n.t("cmd_feedback.relocated", name=off.name, city=city_name))
+    say(i18n.t("cmd_feedback.relocated", name=utils.get_officer_name(off.name), city=city_name))
 
 @when("march NUMBER from SOURCE to DESTINATION", number=int)
 def march_cmd(number, source, destination):
@@ -382,7 +321,7 @@ def reward_cmd(officer, number):
     delta = max(1, amount // 100)
     off.loyalty = clamp(off.loyalty + delta, 0, 100)
     off.energy = clamp(off.energy + 5, 0, 100)
-    say(i18n.t("cmd_feedback.reward", name=off.name, gold=amount, delta=delta, loyalty=off.loyalty))
+    say(i18n.t("cmd_feedback.reward", name=utils.get_officer_name(off.name), gold=amount, delta=delta, loyalty=off.loyalty))
 
 @when("end")
 def end_turn_cmd():

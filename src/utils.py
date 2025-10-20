@@ -15,6 +15,68 @@ from src.constants import TASK_SYNONYMS, TRAIT_EFFECTS, MIN_STAT, MAX_STAT
 from i18n import i18n
 
 
+def get_officer_name(officer_id: str) -> str:
+    """
+    Get the localized display name for an officer.
+    
+    Args:
+        officer_id: Internal officer ID (e.g., "GuanYu", "CaoCao")
+        
+    Returns:
+        Localized officer name based on current language setting
+        
+    Example:
+        >>> get_officer_name("GuanYu")  # Returns "Guan Yu" in English, "關羽" in Chinese
+    """
+    return i18n.t(f"officers.{officer_id}")
+
+
+def resolve_officer_name(input_name: str, game_state: GameState) -> Optional[str]:
+    """
+    Resolve a user-inputted officer name to the internal officer ID.
+    
+    Accepts both English and Chinese names, and returns the internal ID.
+    
+    Args:
+        input_name: The name entered by the user (could be in any language)
+        game_state: Current game state
+        
+    Returns:
+        Internal officer ID if found, None otherwise
+        
+    Example:
+        >>> resolve_officer_name("Guan Yu", game_state)  # Returns "GuanYu"
+        >>> resolve_officer_name("關羽", game_state)     # Returns "GuanYu"
+        >>> resolve_officer_name("GuanYu", game_state)  # Returns "GuanYu"
+    """
+    # First try exact match with internal ID
+    if input_name in game_state.officers:
+        return input_name
+    
+    # Try to match against localized names in both languages
+    # We need to check both en and zh translations
+    for officer_id in game_state.officers.keys():
+        # Try English name
+        en_name = i18n.trans.get("officers", {}).get(officer_id, "")
+        if en_name.lower() == input_name.lower():
+            return officer_id
+            
+        # Load Chinese translations temporarily to check
+        import json
+        import os
+        try:
+            zh_path = os.path.join(i18n.base_dir, "zh.json")
+            with open(zh_path, "r", encoding="utf-8") as f:
+                zh_trans = json.load(f)
+                zh_name = zh_trans.get("officers", {}).get(officer_id, "")
+                if zh_name == input_name:
+                    return officer_id
+        except:
+            pass
+    
+    return None
+
+
 def clamp(value: int, min_val: int, max_val: int) -> int:
     """
     Clamp a value between minimum and maximum bounds.
@@ -84,16 +146,19 @@ def ensure_player_city(game_state: GameState, city_name: str) -> bool:
 
 def officer_by_name(game_state: GameState, name: str) -> Optional[Officer]:
     """
-    Get an officer by name.
+    Get an officer by name (supports both localized names and internal IDs).
     
     Args:
         game_state: Current game state
-        name: Officer name to look up
+        name: Officer name to look up (can be English, Chinese, or internal ID)
         
     Returns:
         Officer object if found, None otherwise
     """
-    return game_state.officers.get(name)
+    officer_id = resolve_officer_name(name, game_state)
+    if officer_id:
+        return game_state.officers.get(officer_id)
+    return None
 
 
 def officers_in_city(game_state: GameState, faction: str, city_name: str) -> List[Officer]:
@@ -263,7 +328,7 @@ def format_city_status(game_state: GameState, city_name: str) -> Optional[List[s
     
     # Officers
     garrison = [
-        f"{o.name}(Loy{o.loyalty},{'/'.join(i18n.t('traits.'+t) for t in o.traits)})"
+        f"{get_officer_name(o.name)}(Loy{o.loyalty},{'/'.join(i18n.t('traits.'+t) for t in o.traits)})"
         for o in game_state.officers.values()
         if o.city == city.name
     ]
