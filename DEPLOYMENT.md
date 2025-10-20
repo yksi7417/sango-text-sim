@@ -2,6 +2,79 @@
 
 This guide will help you deploy the game to Fly.io.
 
+## ⚠️ CRITICAL: Automated Deployment Warning
+
+**Our CI/CD pipeline is configured to automatically deploy from ANY branch to production!**
+
+### What This Means:
+
+🚨 **Every push to ANY branch triggers a production deployment**
+- The GitHub Actions workflow (`deploy.yml`) uses `branches: ['**']`
+- **ALL branches** (main, feature branches, Copilot-created branches) deploy to the **SAME Fly.io app**
+- There is **NO staging environment** - every deployment goes directly to production
+
+🚨 **Potential Issues:**
+1. **Production Overwrites**: Any branch push will overwrite your live production app
+2. **Cost Implications**: Each deployment counts toward Fly.io build minutes and may incur costs
+3. **No Automatic Rollback**: If a bad deploy goes out, you must manually roll back
+4. **Coordination Required**: Multiple developers pushing simultaneously will conflict
+5. **Testing in Production**: Experimental or incomplete features may be deployed live
+
+### Best Practices:
+
+✅ **DO:**
+- Review code carefully before pushing ANY branch
+- Test thoroughly locally before pushing
+- Use pull requests and code reviews
+- Monitor `fly logs` after any push
+- Keep the main branch stable and production-ready
+- Communicate with team members before pushing
+
+❌ **DON'T:**
+- Push experimental or broken code to any branch
+- Create throwaway branches without testing
+- Push incomplete features
+- Assume feature branches are "safe" - they deploy too!
+
+### Alternative Configurations:
+
+If you want to restrict deployments to specific branches only:
+
+**Option 1: Deploy Only from Main**
+```yaml
+# In .github/workflows/deploy.yml
+on:
+  push:
+    branches: ['main']  # Only main deploys
+```
+
+**Option 2: Use Separate Environments**
+```yaml
+# Deploy different branches to different Fly.io apps
+jobs:
+  deploy:
+    steps:
+      - name: Deploy to appropriate environment
+        run: |
+          if [ "${{ github.ref }}" == "refs/heads/main" ]; then
+            fly deploy --app sango-prod
+          else
+            fly deploy --app sango-dev
+          fi
+```
+
+**Option 3: Manual Deployment Only**
+- Remove the `deploy.yml` workflow entirely
+- Deploy manually with `fly deploy` from your local machine
+- Full control over what gets deployed and when
+
+### Current Configuration:
+
+See `.github/workflows/deploy.yml`:
+- **Trigger**: Push to ANY branch (`branches: ['**']`)
+- **Target**: Single Fly.io app (production)
+- **Automatic**: No manual approval required
+
 ## Prerequisites
 
 1. **Install Fly CLI**
