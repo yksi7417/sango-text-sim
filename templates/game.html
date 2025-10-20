@@ -155,18 +155,8 @@
             <div>Current City: <span id="currentCity">None</span></div>
         </div>
         
-        <div class="quick-commands">
-            <button class="quick-cmd" onclick="sendCommand('help')">Help</button>
-            <button class="quick-cmd" onclick="sendCommand('menu')" style="background: #006600; font-weight: bold;">📋 Menu</button>
-            <button class="quick-cmd" onclick="sendCommand('start')">Start Game</button>
-            <button class="quick-cmd" onclick="sendCommand('choose Shu')">Choose Shu</button>
-            <button class="quick-cmd" onclick="sendCommand('choose Wei')">Choose Wei</button>
-            <button class="quick-cmd" onclick="sendCommand('choose Wu')">Choose Wu</button>
-            <button class="quick-cmd" onclick="sendCommand('status')">Status</button>
-            <button class="quick-cmd" onclick="sendCommand('officers')">Officers</button>
-            <button class="quick-cmd" onclick="sendCommand('turn')">End Turn</button>
-            <button class="quick-cmd" onclick="sendCommand('lang zh')">中文</button>
-            <button class="quick-cmd" onclick="sendCommand('lang en')">English</button>
+        <div class="quick-commands" id="buttonBar">
+            <!-- Buttons will be dynamically generated based on game state -->
         </div>
         
         <div class="terminal" id="terminal">
@@ -192,6 +182,143 @@
     <script>
         const terminal = document.getElementById('terminal');
         const input = document.getElementById('commandInput');
+        const buttonBar = document.getElementById('buttonBar');
+        
+        // Menu button configurations
+        const menuConfig = {
+            pregame: [
+                { label: 'Help', command: 'help' },
+                { label: 'Choose Shu (蜀)', command: 'choose Shu', style: 'background: #cc3333; font-weight: bold;' },
+                { label: 'Choose Wei (魏)', command: 'choose Wei', style: 'background: #3333cc; font-weight: bold;' },
+                { label: 'Choose Wu (吳)', command: 'choose Wu', style: 'background: #cc6600; font-weight: bold;' },
+                { label: 'Start Game', command: 'start', style: 'background: #006600; font-weight: bold;' },
+                { label: '中文', command: 'lang zh' },
+                { label: 'English', command: 'lang en' }
+            ],
+            main: [
+                { label: '1. Set Current City', command: '1' },
+                { label: '2. War', command: '2' },
+                { label: '3. Officer Management', command: '3' },
+                { label: '4. Diplomacy', command: '4' },
+                { label: '5. Internal Affairs', command: '5' },
+                { label: '6. Merchant', command: '6' },
+                { label: '7. Tactics', command: '7' },
+                { label: '8. Advice', command: '8' },
+                { label: 'Status', command: 'status', style: 'background: #004400;' },
+                { label: 'Officers', command: 'officers', style: 'background: #004400;' },
+                { label: 'End Turn', command: 'turn', style: 'background: #440000; font-weight: bold;' },
+                { label: '中文', command: 'lang zh' },
+                { label: 'English', command: 'lang en' }
+            ],
+            city: [
+                { label: 'Back to Main Menu', command: '0', style: 'background: #660000; font-weight: bold;' }
+            ],
+            war: [
+                { label: '1. Move Troops', command: '1' },
+                { label: '2. Transfer Troops', command: '2' },
+                { label: '3. Wage War', command: '3' },
+                { label: '4. Recruit Soldiers', command: '4' },
+                { label: '5. Training', command: '5' },
+                { label: '6. Make Weapons', command: '6' },
+                { label: '7. Surveillance', command: '7' },
+                { label: 'Back to Main Menu', command: '0', style: 'background: #660000; font-weight: bold;' }
+            ],
+            officer: [
+                { label: '1. Search for Officers', command: '1' },
+                { label: '2. Recruit Officer', command: '2' },
+                { label: '3. Reward Officer', command: '3' },
+                { label: 'Back to Main Menu', command: '0', style: 'background: #660000; font-weight: bold;' }
+            ],
+            diplomacy: [
+                { label: '1. Form Alliance', command: '1' },
+                { label: '2. Attack Common Enemy', command: '2' },
+                { label: '3. Send Gift', command: '3' },
+                { label: '4. Persuade to Capitulate', command: '4' },
+                { label: '5. Break Alliance', command: '5' },
+                { label: '6. Rescue Prisoner of War', command: '6' },
+                { label: 'Back to Main Menu', command: '0', style: 'background: #660000; font-weight: bold;' }
+            ],
+            internal: [
+                { label: '1. Agriculture', command: '1' },
+                { label: '2. Flood Management', command: '2' },
+                { label: '3. Commerce', command: '3' },
+                { label: '4. Technology', command: '4' },
+                { label: '5. Build School', command: '5' },
+                { label: 'Again', command: 'again', style: 'background: #004400;' },
+                { label: 'Back to Main Menu', command: '0', style: 'background: #660000; font-weight: bold;' }
+            ],
+            merchant: [
+                { label: '1. Buy/Sell Food', command: '1' },
+                { label: '2. Buy/Sell Weapons', command: '2' },
+                { label: '3. Buy/Sell Horses', command: '3' },
+                { label: 'Back to Main Menu', command: '0', style: 'background: #660000; font-weight: bold;' }
+            ],
+            tactics: [
+                { label: '1. Espionage', command: '1' },
+                { label: '2. Spread Rumors', command: '2' },
+                { label: '3. Set Fire', command: '3' },
+                { label: '4. Detect Double Agent', command: '4' },
+                { label: '5. Send Undercover Agent', command: '5' },
+                { label: '6. Spread False Information', command: '6' },
+                { label: 'Back to Main Menu', command: '0', style: 'background: #660000; font-weight: bold;' }
+            ],
+            advice: [
+                { label: '1. War Strategy', command: '1' },
+                { label: '2. Officer Management', command: '2' },
+                { label: '3. Diplomacy', command: '3' },
+                { label: '4. Internal Affairs', command: '4' },
+                { label: '5. Trade & Commerce', command: '5' },
+                { label: '6. Tactics & Espionage', command: '6' },
+                { label: '7. Current Situation', command: '7' },
+                { label: '8. Long-term Strategy', command: '8' },
+                { label: 'Back to Main Menu', command: '0', style: 'background: #660000; font-weight: bold;' }
+            ]
+        };
+        
+        // Update buttons based on game state
+        function updateButtons(menuState, gameState) {
+            const currentMenu = menuState?.current_menu || 'pregame';
+            const faction = gameState?.faction || 'None';
+            
+            // Determine which button set to show
+            let buttons = menuConfig.pregame;
+            
+            if (faction !== 'None' && faction !== null) {
+                // Game has started - show menu buttons
+                buttons = menuConfig[currentMenu] || menuConfig.main;
+                
+                // Special handling for city menu - generate dynamic buttons
+                if (currentMenu === 'city' && menuState?.cities && menuState.cities.length > 0) {
+                    buttons = [];
+                    menuState.cities.forEach((city, index) => {
+                        buttons.push({ 
+                            label: `${index + 1}. ${city}`, 
+                            command: (index + 1).toString() 
+                        });
+                    });
+                    buttons.push({ 
+                        label: 'Back to Main Menu', 
+                        command: '0', 
+                        style: 'background: #660000; font-weight: bold;' 
+                    });
+                }
+            }
+            
+            // Clear existing buttons
+            buttonBar.innerHTML = '';
+            
+            // Create new buttons
+            buttons.forEach(btn => {
+                const button = document.createElement('button');
+                button.className = 'quick-cmd';
+                button.textContent = btn.label;
+                button.onclick = () => sendCommand(btn.command);
+                if (btn.style) {
+                    button.setAttribute('style', btn.style);
+                }
+                buttonBar.appendChild(button);
+            });
+        }
         
         // Handle Enter key
         input.addEventListener('keypress', function(e) {
@@ -266,6 +393,9 @@
                 // Update menu state display
                 if (data.menu_state) {
                     document.getElementById('currentCity').textContent = data.menu_state.current_city || 'None';
+                    
+                    // Update buttons based on current menu and game state
+                    updateButtons(data.menu_state, data.game_state);
                 }
                 
             } catch (error) {
@@ -283,9 +413,14 @@
                     document.getElementById('faction').textContent = data.faction || 'None';
                     document.getElementById('year').textContent = data.year;
                     document.getElementById('month').textContent = data.month;
+                    
+                    // Initialize buttons with pregame state
+                    updateButtons(null, { faction: data.faction });
                 }
             } catch (error) {
                 console.error('Failed to load state:', error);
+                // Initialize with pregame buttons on error
+                updateButtons(null, { faction: 'None' });
             }
         }
         

@@ -336,7 +336,7 @@ def execute_command(gs, command_text, session_state=None):
             world.init_world(gs)
             if session_state:
                 session_state['current_menu'] = 'main'
-                return "Game started! Choose your faction with: choose Wei/Shu/Wu\n\nType 'menu' to use the menu system."
+                return "Game started! Choose your faction with: choose Wei/Shu/Wu"
             return "Game started! Choose your faction with: choose Wei/Shu/Wu"
         
         elif cmd in ['choose', '選擇']:
@@ -345,7 +345,8 @@ def execute_command(gs, command_text, session_state=None):
             faction = parts[1]
             world.init_world(gs, player_choice=faction)
             if session_state:
-                return f"You are now playing as {faction}!\n\nType 'menu' to use the menu system."
+                session_state['current_menu'] = 'main'
+                return f"You are now playing as {faction}!\n\n" + format_menu('main', gs, session_state)
             return f"You are now playing as {faction}!"
         
         elif cmd in ['status', '狀態']:
@@ -466,6 +467,12 @@ def api_command():
     # Get messages
     messages = gs.messages[-10:] if gs.messages else []
     
+    # Prepare city list for dynamic buttons if in city menu
+    city_list = []
+    if session_state.get('current_menu') == 'city' and gs.factions and gs.player_faction in gs.factions:
+        faction = gs.factions[gs.player_faction]
+        city_list = list(faction.cities) if faction.cities else []
+    
     return jsonify({
         'output': output,
         'messages': messages,
@@ -477,7 +484,8 @@ def api_command():
         'menu_state': {
             'current_menu': session_state.get('current_menu', 'main'),
             'current_city': session_state.get('current_city'),
-            'language': session_state.get('language', 'en')
+            'language': session_state.get('language', 'en'),
+            'cities': city_list
         }
     })
 
