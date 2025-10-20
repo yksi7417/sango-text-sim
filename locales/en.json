@@ -183,7 +183,10 @@
         "Military Academy (for Officers)",
         "Scholar Academy (for Politics)",
         "Engineering School (for War Technology)"
-      ]
+      ],
+      "no_officers": "No available officers in {city} with sufficient energy (20+).\nAssign officers to {city} or wait for them to recover energy.",
+      "success": "[OK] {officer} assigned to {action} in {city}",
+      "current_status": "Current Status"
     },
     "merchant": {
       "title": "=== Merchant ===",

@@ -184,7 +184,10 @@
         "武學館（培養武將）",
         "文學院（培養政治人才）",
         "工學院（研發軍事科技）"
-      ]
+      ],
+      "no_officers": "{city} 無可用武將（需精力20+）。\n請調派武將至 {city} 或等待精力恢復。",
+      "success": "[成功] {officer} 受命於 {city} 執行 {action}",
+      "current_status": "當前狀態"
     },
     "merchant": {
       "title": "=== 商賈 ===",

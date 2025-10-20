@@ -113,6 +113,10 @@ def handle_menu_input(gs, session_state, input_text):
         session_state['current_menu'] = 'main'
         return format_menu('main', gs, session_state)
     
+    # Allow 'again' or 'continue' to stay in current submenu
+    if input_text.lower() in ['again', 'continue', 'c'] and current_menu != 'main':
+        return format_menu(current_menu, gs, session_state)
+    
     # Main menu routing
     if current_menu == 'main':
         menu_map = {
@@ -158,9 +162,123 @@ def handle_menu_input(gs, session_state, input_text):
         
         return i18n.t("menu.common.invalid")
     
+    # Internal Affairs menu
+    elif current_menu == 'internal':
+        if not gs.factions or gs.player_faction not in gs.factions:
+            session_state['current_menu'] = 'main'
+            return "Game not initialized. Use 'start' or 'choose Wei/Shu/Wu' first."
+        
+        if not session_state.get('current_city'):
+            session_state['current_menu'] = 'main'
+            return "Please set a current city first (Main Menu > Option 1)."
+        
+        city_name = session_state['current_city']
+        
+        # Validate city ownership
+        faction = gs.factions[gs.player_faction]
+        if city_name not in faction.cities:
+            session_state['current_menu'] = 'main'
+            return f"{city_name} is no longer under your control."
+        
+        # Internal Affairs action mapping
+        if input_text == '1':  # Agriculture
+            return handle_internal_action(gs, session_state, city_name, 'farm')
+        elif input_text == '2':  # Flood Management
+            return handle_internal_action(gs, session_state, city_name, 'flood')
+        elif input_text == '3':  # Commerce
+            return handle_internal_action(gs, session_state, city_name, 'trade')
+        elif input_text == '4':  # Technology
+            return handle_internal_action(gs, session_state, city_name, 'research')
+        elif input_text == '5':  # Build School
+            return handle_build_school(gs, session_state, city_name)
+        else:
+            return i18n.t("menu.common.invalid")
+    
     # Other menus - not yet implemented
     else:
         return i18n.t("menu.common.not_implemented") + "\n\n" + format_menu(current_menu, gs, session_state)
+
+
+def handle_internal_action(gs, session_state, city_name, action_type):
+    """Handle internal affairs actions like agriculture, commerce, etc."""
+    from src import utils, engine
+    
+    lang = session_state.get('language', 'en')
+    i18n.load(lang)
+    
+    city = gs.cities.get(city_name)
+    if not city:
+        session_state['current_menu'] = 'main'
+        return "City not found."
+    
+    faction = gs.factions[gs.player_faction]
+    
+    # Map action types to task types
+    task_map = {
+        'farm': 'farm',
+        'trade': 'trade',
+        'research': 'research',
+        'flood': 'farm'  # Flood management is also agriculture-related
+    }
+    
+    task = task_map.get(action_type, 'farm')
+    
+    # Find available officers in the city
+    available_officers = [
+        off for off_name in faction.officers
+        if (off := gs.officers.get(off_name)) and 
+        off.city == city_name and 
+        off.energy >= 20 and
+        not off.busy
+    ]
+    
+    if not available_officers:
+        return i18n.t("menu.internal.no_officers", city=city_name) if i18n.t("menu.internal.no_officers") != "menu.internal.no_officers" else f"No available officers in {city_name} with sufficient energy (20+).\n\nAssign officers to {city_name} or wait for them to recover energy."
+    
+    # Auto-assign the best officer for the task
+    best_officer = max(available_officers, key=lambda o: utils.trait_mult(o, task) * (
+        o.politics if task in ['farm', 'trade'] else o.intelligence
+    ))
+    
+    # Assign the task
+    best_officer.city = city_name
+    best_officer.task = task
+    best_officer.task_city = city_name
+    best_officer.busy = True
+    
+    # Execute the assignment immediately for feedback
+    engine.assignment_effect(gs, best_officer, city)
+    
+    action_names = {
+        'farm': i18n.t("menu.internal.options")[0] if isinstance(i18n.t("menu.internal.options"), list) else "Agriculture",
+        'trade': i18n.t("menu.internal.options")[2] if isinstance(i18n.t("menu.internal.options"), list) else "Commerce",
+        'research': i18n.t("menu.internal.options")[3] if isinstance(i18n.t("menu.internal.options"), list) else "Technology",
+        'flood': i18n.t("menu.internal.options")[1] if isinstance(i18n.t("menu.internal.options"), list) else "Flood Management"
+    }
+    
+    officer_name = utils.get_officer_name(best_officer.name)
+    action_name = action_names.get(action_type, action_type)
+    
+    # Show results
+    result = f"[OK] {officer_name} assigned to {action_name} in {city_name}\n"
+    result += f"  Energy: {best_officer.energy}/100\n"
+    result += f"\nCity Status:\n"
+    result += f"  Agriculture: {city.agri}\n"
+    result += f"  Commerce: {city.commerce}\n"
+    result += f"  Technology: {city.tech}\n"
+    result += f"  Gold: {city.gold} | Food: {city.food}\n"
+    result += f"\n" + "="*50 + "\n\n"
+    result += format_menu('internal', gs, session_state)
+    
+    return result
+
+
+def handle_build_school(gs, session_state, city_name):
+    """Handle building schools (future feature)."""
+    lang = session_state.get('language', 'en')
+    i18n.load(lang)
+    
+    return i18n.t("menu.common.not_implemented") + "\n\nSchool construction will be available in a future update.\n\nType 'menu' to return to main menu."
 
 
 def execute_command(gs, command_text, session_state=None):
