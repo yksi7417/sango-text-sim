@@ -345,6 +345,9 @@ def ai_turn(game_state: GameState, faction_name: str) -> None:
                     win, _ = battle(game_state, base_city, game_state.cities[dst], size)
                     if win and game_state.cities[dst].troops <= 0:
                         transfer_city(game_state, faction_name, game_state.cities[dst])
+                else:
+                    # Can't attack, rest instead
+                    off.energy = utils.clamp(off.energy + 5, 0, 100)
             
             else:  # rest
                 off.energy = utils.clamp(off.energy + 5, 0, 100)
