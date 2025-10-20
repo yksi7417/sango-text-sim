@@ -62,7 +62,8 @@ def execute_command(gs, command_text):
             if len(parts) > 1:
                 return utils.format_city_status(gs, parts[1])
             else:
-                return utils.format_faction_overview(gs, gs.player_faction)
+                overview, resources, relations = utils.format_faction_overview(gs)
+                return f"{overview}\n{resources}\n{relations}"
         
         elif cmd in ['officers', '武將']:
             faction = gs.factions.get(gs.player_faction)
