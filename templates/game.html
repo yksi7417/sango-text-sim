@@ -136,11 +136,31 @@
             margin-top: 20px;
             color: #666;
             font-size: 12px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
         }
         
         .footer a {
             color: #00ff00;
             text-decoration: none;
+        }
+        
+        .footer .lang-btn {
+            background: #003300;
+            color: #00ff00;
+            border: 1px solid #00ff00;
+            padding: 5px 15px;
+            font-size: 12px;
+            cursor: pointer;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .footer .lang-btn:hover {
+            background: #004400;
+            box-shadow: 0 0 5px #00ff00;
         }
     </style>
 </head>
@@ -176,6 +196,8 @@
             <p>Sango Text Sim v1.0 | 
             <a href="https://github.com/yksi7417/sango-text-sim" target="_blank">GitHub</a> | 
             99% Test Coverage | 153 Tests Passing</p>
+            <button class="lang-btn" onclick="sendCommand('lang zh')">中文</button>
+            <button class="lang-btn" onclick="sendCommand('lang en')">English</button>
         </div>
     </div>
     
@@ -191,9 +213,7 @@
                 { label: 'Choose Shu (蜀)', command: 'choose Shu', style: 'background: #cc3333; font-weight: bold;' },
                 { label: 'Choose Wei (魏)', command: 'choose Wei', style: 'background: #3333cc; font-weight: bold;' },
                 { label: 'Choose Wu (吳)', command: 'choose Wu', style: 'background: #cc6600; font-weight: bold;' },
-                { label: 'Start Game', command: 'start', style: 'background: #006600; font-weight: bold;' },
-                { label: '中文', command: 'lang zh' },
-                { label: 'English', command: 'lang en' }
+                { label: 'Start Game', command: 'start', style: 'background: #006600; font-weight: bold;' }
             ],
             main: [
                 { label: '1. Set Current City', command: '1' },
@@ -206,9 +226,7 @@
                 { label: '8. Advice', command: '8' },
                 { label: 'Status', command: 'status', style: 'background: #004400;' },
                 { label: 'Officers', command: 'officers', style: 'background: #004400;' },
-                { label: 'End Turn', command: 'turn', style: 'background: #440000; font-weight: bold;' },
-                { label: '中文', command: 'lang zh' },
-                { label: 'English', command: 'lang en' }
+                { label: 'End Turn', command: 'turn', style: 'background: #440000; font-weight: bold;' }
             ],
             city: [
                 { label: 'Back to Main Menu', command: '0', style: 'background: #660000; font-weight: bold;' }
