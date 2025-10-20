@@ -12,6 +12,15 @@
     "taken_city": "{owner} 奪取了 {city}！",
     "defect": "{name} 投奔 {new_faction}！"
   },
+  "officers": {
+    "LiuBei": "劉備",
+    "GuanYu": "關羽",
+    "ZhangFei": "張飛",
+    "CaoCao": "曹操",
+    "ZhangLiao": "張遼",
+    "SunQuan": "孫權",
+    "ZhouYu": "周瑜"
+  },
   "lang": {
     "set": "語言已切換為 {lang}。",
     "usage": "lang 語言 en|zh"

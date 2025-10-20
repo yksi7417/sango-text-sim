@@ -26,8 +26,8 @@ class TestFullGameInitialization:
         
         # Verify officers created
         assert len(gs.officers) >= 7
-        assert any(o.name == "劉備" for o in gs.officers.values())
-        assert any(o.name == "曹操" for o in gs.officers.values())
+        assert any(o.name == "LiuBei" for o in gs.officers.values())
+        assert any(o.name == "CaoCao" for o in gs.officers.values())
         
         # Verify player faction set
         assert gs.player_faction == "Shu"

@@ -101,9 +101,10 @@ ADJACENCY_MAP = {
 }
 
 # Officer data templates
+# Internal IDs are used for game logic, display names come from i18n
 OFFICER_DATA = [
     {
-        "name": "劉備",
+        "id": "LiuBei",
         "faction": "Shu",
         "leadership": 86,
         "intelligence": 80,
@@ -114,7 +115,7 @@ OFFICER_DATA = [
         "city": "Chengdu"
     },
     {
-        "name": "關羽",
+        "id": "GuanYu",
         "faction": "Shu",
         "leadership": 98,
         "intelligence": 79,
@@ -125,7 +126,7 @@ OFFICER_DATA = [
         "city": "Chengdu"
     },
     {
-        "name": "張飛",
+        "id": "ZhangFei",
         "faction": "Shu",
         "leadership": 97,
         "intelligence": 65,
@@ -136,7 +137,7 @@ OFFICER_DATA = [
         "city": "Chengdu"
     },
     {
-        "name": "曹操",
+        "id": "CaoCao",
         "faction": "Wei",
         "leadership": 92,
         "intelligence": 94,
@@ -147,7 +148,7 @@ OFFICER_DATA = [
         "city": "Xuchang"
     },
     {
-        "name": "張遼",
+        "id": "ZhangLiao",
         "faction": "Wei",
         "leadership": 94,
         "intelligence": 78,
@@ -158,7 +159,7 @@ OFFICER_DATA = [
         "city": "Luoyang"
     },
     {
-        "name": "孫權",
+        "id": "SunQuan",
         "faction": "Wu",
         "leadership": 86,
         "intelligence": 80,
@@ -169,7 +170,7 @@ OFFICER_DATA = [
         "city": "Jianye"
     },
     {
-        "name": "周瑜",
+        "id": "ZhouYu",
         "faction": "Wu",
         "leadership": 90,
         "intelligence": 92,
@@ -181,11 +182,11 @@ OFFICER_DATA = [
     }
 ]
 
-# Faction rulers mapping
+# Faction rulers mapping (using officer IDs)
 FACTION_RULERS = {
-    "Wei": "曹操",
-    "Shu": "劉備",
-    "Wu": "孫權"
+    "Wei": "CaoCao",
+    "Shu": "LiuBei",
+    "Wu": "SunQuan"
 }
 
 
@@ -270,7 +271,7 @@ def init_world(game_state: GameState, player_choice: Optional[str] = None, seed:
     # Add officers
     for officer_data in OFFICER_DATA:
         officer = Officer(
-            name=officer_data["name"],
+            name=officer_data["id"],
             faction=officer_data["faction"],
             leadership=officer_data["leadership"],
             intelligence=officer_data["intelligence"],
@@ -287,6 +288,7 @@ def init_world(game_state: GameState, player_choice: Optional[str] = None, seed:
     game_state.month = 1
     game_state.messages.clear()
     
-    # Welcome message
-    game_state.log(i18n.t("game.welcome", ruler=game_state.player_ruler, faction=game_state.player_faction))
+    # Welcome message with localized ruler name
+    ruler_display_name = i18n.t(f"officers.{game_state.player_ruler}")
+    game_state.log(i18n.t("game.welcome", ruler=ruler_display_name, faction=game_state.player_faction))
     game_state.log(i18n.t("game.time", year=game_state.year, month=game_state.month))
