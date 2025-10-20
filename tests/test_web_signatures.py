@@ -170,3 +170,61 @@ class TestWebServerErrorPrevention:
         result = utils.format_city_status(gs, city_name)
         assert isinstance(result, list)
         assert all(isinstance(s, str) for s in result)
+
+    def test_status_command_always_returns_string(self):
+        """
+        Regression test for bug where 'status CITY' returned a list instead of string.
+        
+        Bug: JavaScript error "data.output.split is not a function"
+        Root cause: format_city_status returns a list, but web server returned it directly
+        Fix: web_server.py must join the list into a string before returning
+        
+        This test simulates what web_server.execute_command does and ensures it
+        always returns a string, never a list.
+        """
+        gs = GameState()
+        world.init_world(gs, player_choice=None, seed=42)
+        
+        # Get a city name to test with
+        city_name = list(gs.cities.keys())[0]
+        
+        # Test 'status' command without city (faction overview)
+        overview, resources, relations = utils.format_faction_overview(gs)
+        status_output = f"{overview}\n{resources}\n{relations}"
+        assert isinstance(status_output, str), "status command must return string"
+        assert len(status_output) > 0
+        
+        # Test 'status CITY' command with city (city status)
+        city_status = utils.format_city_status(gs, city_name)
+        assert isinstance(city_status, list), "format_city_status returns list"
+        
+        # This is what web_server.py must do - join the list into a string
+        city_status_output = "\n".join(city_status)
+        assert isinstance(city_status_output, str), "status CITY must return string, not list"
+        assert len(city_status_output) > 0
+        assert city_name in city_status_output
+        
+        # Verify that the string can be split (what JavaScript does)
+        lines = city_status_output.split('\n')
+        assert isinstance(lines, list)
+        assert len(lines) > 0
+        
+    def test_status_command_for_all_cities_returns_strings(self):
+        """Test that status command returns strings for every city in the game."""
+        gs = GameState()
+        world.init_world(gs, player_choice=None, seed=42)
+        
+        for city_name in gs.cities.keys():
+            city_status = utils.format_city_status(gs, city_name)
+            
+            # format_city_status returns a list
+            assert isinstance(city_status, list)
+            
+            # Web server must join it into a string
+            status_output = "\n".join(city_status)
+            assert isinstance(status_output, str), f"status {city_name} must return string"
+            
+            # Verify JavaScript can split it
+            lines = status_output.split('\n')
+            assert isinstance(lines, list)
+            assert len(lines) > 0

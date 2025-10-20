@@ -64,7 +64,10 @@ def execute_command(gs, command_text):
                 return "Game not initialized. Use 'start' or 'choose Wei/Shu/Wu' first."
             
             if len(parts) > 1:
-                return utils.format_city_status(gs, parts[1])
+                city_status = utils.format_city_status(gs, parts[1])
+                if city_status is None:
+                    return "City not found."
+                return "\n".join(city_status)
             else:
                 overview, resources, relations = utils.format_faction_overview(gs)
                 return f"{overview}\n{resources}\n{relations}"
