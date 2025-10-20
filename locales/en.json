@@ -91,6 +91,8 @@
   "help": {
     "header": "Commands:",
     "lines": [
+      "Taxes: Commerce taxes in January, Agriculture taxes in July",
+      "",
       "status                        - Overview of your faction",
       "status CITY                   - City details",
       "officers                      - List your officers (stats, energy, loyalty, traits)",

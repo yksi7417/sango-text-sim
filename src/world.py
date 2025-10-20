@@ -291,4 +291,4 @@ def init_world(game_state: GameState, player_choice: Optional[str] = None, seed:
     # Welcome message with localized ruler name
     ruler_display_name = i18n.t(f"officers.{game_state.player_ruler}")
     game_state.log(i18n.t("game.welcome", ruler=ruler_display_name, faction=game_state.player_faction))
-    game_state.log(i18n.t("game.time", year=game_state.year, month=game_state.month))
+    # Don't log time message - it's shown in the UI header

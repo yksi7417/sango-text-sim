@@ -53,16 +53,11 @@ def format_menu(menu_type, gs, session_state):
     menu_key = f"menu.{menu_type}"
     lines = []
     
-    # Title
-    title = i18n.t(f"{menu_key}.title")
-    lines.append(title)
-    lines.append("")
-    
-    # Show current city if set
+    # Don't show title or prompt in web version - buttons handle this
+    # Just show current city if set
     if session_state.get('current_city'):
         current_city_msg = i18n.t("menu.common.current_city", city=session_state['current_city'])
         lines.append(current_city_msg)
-        lines.append("")
     
     # Handle special case for city selection
     if menu_type == 'city':
@@ -73,28 +68,11 @@ def format_menu(menu_type, gs, session_state):
         if not faction.cities:
             return i18n.t("menu.city.none")
         
-        for idx, city_name in enumerate(faction.cities, 1):
-            city = gs.cities[city_name]
-            lines.append(f"{idx}. {city_name} (Troops: {city.troops}, Gold: {city.gold}, Food: {city.food})")
-        lines.append("")
-        lines.append(i18n.t(f"{menu_key}.prompt"))
-        return "\n".join(lines)
+        # Don't show city list in text - buttons will handle it
+        return ""
     
-    # Regular menu
-    options = i18n.t(f"{menu_key}.options")
-    # Handle both list and string returns from i18n
-    if isinstance(options, list):
-        for idx, option in enumerate(options, 1):
-            lines.append(f"{idx}. {option}")
-    else:
-        # Fallback if translation is missing
-        lines.append("(Menu options not available)")
-    
-    lines.append(f"0. {i18n.t('menu.common.back')}")
-    lines.append("")
-    lines.append(i18n.t(f"{menu_key}.prompt"))
-    
-    return "\n".join(lines)
+    # For other menus, don't print menu text - buttons handle the UI
+    return ""
 
 
 def handle_menu_input(gs, session_state, input_text):
@@ -106,16 +84,16 @@ def handle_menu_input(gs, session_state, input_text):
     # Allow 'menu' command to return to main menu
     if input_text.lower() == 'menu':
         session_state['current_menu'] = 'main'
-        return format_menu('main', gs, session_state)
+        return ""  # No text output, buttons will update
     
     # Allow 'back' or '0' to go back
     if input_text.lower() in ['back', '0']:
         session_state['current_menu'] = 'main'
-        return format_menu('main', gs, session_state)
+        return ""  # No text output, buttons will update
     
     # Allow 'again' or 'continue' to stay in current submenu
     if input_text.lower() in ['again', 'continue', 'c'] and current_menu != 'main':
-        return format_menu(current_menu, gs, session_state)
+        return ""  # No text output, just stay in menu
     
     # Main menu routing
     if current_menu == 'main':
@@ -132,7 +110,7 @@ def handle_menu_input(gs, session_state, input_text):
         
         if input_text in menu_map:
             session_state['current_menu'] = menu_map[input_text]
-            return format_menu(menu_map[input_text], gs, session_state)
+            return ""  # No text output, buttons will update
         else:
             return i18n.t("menu.common.invalid")
     
@@ -151,14 +129,14 @@ def handle_menu_input(gs, session_state, input_text):
             if 0 <= idx < len(cities):
                 session_state['current_city'] = cities[idx]
                 session_state['current_menu'] = 'main'
-                return i18n.t("menu.city.set", city=cities[idx]) + "\n\n" + format_menu('main', gs, session_state)
+                return i18n.t("menu.city.set", city=cities[idx])
         
         # Try name selection
         city_name = input_text.title()
         if city_name in cities:
             session_state['current_city'] = city_name
             session_state['current_menu'] = 'main'
-            return i18n.t("menu.city.set", city=city_name) + "\n\n" + format_menu('main', gs, session_state)
+            return i18n.t("menu.city.set", city=city_name)
         
         return i18n.t("menu.common.invalid")
     
@@ -196,7 +174,7 @@ def handle_menu_input(gs, session_state, input_text):
     
     # Other menus - not yet implemented
     else:
-        return i18n.t("menu.common.not_implemented") + "\n\n" + format_menu(current_menu, gs, session_state)
+        return i18n.t("menu.common.not_implemented")
 
 
 def handle_internal_action(gs, session_state, city_name, action_type):
@@ -267,8 +245,6 @@ def handle_internal_action(gs, session_state, city_name, action_type):
     result += f"  Commerce: {city.commerce}\n"
     result += f"  Technology: {city.tech}\n"
     result += f"  Gold: {city.gold} | Food: {city.food}\n"
-    result += f"\n" + "="*50 + "\n\n"
-    result += format_menu('internal', gs, session_state)
     
     return result
 
@@ -304,9 +280,9 @@ def execute_command(gs, command_text, session_state=None):
         # Parse and execute command
         parts = command_text.strip().split()
         if not parts:
-            # If no command and session_state exists, show menu
+            # If no command and session_state exists, don't show menu text
             if session_state:
-                return format_menu('main', gs, session_state)
+                return ""
             return ""
         
         cmd = parts[0].lower()
@@ -314,7 +290,7 @@ def execute_command(gs, command_text, session_state=None):
         # Handle 'menu' command to enter menu mode
         if cmd == 'menu' and session_state:
             session_state['current_menu'] = 'main'
-            return format_menu('main', gs, session_state)
+            return ""  # Buttons will show the menu
         
         # Handle 'lang' command
         if cmd == 'lang':
@@ -346,7 +322,6 @@ def execute_command(gs, command_text, session_state=None):
             world.init_world(gs, player_choice=faction)
             if session_state:
                 session_state['current_menu'] = 'main'
-                return f"You are now playing as {faction}!\n\n" + format_menu('main', gs, session_state)
             return f"You are now playing as {faction}!"
         
         elif cmd in ['status', '狀態']:
@@ -412,6 +387,8 @@ def get_help_text():
     """Return help text."""
     return """
 === Sango Text Sim - Commands ===
+
+Taxes: Commerce taxes in January, Agriculture taxes in July
 
 Game Setup:
   start                 - Start a new game
