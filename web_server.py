@@ -59,6 +59,10 @@ def execute_command(gs, command_text):
             return f"You are now playing as {faction}!"
         
         elif cmd in ['status', '狀態']:
+            # Check if game has been initialized
+            if not gs.factions or gs.player_faction not in gs.factions:
+                return "Game not initialized. Use 'start' or 'choose Wei/Shu/Wu' first."
+            
             if len(parts) > 1:
                 return utils.format_city_status(gs, parts[1])
             else:
@@ -66,6 +70,10 @@ def execute_command(gs, command_text):
                 return f"{overview}\n{resources}\n{relations}"
         
         elif cmd in ['officers', '武將']:
+            # Check if game has been initialized
+            if not gs.factions or gs.player_faction not in gs.factions:
+                return "Game not initialized. Use 'start' or 'choose Wei/Shu/Wu' first."
+            
             faction = gs.factions.get(gs.player_faction)
             if not faction:
                 return "No faction selected. Use 'choose' command first."
