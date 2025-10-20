@@ -29,6 +29,7 @@ class I18N:
                 return cur.format(**kwargs)
             except Exception:
                 return cur
-        return cur if isinstance(cur, str) else str(cur)
+        # Return the value as-is (could be str, list, dict, etc.)
+        return cur
 
 i18n = I18N()

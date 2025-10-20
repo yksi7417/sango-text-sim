@@ -13,6 +13,7 @@ import uuid
 
 from src.models import GameState
 from src import utils, engine, world, persistence
+from i18n import i18n
 
 app = Flask(__name__)
 app.secret_key = os.environ.get('SECRET_KEY', 'dev-secret-key-change-in-production')
@@ -21,6 +22,8 @@ Session(app)
 
 # Store game states in memory (consider Redis for production)
 game_states = {}
+# Store current menu state and selected city for each session
+session_states = {}
 
 
 def get_or_create_game_state(session_id):
@@ -31,17 +34,181 @@ def get_or_create_game_state(session_id):
     return game_states[session_id]
 
 
-def execute_command(gs, command_text):
+def get_session_state(session_id):
+    """Get or create session state for menu navigation."""
+    if session_id not in session_states:
+        session_states[session_id] = {
+            'current_menu': 'main',
+            'current_city': None,
+            'language': 'en'
+        }
+    return session_states[session_id]
+
+
+def format_menu(menu_type, gs, session_state):
+    """Format a menu for display."""
+    lang = session_state.get('language', 'en')
+    i18n.load(lang)
+    
+    menu_key = f"menu.{menu_type}"
+    lines = []
+    
+    # Title
+    title = i18n.t(f"{menu_key}.title")
+    lines.append(title)
+    lines.append("")
+    
+    # Show current city if set
+    if session_state.get('current_city'):
+        current_city_msg = i18n.t("menu.common.current_city", city=session_state['current_city'])
+        lines.append(current_city_msg)
+        lines.append("")
+    
+    # Handle special case for city selection
+    if menu_type == 'city':
+        if not gs.factions or gs.player_faction not in gs.factions:
+            return i18n.t("menu.city.none")
+        
+        faction = gs.factions[gs.player_faction]
+        if not faction.cities:
+            return i18n.t("menu.city.none")
+        
+        for idx, city_name in enumerate(faction.cities, 1):
+            city = gs.cities[city_name]
+            lines.append(f"{idx}. {city_name} (Troops: {city.troops}, Gold: {city.gold}, Food: {city.food})")
+        lines.append("")
+        lines.append(i18n.t(f"{menu_key}.prompt"))
+        return "\n".join(lines)
+    
+    # Regular menu
+    options = i18n.t(f"{menu_key}.options")
+    # Handle both list and string returns from i18n
+    if isinstance(options, list):
+        for idx, option in enumerate(options, 1):
+            lines.append(f"{idx}. {option}")
+    else:
+        # Fallback if translation is missing
+        lines.append("(Menu options not available)")
+    
+    lines.append(f"0. {i18n.t('menu.common.back')}")
+    lines.append("")
+    lines.append(i18n.t(f"{menu_key}.prompt"))
+    
+    return "\n".join(lines)
+
+
+def handle_menu_input(gs, session_state, input_text):
+    """Handle menu navigation and command execution."""
+    current_menu = session_state.get('current_menu', 'main')
+    lang = session_state.get('language', 'en')
+    i18n.load(lang)
+    
+    # Allow 'menu' command to return to main menu
+    if input_text.lower() == 'menu':
+        session_state['current_menu'] = 'main'
+        return format_menu('main', gs, session_state)
+    
+    # Allow 'back' or '0' to go back
+    if input_text.lower() in ['back', '0']:
+        session_state['current_menu'] = 'main'
+        return format_menu('main', gs, session_state)
+    
+    # Main menu routing
+    if current_menu == 'main':
+        menu_map = {
+            '1': 'city',
+            '2': 'war',
+            '3': 'officer',
+            '4': 'diplomacy',
+            '5': 'internal',
+            '6': 'merchant',
+            '7': 'tactics',
+            '8': 'advice'
+        }
+        
+        if input_text in menu_map:
+            session_state['current_menu'] = menu_map[input_text]
+            return format_menu(menu_map[input_text], gs, session_state)
+        else:
+            return i18n.t("menu.common.invalid")
+    
+    # City selection
+    elif current_menu == 'city':
+        if not gs.factions or gs.player_faction not in gs.factions:
+            session_state['current_menu'] = 'main'
+            return "Game not initialized. Use 'start' or 'choose Wei/Shu/Wu' first."
+        
+        faction = gs.factions[gs.player_faction]
+        cities = list(faction.cities)
+        
+        # Try numeric selection
+        if input_text.isdigit():
+            idx = int(input_text) - 1
+            if 0 <= idx < len(cities):
+                session_state['current_city'] = cities[idx]
+                session_state['current_menu'] = 'main'
+                return i18n.t("menu.city.set", city=cities[idx]) + "\n\n" + format_menu('main', gs, session_state)
+        
+        # Try name selection
+        city_name = input_text.title()
+        if city_name in cities:
+            session_state['current_city'] = city_name
+            session_state['current_menu'] = 'main'
+            return i18n.t("menu.city.set", city=city_name) + "\n\n" + format_menu('main', gs, session_state)
+        
+        return i18n.t("menu.common.invalid")
+    
+    # Other menus - not yet implemented
+    else:
+        return i18n.t("menu.common.not_implemented") + "\n\n" + format_menu(current_menu, gs, session_state)
+
+
+def execute_command(gs, command_text, session_state=None):
     """Execute a game command and return the output."""
     output = StringIO()
+    
+    # If session_state is provided and we're in menu mode, handle menu navigation
+    if session_state:
+        current_menu = session_state.get('current_menu', 'main')
+        
+        # Check if command is a menu navigation (pure numbers or 'menu'/'back')
+        is_menu_command = (
+            command_text.strip().isdigit() or 
+            command_text.lower() in ['menu', 'back', '0'] or
+            (current_menu == 'city' and command_text.strip())  # City names
+        )
+        
+        # If in a menu (not main) or it's a menu navigation command
+        if current_menu != 'main' or is_menu_command:
+            return handle_menu_input(gs, session_state, command_text.strip())
     
     try:
         # Parse and execute command
         parts = command_text.strip().split()
         if not parts:
+            # If no command and session_state exists, show menu
+            if session_state:
+                return format_menu('main', gs, session_state)
             return ""
         
         cmd = parts[0].lower()
+        
+        # Handle 'menu' command to enter menu mode
+        if cmd == 'menu' and session_state:
+            session_state['current_menu'] = 'main'
+            return format_menu('main', gs, session_state)
+        
+        # Handle 'lang' command
+        if cmd == 'lang':
+            if len(parts) < 2:
+                return "Usage: lang en|zh"
+            lang = parts[1].lower()
+            if lang not in ['en', 'zh']:
+                return "Usage: lang en|zh"
+            if session_state:
+                session_state['language'] = lang
+            i18n.load(lang)
+            return f"Language set to {lang}."
         
         # Handle commands
         if cmd in ['help', '幫助']:
@@ -49,6 +216,9 @@ def execute_command(gs, command_text):
         
         elif cmd in ['start']:
             world.init_world(gs)
+            if session_state:
+                session_state['current_menu'] = 'main'
+                return "Game started! Choose your faction with: choose Wei/Shu/Wu\n\nType 'menu' to use the menu system."
             return "Game started! Choose your faction with: choose Wei/Shu/Wu"
         
         elif cmd in ['choose', '選擇']:
@@ -56,6 +226,8 @@ def execute_command(gs, command_text):
                 return "Usage: choose Wei/Shu/Wu"
             faction = parts[1]
             world.init_world(gs, player_choice=faction)
+            if session_state:
+                return f"You are now playing as {faction}!\n\nType 'menu' to use the menu system."
             return f"You are now playing as {faction}!"
         
         elif cmd in ['status', '狀態']:
@@ -128,12 +300,14 @@ Game Setup:
 
 Information:
   help                  - Show this help
+  menu                  - Show interactive menu system
   status                - Show faction overview
   status CITY           - Show city details
   officers              - List your officers
 
 Actions:
   turn                  - End turn and process AI
+  lang en|zh            - Switch language
   
 Save/Load:
   save [FILE]           - Save game
@@ -141,6 +315,8 @@ Save/Load:
 
 Full command list available in the terminal version.
 For advanced features, run: python game_cmd.py
+
+TIP: Type 'menu' for an easier menu-based interface!
 """
 
 
@@ -164,9 +340,10 @@ def api_command():
     
     session_id = session['session_id']
     gs = get_or_create_game_state(session_id)
+    session_state = get_session_state(session_id)
     
-    # Execute command
-    output = execute_command(gs, command)
+    # Execute command with session state for menu support
+    output = execute_command(gs, command, session_state)
     
     # Get messages
     messages = gs.messages[-10:] if gs.messages else []
@@ -178,6 +355,11 @@ def api_command():
             'year': gs.year,
             'month': gs.month,
             'faction': gs.player_faction
+        },
+        'menu_state': {
+            'current_menu': session_state.get('current_menu', 'main'),
+            'current_city': session_state.get('current_city'),
+            'language': session_state.get('language', 'en')
         }
     })
 

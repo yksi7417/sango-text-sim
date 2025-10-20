@@ -152,10 +152,12 @@
         <div class="game-info">
             <div>Faction: <span id="faction">None</span></div>
             <div>Year: <span id="year">208</span> | Month: <span id="month">1</span></div>
+            <div>Current City: <span id="currentCity">None</span></div>
         </div>
         
         <div class="quick-commands">
             <button class="quick-cmd" onclick="sendCommand('help')">Help</button>
+            <button class="quick-cmd" onclick="sendCommand('menu')" style="background: #006600; font-weight: bold;">📋 Menu</button>
             <button class="quick-cmd" onclick="sendCommand('start')">Start Game</button>
             <button class="quick-cmd" onclick="sendCommand('choose Shu')">Choose Shu</button>
             <button class="quick-cmd" onclick="sendCommand('choose Wei')">Choose Wei</button>
@@ -163,11 +165,14 @@
             <button class="quick-cmd" onclick="sendCommand('status')">Status</button>
             <button class="quick-cmd" onclick="sendCommand('officers')">Officers</button>
             <button class="quick-cmd" onclick="sendCommand('turn')">End Turn</button>
+            <button class="quick-cmd" onclick="sendCommand('lang zh')">中文</button>
+            <button class="quick-cmd" onclick="sendCommand('lang en')">English</button>
         </div>
         
         <div class="terminal" id="terminal">
             <div class="output-line">Welcome to Sango Text Sim!</div>
-            <div class="output-line">Type 'help' for commands or click a button above to get started.</div>
+            <div class="output-line">Type 'help' for commands or 'menu' for interactive menu.</div>
+            <div class="output-line">Click the 📋 Menu button above to get started!</div>
             <div class="output-line">For full features, download and run: python game_cmd.py</div>
             <div class="output-line">---</div>
         </div>
@@ -256,6 +261,11 @@
                     document.getElementById('faction').textContent = data.game_state.faction || 'None';
                     document.getElementById('year').textContent = data.game_state.year;
                     document.getElementById('month').textContent = data.game_state.month;
+                }
+                
+                // Update menu state display
+                if (data.menu_state) {
+                    document.getElementById('currentCity').textContent = data.menu_state.current_city || 'None';
                 }
                 
             } catch (error) {
