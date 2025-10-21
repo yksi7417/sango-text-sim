@@ -171,18 +171,18 @@ class TestOfficerAssignmentWorkflow:
         officer.location = "Xuchang"
         officer.task = "farm"
         officer.energy = 100
-        officer.pol = 80  # High politics for farming
-        
+        officer.pol = 80  # Legacy attribute retained for compatibility
+
         city = gs.cities["Xuchang"]
         city.owner = gs.player_faction
-        
-        initial_food = city.food
-        
+
+        initial_agri = city.agri
+
         # Process assignment (note: signature is assignment_effect(gs, off, city))
         engine.assignment_effect(gs, officer, city)
-        
-        # Food should have increased
-        assert city.food > initial_food
+
+        # Agriculture development should have increased
+        assert city.agri > initial_agri
         
         # Officer energy should have decreased
         assert officer.energy < 100
