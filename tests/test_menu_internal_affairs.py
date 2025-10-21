@@ -32,7 +32,7 @@ class TestInternalAffairsMenuNavigation:
         assert output == ''
     
     def test_internal_menu_requires_current_city(self):
-        """Test that internal affairs menu requires a current city to be set."""
+        """Test that internal affairs menu defaults to first city when current city is None."""
         gs = GameState()
         world.init_world(gs, player_choice="Shu", seed=42)
         
@@ -42,11 +42,14 @@ class TestInternalAffairsMenuNavigation:
             'language': 'en'
         }
         
-        # Try to use internal affairs without a current city
+        # Try to use internal affairs without a current city - should default to first city
         output = web_server.handle_menu_input(gs, session_state, '1')
         
-        assert 'set a current city first' in output.lower()
-        assert session_state['current_menu'] == 'main'
+        # Should automatically use the first city (Chengdu for Shu)
+        assert '[OK]' in output or 'assigned' in output.lower()
+        # Current city should now be set to the first city
+        assert session_state['current_city'] is not None
+        assert session_state['current_city'] in gs.factions['Shu'].cities
     
     def test_internal_menu_validates_city_ownership(self):
         """Test that internal affairs menu validates you own the city."""

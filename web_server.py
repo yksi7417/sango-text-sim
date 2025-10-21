@@ -45,6 +45,20 @@ def get_session_state(session_id):
     return session_states[session_id]
 
 
+def get_current_city(gs, session_state):
+    """Get the current city, defaulting to the first city of the player's faction if None."""
+    current_city = session_state.get('current_city')
+    
+    # If no current city is set, default to the first city
+    if not current_city and gs.factions and gs.player_faction in gs.factions:
+        faction = gs.factions[gs.player_faction]
+        if faction.cities:
+            current_city = list(faction.cities)[0]
+            session_state['current_city'] = current_city
+    
+    return current_city
+
+
 def format_menu(menu_type, gs, session_state):
     """Format a menu for display."""
     lang = session_state.get('language', 'en')
@@ -146,11 +160,12 @@ def handle_menu_input(gs, session_state, input_text):
             session_state['current_menu'] = 'main'
             return "Game not initialized. Use 'start' or 'choose Wei/Shu/Wu' first."
         
-        if not session_state.get('current_city'):
-            session_state['current_menu'] = 'main'
-            return "Please set a current city first (Main Menu > Option 1)."
+        # Get current city, defaulting to first city if None
+        city_name = get_current_city(gs, session_state)
         
-        city_name = session_state['current_city']
+        if not city_name:
+            session_state['current_menu'] = 'main'
+            return "You don't control any cities."
         
         # Validate city ownership
         faction = gs.factions[gs.player_faction]
@@ -456,6 +471,9 @@ def api_command():
         faction = gs.factions[gs.player_faction]
         city_list = list(faction.cities) if faction.cities else []
     
+    # Get current city (with default to first city)
+    current_city = get_current_city(gs, session_state)
+    
     return jsonify({
         'output': output,
         'messages': messages,
@@ -466,7 +484,7 @@ def api_command():
         },
         'menu_state': {
             'current_menu': session_state.get('current_menu', 'main'),
-            'current_city': session_state.get('current_city'),
+            'current_city': current_city,
             'language': session_state.get('language', 'en'),
             'cities': city_list
         }
