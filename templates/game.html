@@ -206,90 +206,127 @@
         const input = document.getElementById('commandInput');
         const buttonBar = document.getElementById('buttonBar');
         
-        // Menu button configurations
+        // Store loaded translations
+        let translations = {
+            en: null,
+            zh: null
+        };
+        
+        // Track current language
+        let currentLanguage = 'en';
+        
+        // Load translation files
+        async function loadTranslations() {
+            try {
+                const [enResponse, zhResponse] = await Promise.all([
+                    fetch('/locales/en.json'),
+                    fetch('/locales/zh.json')
+                ]);
+                translations.en = await enResponse.json();
+                translations.zh = await zhResponse.json();
+            } catch (error) {
+                console.error('Failed to load translations:', error);
+            }
+        }
+        
+        // Get translated text based on current language
+        function t(key, lang = currentLanguage) {
+            const trans = translations[lang];
+            if (!trans) return key;
+            
+            const keys = key.split('.');
+            let value = trans;
+            for (const k of keys) {
+                value = value?.[k];
+                if (value === undefined) return key;
+            }
+            return value;
+        }
+        
+        // Menu button configurations - using translation keys
         const menuConfig = {
             pregame: [
-                { label: 'Help', command: 'help' },
-                { label: 'Choose Shu (蜀)', command: 'choose Shu', style: 'background: #cc3333; font-weight: bold;' },
-                { label: 'Choose Wei (魏)', command: 'choose Wei', style: 'background: #3333cc; font-weight: bold;' },
-                { label: 'Choose Wu (吳)', command: 'choose Wu', style: 'background: #cc6600; font-weight: bold;' },
-                { label: 'Start Game', command: 'start', style: 'background: #006600; font-weight: bold;' }
+                { labelKey: 'help.header', command: 'help' },
+                { labelKey: 'ui.choose_shu', command: 'choose Shu', style: 'background: #cc3333; font-weight: bold;' },
+                { labelKey: 'ui.choose_wei', command: 'choose Wei', style: 'background: #3333cc; font-weight: bold;' },
+                { labelKey: 'ui.choose_wu', command: 'choose Wu', style: 'background: #cc6600; font-weight: bold;' },
+                { labelKey: 'ui.start_game', command: 'start', style: 'background: #006600; font-weight: bold;' }
             ],
             main: [
-                { label: '1. Set Current City', command: '1' },
-                { label: '2. War', command: '2' },
-                { label: '3. Officer Management', command: '3' },
-                { label: '4. Diplomacy', command: '4' },
-                { label: '5. Internal Affairs', command: '5' },
-                { label: '6. Merchant', command: '6' },
-                { label: '7. Tactics', command: '7' },
-                { label: '8. Advice', command: '8' },
-                { label: 'Status', command: 'status', style: 'background: #004400;' },
-                { label: 'Officers', command: 'officers', style: 'background: #004400;' },
-                { label: 'End Turn', command: 'turn', style: 'background: #440000; font-weight: bold;' }
+                { menuKey: 'main', index: 0, command: '1' },
+                { menuKey: 'main', index: 1, command: '2' },
+                { menuKey: 'main', index: 2, command: '3' },
+                { menuKey: 'main', index: 3, command: '4' },
+                { menuKey: 'main', index: 4, command: '5' },
+                { menuKey: 'main', index: 5, command: '6' },
+                { menuKey: 'main', index: 6, command: '7' },
+                { menuKey: 'main', index: 7, command: '8' },
+                { labelKey: 'ui.status', command: 'status', style: 'background: #004400;' },
+                { labelKey: 'ui.officers', command: 'officers', style: 'background: #004400;' },
+                { labelKey: 'ui.end_turn', command: 'turn', style: 'background: #440000; font-weight: bold;' }
             ],
             city: [
-                { label: 'Back to Main Menu', command: '0', style: 'background: #660000; font-weight: bold;' }
+                { labelKey: 'menu.common.back', command: '0', style: 'background: #660000; font-weight: bold;' }
             ],
             war: [
-                { label: '1. Move Troops', command: '1' },
-                { label: '2. Transfer Troops', command: '2' },
-                { label: '3. Wage War', command: '3' },
-                { label: '4. Recruit Soldiers', command: '4' },
-                { label: '5. Training', command: '5' },
-                { label: '6. Make Weapons', command: '6' },
-                { label: '7. Surveillance', command: '7' },
-                { label: 'Back to Main Menu', command: '0', style: 'background: #660000; font-weight: bold;' }
+                { menuKey: 'war', index: 0, command: '1' },
+                { menuKey: 'war', index: 1, command: '2' },
+                { menuKey: 'war', index: 2, command: '3' },
+                { menuKey: 'war', index: 3, command: '4' },
+                { menuKey: 'war', index: 4, command: '5' },
+                { menuKey: 'war', index: 5, command: '6' },
+                { menuKey: 'war', index: 6, command: '7' },
+                { labelKey: 'menu.common.back', command: '0', style: 'background: #660000; font-weight: bold;' }
             ],
             officer: [
-                { label: '1. Search for Officers', command: '1' },
-                { label: '2. Recruit Officer', command: '2' },
-                { label: '3. Reward Officer', command: '3' },
-                { label: 'Back to Main Menu', command: '0', style: 'background: #660000; font-weight: bold;' }
+                { menuKey: 'officer', index: 0, command: '1' },
+                { menuKey: 'officer', index: 1, command: '2' },
+                { menuKey: 'officer', index: 2, command: '3' },
+                { labelKey: 'menu.common.back', command: '0', style: 'background: #660000; font-weight: bold;' }
             ],
             diplomacy: [
-                { label: '1. Form Alliance', command: '1' },
-                { label: '2. Attack Common Enemy', command: '2' },
-                { label: '3. Send Gift', command: '3' },
-                { label: '4. Persuade to Capitulate', command: '4' },
-                { label: '5. Break Alliance', command: '5' },
-                { label: '6. Rescue Prisoner of War', command: '6' },
-                { label: 'Back to Main Menu', command: '0', style: 'background: #660000; font-weight: bold;' }
+                { menuKey: 'diplomacy', index: 0, command: '1' },
+                { menuKey: 'diplomacy', index: 1, command: '2' },
+                { menuKey: 'diplomacy', index: 2, command: '3' },
+                { menuKey: 'diplomacy', index: 3, command: '4' },
+                { menuKey: 'diplomacy', index: 4, command: '5' },
+                { menuKey: 'diplomacy', index: 5, command: '6' },
+                { labelKey: 'menu.common.back', command: '0', style: 'background: #660000; font-weight: bold;' }
             ],
             internal: [
-                { label: '1. Agriculture', command: '1' },
-                { label: '2. Flood Management', command: '2' },
-                { label: '3. Commerce', command: '3' },
-                { label: '4. Technology', command: '4' },
-                { label: '5. Build School', command: '5' },
-                { label: 'Again', command: 'again', style: 'background: #004400;' },
-                { label: 'Back to Main Menu', command: '0', style: 'background: #660000; font-weight: bold;' }
+                { menuKey: 'internal', index: 0, command: '1' },
+                { menuKey: 'internal', index: 1, command: '2' },
+                { menuKey: 'internal', index: 2, command: '3' },
+                { menuKey: 'internal', index: 3, command: '4' },
+                { menuKey: 'internal', index: 4, command: '5' },
+                { labelKey: 'ui.again', command: 'again', style: 'background: #004400;' },
+                { labelKey: 'menu.common.back', command: '0', style: 'background: #660000; font-weight: bold;' }
             ],
             merchant: [
-                { label: '1. Buy/Sell Food', command: '1' },
-                { label: '2. Buy/Sell Weapons', command: '2' },
-                { label: '3. Buy/Sell Horses', command: '3' },
-                { label: 'Back to Main Menu', command: '0', style: 'background: #660000; font-weight: bold;' }
+                { menuKey: 'merchant', index: 0, command: '1' },
+                { menuKey: 'merchant', index: 1, command: '2' },
+                { menuKey: 'merchant', index: 2, command: '3' },
+                { labelKey: 'menu.common.back', command: '0', style: 'background: #660000; font-weight: bold;' }
             ],
             tactics: [
-                { label: '1. Espionage', command: '1' },
-                { label: '2. Spread Rumors', command: '2' },
-                { label: '3. Set Fire', command: '3' },
-                { label: '4. Detect Double Agent', command: '4' },
-                { label: '5. Send Undercover Agent', command: '5' },
-                { label: '6. Spread False Information', command: '6' },
-                { label: 'Back to Main Menu', command: '0', style: 'background: #660000; font-weight: bold;' }
+                { menuKey: 'tactics', index: 0, command: '1' },
+                { menuKey: 'tactics', index: 1, command: '2' },
+                { menuKey: 'tactics', index: 2, command: '3' },
+                { menuKey: 'tactics', index: 3, command: '4' },
+                { menuKey: 'tactics', index: 4, command: '5' },
+                { menuKey: 'tactics', index: 5, command: '6' },
+                { labelKey: 'menu.common.back', command: '0', style: 'background: #660000; font-weight: bold;' }
             ],
             advice: [
-                { label: '1. War Strategy', command: '1' },
-                { label: '2. Officer Management', command: '2' },
-                { label: '3. Diplomacy', command: '3' },
-                { label: '4. Internal Affairs', command: '4' },
-                { label: '5. Trade & Commerce', command: '5' },
-                { label: '6. Tactics & Espionage', command: '6' },
-                { label: '7. Current Situation', command: '7' },
-                { label: '8. Long-term Strategy', command: '8' },
-                { label: 'Back to Main Menu', command: '0', style: 'background: #660000; font-weight: bold;' }
+                { menuKey: 'advice', index: 0, command: '1' },
+                { menuKey: 'advice', index: 1, command: '2' },
+                { menuKey: 'advice', index: 2, command: '3' },
+                { menuKey: 'advice', index: 3, command: '4' },
+                { menuKey: 'advice', index: 4, command: '5' },
+                { menuKey: 'advice', index: 5, command: '6' },
+                { menuKey: 'advice', index: 6, command: '7' },
+                { menuKey: 'advice', index: 7, command: '8' },
+                { labelKey: 'menu.common.back', command: '0', style: 'background: #660000; font-weight: bold;' }
             ]
         };
         
@@ -297,6 +334,10 @@
         function updateButtons(menuState, gameState) {
             const currentMenu = menuState?.current_menu || 'pregame';
             const faction = gameState?.faction || 'None';
+            const lang = menuState?.language || currentLanguage;
+            
+            // Update current language
+            currentLanguage = lang;
             
             // Determine which button set to show
             let buttons = menuConfig.pregame;
@@ -310,12 +351,12 @@
                     buttons = [];
                     menuState.cities.forEach((city, index) => {
                         buttons.push({ 
-                            label: `${index + 1}. ${city}`, 
+                            cityLabel: `${index + 1}. ${city}`,
                             command: (index + 1).toString() 
                         });
                     });
                     buttons.push({ 
-                        label: 'Back to Main Menu', 
+                        labelKey: 'menu.common.back',
                         command: '0', 
                         style: 'background: #660000; font-weight: bold;' 
                     });
@@ -329,7 +370,24 @@
             buttons.forEach(btn => {
                 const button = document.createElement('button');
                 button.className = 'quick-cmd';
-                button.textContent = btn.label;
+                
+                // Get button label
+                let label = '';
+                if (btn.cityLabel) {
+                    // City selection buttons
+                    label = btn.cityLabel;
+                } else if (btn.labelKey) {
+                    // Direct translation key
+                    label = t(btn.labelKey, lang);
+                } else if (btn.menuKey !== undefined && btn.index !== undefined) {
+                    // Menu option by index
+                    const options = t(`menu.${btn.menuKey}.options`, lang);
+                    if (Array.isArray(options)) {
+                        label = `${btn.index + 1}. ${options[btn.index]}`;
+                    }
+                }
+                
+                button.textContent = label;
                 button.onclick = () => sendCommand(btn.command);
                 if (btn.style) {
                     button.setAttribute('style', btn.style);
@@ -423,6 +481,9 @@
         
         // Load initial state
         async function loadState() {
+            // First load translations
+            await loadTranslations();
+            
             try {
                 const response = await fetch('/api/state');
                 const data = await response.json();

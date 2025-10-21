@@ -32,7 +32,16 @@
     "city_header": "{name} [{owner}] {tag}",
     "city_stats1": "  Gold:{gold} Food:{food} Troops:{troops} Def:{defense} Morale:{morale}",
     "city_stats2": "  Agri:{agri} Commerce:{commerce} Tech:{tech} Walls:{walls}",
-    "officers_list_header": "Officers: {names}"
+    "officers_list_header": "Officers: {names}",
+    "help": "Help",
+    "status": "Status",
+    "officers": "Officers",
+    "end_turn": "End Turn",
+    "start_game": "Start Game",
+    "choose_shu": "Choose Shu (蜀)",
+    "choose_wei": "Choose Wei (魏)",
+    "choose_wu": "Choose Wu (吳)",
+    "again": "Again"
   },
   "tasks": {
     "farm": "Increase Agriculture; boosts July harvests & monthly food.",

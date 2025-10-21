@@ -3,7 +3,7 @@
 Web server wrapper for Sango Text Sim to run on Fly.io.
 Provides a simple web interface for the text-based game.
 """
-from flask import Flask, render_template, request, jsonify, session
+from flask import Flask, render_template, request, jsonify, session, send_from_directory
 from flask_session import Session
 import os
 import sys
@@ -423,6 +423,12 @@ def index():
         session['session_id'] = str(uuid.uuid4())
     
     return render_template('game.html')
+
+
+@app.route('/locales/<path:filename>')
+def serve_locales(filename):
+    """Serve locale JSON files."""
+    return send_from_directory('locales', filename)
 
 
 @app.route('/api/command', methods=['POST'])

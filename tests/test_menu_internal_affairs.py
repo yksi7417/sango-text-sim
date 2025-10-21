@@ -28,11 +28,8 @@ class TestInternalAffairsMenuNavigation:
         output = web_server.handle_menu_input(gs, session_state, '5')
         
         assert session_state['current_menu'] == 'internal'
-        assert '=== Internal Affairs ===' in output
-        assert 'Agriculture' in output
-        assert 'Commerce' in output
-        assert 'Technology' in output
-        assert 'Flood Management' in output
+        # Menu navigation returns empty string, buttons handle the UI
+        assert output == ''
     
     def test_internal_menu_requires_current_city(self):
         """Test that internal affairs menu requires a current city to be set."""
@@ -83,7 +80,8 @@ class TestInternalAffairsMenuNavigation:
         output = web_server.handle_menu_input(gs, session_state, '0')
         
         assert session_state['current_menu'] == 'main'
-        assert '=== Main Menu ===' in output
+        # Menu navigation returns empty string, buttons handle the UI
+        assert output == ''
 
 
 class TestAgricultureDevelopment:
@@ -303,8 +301,8 @@ class TestMenuContinuity:
         
         # Should still be in internal menu
         assert session_state['current_menu'] == 'internal'
-        assert '=== Internal Affairs ===' in output
-        assert 'Select an action' in output or '請選擇行動' in output
+        # Action feedback is returned, but menu text is not (buttons handle UI)
+        assert '[OK]' in output or 'assigned' in output.lower()
     
     def test_multiple_consecutive_actions(self):
         """Test performing multiple internal affairs actions in sequence."""
@@ -389,11 +387,8 @@ class TestChineseLanguageSupport:
         # Navigate to show menu
         output = web_server.format_menu('internal', gs, session_state)
         
-        assert '=== 內政 ===' in output
-        assert '農業' in output
-        assert '商業' in output
-        assert '科技' in output
-        assert '治水' in output
+        # format_menu now returns empty string, buttons handle the UI
+        assert output == ''
     
     def test_action_feedback_in_chinese(self):
         """Test that action feedback is in Chinese when language is set to zh."""

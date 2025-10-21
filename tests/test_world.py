@@ -171,8 +171,9 @@ class TestInitWorld:
         
         world.init_world(empty_game_state)
         
-        # Should have welcome and time messages only
-        assert len(empty_game_state.messages) == 2
+        # Should have welcome message only (time message removed for web UI)
+        assert len(empty_game_state.messages) == 1
+        assert 'Welcome' in empty_game_state.messages[0]
     
     def test_init_world_with_seed(self, empty_game_state):
         """Same seed should produce same diplomatic relations."""

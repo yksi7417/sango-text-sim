@@ -32,7 +32,16 @@
     "city_header": "{name} [{owner}] {tag}",
     "city_stats1": "  金:{gold} 糧:{food} 兵:{troops} 防:{defense} 士氣:{morale}",
     "city_stats2": "  農:{agri} 商:{commerce} 科:{tech} 城牆:{walls}",
-    "officers_list_header": "武將：{names}"
+    "officers_list_header": "武將：{names}",
+    "help": "幫助",
+    "status": "狀態",
+    "officers": "武將",
+    "end_turn": "結束回合",
+    "start_game": "開始遊戲",
+    "choose_shu": "選擇蜀國",
+    "choose_wei": "選擇魏國",
+    "choose_wu": "選擇吳國",
+    "again": "再次執行"
   },
   "tasks": {
     "farm": "提升農業；豐收與月糧更高。",
