@@ -334,6 +334,7 @@
         function updateButtons(menuState, gameState) {
             const currentMenu = menuState?.current_menu || 'pregame';
             const faction = gameState?.faction || 'None';
+            const gameStarted = gameState?.game_started || false;
             const lang = menuState?.language || currentLanguage;
             
             // Update current language
@@ -342,7 +343,8 @@
             // Determine which button set to show
             let buttons = menuConfig.pregame;
             
-            if (faction !== 'None' && faction !== null) {
+            // Only show game menus if game is properly started AND faction is set
+            if (gameStarted && faction && faction !== 'None' && faction !== null && faction !== '') {
                 // Game has started - show menu buttons
                 buttons = menuConfig[currentMenu] || menuConfig.main;
                 
@@ -361,6 +363,9 @@
                         style: 'background: #660000; font-weight: bold;' 
                     });
                 }
+            } else {
+                // Force pregame buttons if game hasn't been properly started
+                buttons = menuConfig.pregame;
             }
             
             // Clear existing buttons

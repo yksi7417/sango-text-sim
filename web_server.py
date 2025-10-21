@@ -38,9 +38,10 @@ def get_session_state(session_id):
     """Get or create session state for menu navigation."""
     if session_id not in session_states:
         session_states[session_id] = {
-            'current_menu': 'main',
+            'current_menu': 'pregame',
             'current_city': None,
-            'language': 'en'
+            'language': 'en',
+            'game_started': False
         }
     return session_states[session_id]
 
@@ -91,9 +92,17 @@ def format_menu(menu_type, gs, session_state):
 
 def handle_menu_input(gs, session_state, input_text):
     """Handle menu navigation and command execution."""
-    current_menu = session_state.get('current_menu', 'main')
+    current_menu = session_state.get('current_menu', 'pregame')
     lang = session_state.get('language', 'en')
     i18n.load(lang)
+    
+    # Check if game is started for non-pregame menus
+    # Game is considered started if faction exists in game state
+    if current_menu not in ['pregame', 'main']:
+        if not gs.factions or gs.player_faction not in gs.factions:
+            session_state['current_menu'] = 'pregame'
+            session_state['game_started'] = False
+            return "Game not properly initialized. Please start a new game and choose your faction."
     
     # Allow 'menu' command to return to main menu
     if input_text.lower() == 'menu':
@@ -326,7 +335,8 @@ def execute_command(gs, command_text, session_state=None):
         elif cmd in ['start']:
             world.init_world(gs)
             if session_state:
-                session_state['current_menu'] = 'main'
+                session_state['current_menu'] = 'pregame'
+                session_state['game_started'] = False
                 return "Game started! Choose your faction with: choose Wei/Shu/Wu"
             return "Game started! Choose your faction with: choose Wei/Shu/Wu"
         
@@ -337,6 +347,7 @@ def execute_command(gs, command_text, session_state=None):
             world.init_world(gs, player_choice=faction)
             if session_state:
                 session_state['current_menu'] = 'main'
+                session_state['game_started'] = True
             return f"You are now playing as {faction}!"
         
         elif cmd in ['status', '狀態']:
@@ -474,16 +485,22 @@ def api_command():
     # Get current city (with default to first city)
     current_city = get_current_city(gs, session_state)
     
+    # Calculate game_started based on whether faction is properly initialized
+    game_started = bool(gs.factions and gs.player_faction in gs.factions)
+    if game_started and not session_state.get('game_started'):
+        session_state['game_started'] = True
+    
     return jsonify({
         'output': output,
         'messages': messages,
         'game_state': {
             'year': gs.year,
             'month': gs.month,
-            'faction': gs.player_faction
+            'faction': gs.player_faction,
+            'game_started': game_started
         },
         'menu_state': {
-            'current_menu': session_state.get('current_menu', 'main'),
+            'current_menu': session_state.get('current_menu', 'pregame'),
             'current_city': current_city,
             'language': session_state.get('language', 'en'),
             'cities': city_list
