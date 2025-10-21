@@ -26,20 +26,22 @@ sango-text-sim/
 │   ├── engine.py          # Core game mechanics (battles, economy, AI)
 │   ├── world.py           # World initialization and data
 │   └── persistence.py     # Save/load functionality
-├── tests/                  # Comprehensive test suite (153 tests, 99% coverage)
+├── tests/                  # Comprehensive test suite (187 tests, 96% coverage)
 │   ├── test_models.py
 │   ├── test_utils.py
 │   ├── test_engine.py
 │   ├── test_world.py
 │   ├── test_persistence.py
-│   └── test_integration.py
+│   ├── test_integration.py
+│   ├── test_menu_internal_affairs.py
+│   └── test_web_signatures.py
 ├── locales/               # I18n translations
 │   ├── en.json
 │   └── zh.json
 ├── game.py                # Main game loop and adventurelib interface
 └── i18n.py                # Internationalization support
 
-468 total statements | 99% test coverage | 153 passing tests
+468 total statements | 96% test coverage | 187 passing tests
 ```
 
 See [ARCHITECTURE.md](ARCHITECTURE.md) for detailed module documentation.
@@ -132,10 +134,10 @@ python -m pytest tests/test_integration.py -v
 ```
 
 **Test Statistics**:
-- Total Tests: 153
-- Coverage: 99%
-- Test Files: 6
-- Unit Tests: 136
+- Total Tests: 187
+- Coverage: 96%
+- Test Files: 8
+- Unit Tests: 170
 - Integration Tests: 17
 
 ## Development
@@ -150,15 +152,31 @@ python -m pytest tests/test_integration.py -v
 - **persistence.py**: JSON serialization for save/load
 - **game.py**: User interface layer (adventurelib commands)
 
+### Development Guidelines
+
+📖 **See comprehensive guides:**
+- **[COPILOT_INSTRUCTIONS.md](COPILOT_INSTRUCTIONS.md)** - Complete development rules and patterns
+- **[QUICK_REFERENCE.md](QUICK_REFERENCE.md)** - Quick command reference
+- **[.github/copilot-instructions.md](.github/copilot-instructions.md)** - GitHub Copilot config
+
+**Critical Rules:**
+- ✅ **Always run tests:** `python -m pytest --no-cov -v`
+- ✅ **All 187 tests must pass**
+- ✅ **Maintain 96%+ code coverage**
+- ✅ **Update both `en.json` AND `zh.json`**
+- ✅ **Test in both English and Chinese**
+
 ### Adding New Features
 
-1. Define data models in `models.py`
-2. Add constants to `constants.py`
-3. Implement logic in appropriate module (engine, world, etc.)
-4. Write unit tests achieving >80% coverage
-5. Add integration tests for end-to-end flows
+1. **Write tests first** (TDD approach)
+2. Define data models in `models.py`
+3. Add constants to `constants.py`
+4. Implement logic in appropriate module (engine, world, etc.)
+5. **Run test suite:** `python -m pytest --no-cov -v`
 6. Update `game.py` commands as needed
-7. Add i18n translations to `locales/*.json`
+7. **Add i18n translations to BOTH `locales/en.json` and `locales/zh.json`**
+8. Manual testing in browser (both languages)
+9. Update documentation
 
 ### Code Quality
 
@@ -167,6 +185,8 @@ python -m pytest tests/test_integration.py -v
 - Test-driven development (TDD) approach
 - Modular design with clear separation of concerns
 - No circular dependencies between modules
+- PEP 8 style compliance
+- 96%+ test coverage
 
 ## Game Mechanics
 
