@@ -8,8 +8,9 @@ This repository follows strict development practices to maintain code quality an
 - **Every code change requires tests**
 - **Always run `python -m pytest --no-cov -v` after Python changes**
 - **Always run `npm test` after JavaScript changes**
-- **All 187 tests must pass before committing**
+- **All 201 tests must pass before committing**
 - **Maintain 96%+ code coverage**
+- **Add E2E tests for user workflows and bug fixes**
 
 ### 🌐 Internationalization (i18n)
 - **Never hardcode display text** - use translation keys
@@ -41,7 +42,7 @@ See [`COPILOT_INSTRUCTIONS.md`](../COPILOT_INSTRUCTIONS.md) for complete develop
 
 ## Before Every Commit
 
-- [ ] All tests pass (187/187)
+- [ ] All tests pass (201/201)
 - [ ] Code coverage maintained (96%+)
 - [ ] Both language files updated
 - [ ] No lint errors

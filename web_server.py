@@ -296,8 +296,9 @@ def execute_command(gs, command_text, session_state=None):
             (current_menu == 'city' and command_text.strip())  # City names
         )
         
-        # If in a menu (not main) or it's a menu navigation command
-        if current_menu != 'main' or is_menu_command:
+        # If in a menu (not main/pregame) or it's a menu navigation command, use menu handler
+        # Pregame menu should use regular command handler for 'start' and 'choose'
+        if (current_menu not in ['main', 'pregame']) or is_menu_command:
             return handle_menu_input(gs, session_state, command_text.strip())
     
     try:

@@ -134,11 +134,12 @@ python -m pytest tests/test_integration.py -v
 ```
 
 **Test Statistics**:
-- Total Tests: 187
+- Total Tests: 201
 - Coverage: 96%
-- Test Files: 8
+- Test Files: 9
 - Unit Tests: 170
 - Integration Tests: 17
+- End-to-End Tests: 14
 
 ## Development
 

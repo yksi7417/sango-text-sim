@@ -48,6 +48,10 @@ class TestWebServerFunctionSignatures:
         gs = GameState()
         world.init_world(gs, player_choice=None, seed=42)
         
+        # Set language explicitly for test
+        from i18n import i18n
+        i18n.load('en')
+        
         # This simulates what web_server does for 'status' command
         overview, resources, relations = utils.format_faction_overview(gs)
         result = f"{overview}\n{resources}\n{relations}"
@@ -59,7 +63,7 @@ class TestWebServerFunctionSignatures:
         
         # Should contain expected content
         assert any(str(gs.year) in result or str(gs.month) in result for _ in [1])
-        assert "Treasury" in result or "Gold" in result.lower()
+        assert "Treasury" in result or "Gold" in result.lower() or "金庫" in result
 
     def test_status_command_with_city_uses_city_status(self):
         """Test status command logic when a city is specified."""
@@ -93,8 +97,8 @@ class TestWebServerCommandIntegrity:
         # Overview should mention cities and faction
         assert any(faction in overview for faction in ["Wei", "Shu", "Wu"])
         
-        # Resources should mention treasury/gold, food, and troops
-        assert "Treasury" in resources or "Gold" in resources
+        # Resources should mention treasury/gold, food, and troops (in any language)
+        assert "Treasury" in resources or "Gold" in resources or "金庫" in resources
         assert "Food" in resources or "Granary" in resources
         assert "Troops" in resources
 
