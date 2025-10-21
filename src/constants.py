@@ -100,6 +100,15 @@ ENERGY_COST_ADMIN = 8   # farm, trade, research
 ENERGY_COST_MILITARY = 10  # train, fortify, recruit
 ENERGY_RECOVERY = 12  # For idle officers
 
+# Internal affairs costs
+INTERNAL_ACTION_GOLD_COSTS = {
+    "farm": 50,
+    "flood": 50,
+    "trade": 75,
+    "research": 90,
+}
+INTERNAL_ACTION_ENERGY_COST = 20
+
 # =================== Economy ===================
 TROOP_UPKEEP_RATE = 0.12  # Food consumption per troop
 DESERTION_MIN_RATE = 0.05

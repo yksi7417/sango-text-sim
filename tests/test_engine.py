@@ -140,29 +140,29 @@ class TestTransferCity:
 class TestAssignmentEffect:
     """Tests for officer assignment effects."""
     
-    def test_farm_increases_food(self, populated_game_state):
-        """Farming task should increase city food."""
+    def test_farm_increases_agriculture(self, populated_game_state):
+        """Farming task should increase city agriculture development."""
         officer = populated_game_state.officers["TestOfficer"]
         city = populated_game_state.cities["TestCity"]
         officer.task = "farm"
         officer.task_city = city.name
-        
-        initial_food = city.food
+
+        initial_agri = city.agri
         engine.assignment_effect(populated_game_state, officer, city)
-        
-        assert city.food > initial_food
-    
-    def test_trade_increases_gold(self, populated_game_state):
-        """Trading task should increase city gold."""
+
+        assert city.agri > initial_agri
+
+    def test_trade_increases_commerce(self, populated_game_state):
+        """Trading task should increase city commerce development."""
         officer = populated_game_state.officers["TestOfficer"]
         city = populated_game_state.cities["TestCity"]
         officer.task = "trade"
         officer.task_city = city.name
-        
-        initial_gold = city.gold
+
+        initial_commerce = city.commerce
         engine.assignment_effect(populated_game_state, officer, city)
-        
-        assert city.gold > initial_gold
+
+        assert city.commerce > initial_commerce
     
     def test_research_increases_tech(self, populated_game_state):
         """Research task should increase city tech."""
@@ -326,7 +326,7 @@ class TestMonthlyEconomy:
         engine.monthly_economy(populated_game_state)
         
         assert city.troops < 100  # Some troops deserted
-        assert city.gold == 0  # Gold reset to 0
+        assert city.gold >= 0  # Gold should not remain negative
     
     def test_january_tax_bonus(self, populated_game_state):
         """January should provide tax bonus."""

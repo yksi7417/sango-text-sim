@@ -14,7 +14,12 @@ This module contains the central game logic:
 import random
 from typing import Tuple
 from .models import Officer, City, GameState, Faction
-from .constants import TASKS
+from .constants import (
+    TASKS,
+    INTERNAL_ACTION_ENERGY_COST,
+    JANUARY_TAX_MULTIPLIER,
+    JULY_HARVEST_MULTIPLIER,
+)
 from . import utils
 from i18n import i18n
 
@@ -163,34 +168,38 @@ def assignment_effect(game_state: GameState, off: Officer, city: City) -> None:
     """
     task = off.task
     energy_cost = 20
-    
+    energy_already_spent = off.assignment_energy_spent
+
     if task == "farm":
-        base = 15
-        mult = utils.trait_mult(off, "diligent")
-        city.food += int(base * mult)
-        city.morale = utils.clamp(city.morale + 2, 0, 100)
-        if "diligent" in off.traits:
+        mult = utils.trait_mult(off, "farm")
+        gain = max(1, int((off.politics * mult) / 12))
+        city.agri = min(city.agri + gain, 200)
+        city.morale = utils.clamp(city.morale + 1, 0, 100)
+        if "Benevolent" in off.traits:
             off.loyalty = utils.clamp(off.loyalty + 2, 0, 100)
-    
+        energy_cost = INTERNAL_ACTION_ENERGY_COST
+
     elif task == "trade":
-        base = 20
-        mult = utils.trait_mult(off, "charming")
-        city.gold += int(base * mult)
-        city.morale = utils.clamp(city.morale + 3, 0, 100)
-        if "charming" in off.traits:
+        mult = utils.trait_mult(off, "trade")
+        gain = max(1, int((off.politics * mult) / 12))
+        city.commerce = min(city.commerce + gain, 200)
+        city.morale = utils.clamp(city.morale + 1, 0, 100)
+        if "Merchant" in off.traits:
             off.loyalty = utils.clamp(off.loyalty + 2, 0, 100)
-    
+        energy_cost = INTERNAL_ACTION_ENERGY_COST
+
     elif task == "research":
-        base = 3
-        mult = utils.trait_mult(off, "brilliant")
-        city.tech += int(base * mult)
-        if "brilliant" in off.traits:
+        mult = utils.trait_mult(off, "research")
+        gain = max(1, int((off.intelligence * mult) / 15))
+        city.tech = min(city.tech + gain, 200)
+        if "Scholar" in off.traits:
             off.loyalty = utils.clamp(off.loyalty + 2, 0, 100)
-    
+        energy_cost = INTERNAL_ACTION_ENERGY_COST
+
     elif task == "train":
         city.troops += 10
         off.loyalty = utils.clamp(off.loyalty - 1, 0, 100)
-    
+
     elif task == "fortify":
         city.defense = utils.clamp(city.defense + 5, 0, 100)
         city.morale = utils.clamp(city.morale - 2, 0, 100)
@@ -218,13 +227,15 @@ def assignment_effect(game_state: GameState, off: Officer, city: City) -> None:
         game_state.log(i18n.t("game.recruit", name=new_name, city=city.name))
         energy_cost = 30
     
-    # Apply energy cost
-    off.energy = utils.clamp(off.energy - energy_cost, 0, 100)
-    
+    # Apply energy cost (skip if already paid up front)
+    if not energy_already_spent:
+        off.energy = utils.clamp(off.energy - energy_cost, 0, 100)
+
     # Clear task
     off.task = None
     off.task_city = None
     off.busy = False
+    off.assignment_energy_spent = False
 
 
 def process_assignments(game_state: GameState) -> None:
@@ -254,9 +265,12 @@ def monthly_economy(game_state: GameState) -> None:
     - Special seasonal events (January tax, July harvest)
     """
     for city in game_state.cities.values():
-        # Income
-        city.gold += 10
-        
+        # Income scales with development stats
+        gold_income = max(0, city.commerce // 5)
+        food_income = max(0, city.agri // 5)
+        city.gold += gold_income
+        city.food += food_income
+
         # Upkeep
         upkeep = city.troops // 10
         city.gold -= upkeep
@@ -281,15 +295,17 @@ def monthly_economy(game_state: GameState) -> None:
     # Special months
     if game_state.month == 1:  # January: tax season
         for city in game_state.cities.values():
-            tax = city.gold // 10
-            city.gold += tax
-            game_state.log(i18n.t("game.tax", city=city.name, amount=tax))
-    
+            tax = max(0, (city.commerce * JANUARY_TAX_MULTIPLIER) // 10)
+            if tax:
+                city.gold += tax
+                game_state.log(i18n.t("game.tax", city=city.name, amount=tax))
+
     if game_state.month == 7:  # July: harvest
         for city in game_state.cities.values():
-            harvest = city.food // 5
-            city.food += harvest
-            game_state.log(i18n.t("game.harvest", city=city.name, amount=harvest))
+            harvest = max(0, (city.agri * JULY_HARVEST_MULTIPLIER) // 10)
+            if harvest:
+                city.food += harvest
+                game_state.log(i18n.t("game.harvest", city=city.name, amount=harvest))
 
 
 def ai_turn(game_state: GameState, faction_name: str) -> None:

@@ -10,6 +10,24 @@ from src import world, utils, engine
 import web_server
 
 
+def perform_internal_action(gs, session_state, option, selection='1'):
+    """Helper to select an internal affairs option and choose an officer."""
+    prompt = web_server.handle_menu_input(gs, session_state, option)
+    assert prompt  # Should prompt for officer selection
+    result = web_server.handle_menu_input(gs, session_state, selection)
+    return prompt, result
+
+
+def current_assignment_officer(gs, faction_name, city_name):
+    """Return the officer currently assigned to work in the specified city."""
+    faction = gs.factions[faction_name]
+    for off_name in faction.officers:
+        officer = gs.officers[off_name]
+        if officer.busy and officer.task_city == city_name:
+            return officer
+    return None
+
+
 class TestInternalAffairsMenuNavigation:
     """Test navigation to and within the Internal Affairs menu."""
     
@@ -43,10 +61,12 @@ class TestInternalAffairsMenuNavigation:
         }
         
         # Try to use internal affairs without a current city - should default to first city
-        output = web_server.handle_menu_input(gs, session_state, '1')
-        
-        # Should automatically use the first city (Chengdu for Shu)
-        assert '[OK]' in output or 'assigned' in output.lower()
+        prompt = web_server.handle_menu_input(gs, session_state, '1')
+        assert 'Select an officer' in prompt or '請選擇' in prompt
+
+        # Choose the first officer to complete the assignment setup
+        result = web_server.handle_menu_input(gs, session_state, '1')
+        assert '[OK]' in result
         # Current city should now be set to the first city
         assert session_state['current_city'] is not None
         assert session_state['current_city'] in gs.factions['Shu'].cities
@@ -104,16 +124,21 @@ class TestAgricultureDevelopment:
             'language': 'en'
         }
         
-        # Develop agriculture (option 1)
-        output = web_server.handle_menu_input(gs, session_state, '1')
-        
-        # Should assign an officer and improve agriculture
-        assert 'assigned to Agriculture' in output or '農業' in output
-        assert 'City Status' in output or '當前狀態' in output
+        # Develop agriculture (option 1) and choose the first officer
+        prompt, output = perform_internal_action(gs, session_state, '1')
+
+        assert 'Agriculture' in prompt or '農業' in prompt
+        assert 'Results will apply' in output or '成果將於月底結算' in output
         assert session_state['current_menu'] == 'internal'
-        
-        # Agriculture should have improved
-        assert city.agri >= initial_agri
+
+        assigned = current_assignment_officer(gs, 'Shu', 'Chengdu')
+        assert assigned is not None
+        assert assigned.task == 'farm'
+
+        # Process month-end to apply the effect
+        engine.process_assignments(gs)
+
+        assert city.agri > initial_agri
     
     def test_agriculture_requires_available_officer(self):
         """Test that agriculture development needs an available officer."""
@@ -153,11 +178,14 @@ class TestAgricultureDevelopment:
         }
         
         # Flood management (option 2)
-        output = web_server.handle_menu_input(gs, session_state, '2')
-        
-        assert 'assigned to Flood Management' in output or '治水' in output
-        # Should improve agriculture since flood management is agriculture-related
-        assert city.agri >= initial_agri
+        prompt, output = perform_internal_action(gs, session_state, '2')
+
+        assert 'Flood' in prompt or '治水' in prompt
+
+        # Process month-end to apply the effect
+        engine.process_assignments(gs)
+
+        assert city.agri > initial_agri
 
 
 class TestCommerceDevelopment:
@@ -178,10 +206,14 @@ class TestCommerceDevelopment:
         }
         
         # Develop commerce (option 3)
-        output = web_server.handle_menu_input(gs, session_state, '3')
-        
-        assert 'assigned to Commerce' in output or '商業' in output
-        assert city.commerce >= initial_commerce
+        prompt, output = perform_internal_action(gs, session_state, '3')
+
+        assert 'Commerce' in prompt or '商業' in prompt
+        assert 'Results will apply' in output or '成果將於月底結算' in output
+
+        engine.process_assignments(gs)
+
+        assert city.commerce > initial_commerce
     
     def test_commerce_shown_in_status(self):
         """Test that commerce level is shown in the output."""
@@ -194,9 +226,9 @@ class TestCommerceDevelopment:
             'language': 'en'
         }
         
-        output = web_server.handle_menu_input(gs, session_state, '3')
-        
-        # Should show commerce stat
+        _, output = perform_internal_action(gs, session_state, '3')
+
+        # Should show commerce stat in the confirmation output
         assert 'Commerce:' in output
 
 
@@ -218,10 +250,14 @@ class TestTechnologyDevelopment:
         }
         
         # Develop technology (option 4)
-        output = web_server.handle_menu_input(gs, session_state, '4')
-        
-        assert 'assigned to Technology' in output or '科技' in output
-        assert city.tech >= initial_tech
+        prompt, output = perform_internal_action(gs, session_state, '4')
+
+        assert 'Technology' in prompt or '科技' in prompt
+        assert 'Results will apply' in output or '成果將於月底結算' in output
+
+        engine.process_assignments(gs)
+
+        assert city.tech > initial_tech
 
 
 class TestOfficerSelection:
@@ -250,11 +286,17 @@ class TestOfficerSelection:
             'language': 'en'
         }
         
-        # Develop agriculture
-        output = web_server.handle_menu_input(gs, session_state, '1')
-        
-        # Should select the high-politics officer
-        assert 'HighPolitics' in output
+        # Develop agriculture - prompt should list HighPolitics first
+        prompt = web_server.handle_menu_input(gs, session_state, '1')
+        first_option = next(
+            (line.strip() for line in prompt.splitlines() if line.strip().startswith('1.')),
+            ""
+        )
+        assert 'HighPolitics' in first_option
+
+        # Cancel to avoid locking assignment for other tests
+        cancel_output = web_server.handle_menu_input(gs, session_state, 'cancel')
+        assert 'cancel' in cancel_output.lower()
     
     def test_selects_officer_with_beneficial_trait(self):
         """Test that officers with beneficial traits are preferred."""
@@ -278,11 +320,11 @@ class TestOfficerSelection:
             'language': 'en'
         }
         
-        # Develop commerce - should prefer Merchant officer
-        output = web_server.handle_menu_input(gs, session_state, '3')
-        
-        # Check that an officer was assigned (might not always be Merchant due to other factors)
-        assert 'assigned to Commerce' in output
+        # Develop commerce - prompt should include Merchant officer as an option
+        prompt = web_server.handle_menu_input(gs, session_state, '3')
+        assert 'Merchant' in prompt
+
+        web_server.handle_menu_input(gs, session_state, 'cancel')
 
 
 class TestMenuContinuity:
@@ -299,14 +341,14 @@ class TestMenuContinuity:
             'language': 'en'
         }
         
-        # Perform an action
-        output = web_server.handle_menu_input(gs, session_state, '1')
-        
+        # Perform an action (Agriculture)
+        _, output = perform_internal_action(gs, session_state, '1')
+
         # Should still be in internal menu
         assert session_state['current_menu'] == 'internal'
-        # Action feedback is returned, but menu text is not (buttons handle UI)
-        assert '[OK]' in output or 'assigned' in output.lower()
-    
+        # Action feedback is returned after officer selection
+        assert '[OK]' in output
+
     def test_multiple_consecutive_actions(self):
         """Test performing multiple internal affairs actions in sequence."""
         gs = GameState()
@@ -320,19 +362,21 @@ class TestMenuContinuity:
             'language': 'en'
         }
         
-        # Develop agriculture
-        output1 = web_server.handle_menu_input(gs, session_state, '1')
+        # Develop agriculture and resolve the assignment
+        _, output1 = perform_internal_action(gs, session_state, '1')
         assert 'Agriculture' in output1
-        assert session_state['current_menu'] == 'internal'
-        
-        # Develop commerce
-        output2 = web_server.handle_menu_input(gs, session_state, '3')
+        engine.process_assignments(gs)
+
+        # Develop commerce and resolve
+        _, output2 = perform_internal_action(gs, session_state, '3')
         assert 'Commerce' in output2
-        assert session_state['current_menu'] == 'internal'
-        
-        # Develop technology
-        output3 = web_server.handle_menu_input(gs, session_state, '4')
+        engine.process_assignments(gs)
+
+        # Develop technology and resolve
+        _, output3 = perform_internal_action(gs, session_state, '4')
         assert 'Technology' in output3
+        engine.process_assignments(gs)
+
         assert session_state['current_menu'] == 'internal'
 
 
@@ -350,8 +394,8 @@ class TestResourceDisplay:
             'language': 'en'
         }
         
-        output = web_server.handle_menu_input(gs, session_state, '1')
-        
+        _, output = perform_internal_action(gs, session_state, '1')
+
         assert 'Gold:' in output
         assert 'Food:' in output
     
@@ -366,8 +410,8 @@ class TestResourceDisplay:
             'language': 'en'
         }
         
-        output = web_server.handle_menu_input(gs, session_state, '1')
-        
+        _, output = perform_internal_action(gs, session_state, '1')
+
         assert 'Agriculture:' in output
         assert 'Commerce:' in output
         assert 'Technology:' in output
@@ -404,10 +448,12 @@ class TestChineseLanguageSupport:
             'language': 'zh'
         }
         
-        output = web_server.handle_menu_input(gs, session_state, '1')
-        
-        # Should contain Chinese text
-        assert any(char > '\u4e00' and char < '\u9fff' for char in output)
+        prompt = web_server.handle_menu_input(gs, session_state, '1')
+        result = web_server.handle_menu_input(gs, session_state, '1')
+
+        # Should contain Chinese text in either prompt or result
+        combined = prompt + result
+        assert any('\u4e00' <= char <= '\u9fff' for char in combined)
 
 
 class TestIntegrationWithGameMechanics:
@@ -429,18 +475,17 @@ class TestIntegrationWithGameMechanics:
         
         # Develop agriculture multiple times
         for _ in range(3):
-            # Find officer with energy
             faction = gs.factions['Shu']
             for off_name in faction.officers:
                 off = gs.officers[off_name]
                 if off.city == 'Chengdu':
-                    off.energy = 100  # Restore energy for next action
-            
-            output = web_server.handle_menu_input(gs, session_state, '1')
-            assert 'assigned to Agriculture' in output
-        
-        # Agriculture should have improved from the immediate effects
-        assert city.agri >= initial_agri
+                    off.energy = 100
+
+            perform_internal_action(gs, session_state, '1')
+            engine.process_assignments(gs)
+
+        # Agriculture should have improved from the accumulated effects
+        assert city.agri > initial_agri
     
     def test_commerce_improves_gold_production(self):
         """Test that developing commerce assigns officers correctly."""
@@ -457,12 +502,17 @@ class TestIntegrationWithGameMechanics:
             'language': 'en'
         }
         
+        city.troops = 0  # Remove upkeep for clarity
+
         # Develop commerce
-        output = web_server.handle_menu_input(gs, session_state, '3')
-        
-        assert 'assigned to Commerce' in output
-        # Gold may have changed due to immediate effects
-        assert city.commerce >= initial_commerce
+        perform_internal_action(gs, session_state, '3')
+        engine.process_assignments(gs)
+
+        before_economy_gold = city.gold
+        engine.monthly_economy(gs)
+
+        assert city.commerce > initial_commerce
+        assert city.gold > before_economy_gold
     
     def test_technology_provides_combat_bonus(self):
         """Test that technology development improves tech level."""
@@ -479,8 +529,9 @@ class TestIntegrationWithGameMechanics:
         }
         
         # Develop technology
-        web_server.handle_menu_input(gs, session_state, '4')
-        
+        perform_internal_action(gs, session_state, '4')
+        engine.process_assignments(gs)
+
         assert city.tech > initial_tech
     
     def test_officer_energy_depletes(self):
@@ -507,8 +558,8 @@ class TestIntegrationWithGameMechanics:
         }
         
         # Perform an action
-        web_server.handle_menu_input(gs, session_state, '1')
-        
+        perform_internal_action(gs, session_state, '1')
+
         # Energy should have decreased
         assert officer.energy < initial_energy
 

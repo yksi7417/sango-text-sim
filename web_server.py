@@ -13,6 +13,7 @@ import uuid
 
 from src.models import GameState
 from src import utils, engine, world, persistence
+from src.constants import INTERNAL_ACTION_GOLD_COSTS, INTERNAL_ACTION_ENERGY_COST
 from i18n import i18n
 
 app = Flask(__name__)
@@ -168,20 +169,24 @@ def handle_menu_input(gs, session_state, input_text):
         if not gs.factions or gs.player_faction not in gs.factions:
             session_state['current_menu'] = 'main'
             return "Game not initialized. Use 'start' or 'choose Wei/Shu/Wu' first."
-        
+
         # Get current city, defaulting to first city if None
         city_name = get_current_city(gs, session_state)
-        
+
         if not city_name:
             session_state['current_menu'] = 'main'
             return "You don't control any cities."
-        
+
         # Validate city ownership
         faction = gs.factions[gs.player_faction]
         if city_name not in faction.cities:
             session_state['current_menu'] = 'main'
             return f"{city_name} is no longer under your control."
-        
+
+        # If awaiting officer selection, handle that first
+        if session_state.get('pending_assignment'):
+            return handle_internal_officer_selection(gs, session_state, input_text)
+
         # Internal Affairs action mapping
         if input_text == '1':  # Agriculture
             return handle_internal_action(gs, session_state, city_name, 'farm')
@@ -203,18 +208,16 @@ def handle_menu_input(gs, session_state, input_text):
 
 def handle_internal_action(gs, session_state, city_name, action_type):
     """Handle internal affairs actions like agriculture, commerce, etc."""
-    from src import utils, engine
-    
     lang = session_state.get('language', 'en')
     i18n.load(lang)
-    
+
     city = gs.cities.get(city_name)
     if not city:
         session_state['current_menu'] = 'main'
         return "City not found."
-    
+
     faction = gs.factions[gs.player_faction]
-    
+
     # Map action types to task types
     task_map = {
         'farm': 'farm',
@@ -222,55 +225,183 @@ def handle_internal_action(gs, session_state, city_name, action_type):
         'research': 'research',
         'flood': 'farm'  # Flood management is also agriculture-related
     }
-    
+
     task = task_map.get(action_type, 'farm')
-    
+    energy_cost = INTERNAL_ACTION_ENERGY_COST
+    gold_cost = INTERNAL_ACTION_GOLD_COSTS.get(action_type, 0)
+
     # Find available officers in the city
     available_officers = [
         off for off_name in faction.officers
-        if (off := gs.officers.get(off_name)) and 
-        off.city == city_name and 
-        off.energy >= 20 and
+        if (off := gs.officers.get(off_name)) and
+        off.city == city_name and
+        off.energy >= energy_cost and
         not off.busy
     ]
-    
+
     if not available_officers:
-        return i18n.t("menu.internal.no_officers", city=city_name) if i18n.t("menu.internal.no_officers") != "menu.internal.no_officers" else f"No available officers in {city_name} with sufficient energy (20+).\n\nAssign officers to {city_name} or wait for them to recover energy."
-    
-    # Auto-assign the best officer for the task
-    best_officer = max(available_officers, key=lambda o: utils.trait_mult(o, task) * (
-        o.politics if task in ['farm', 'trade'] else o.intelligence
-    ))
-    
-    # Assign the task
-    best_officer.city = city_name
-    best_officer.task = task
-    best_officer.task_city = city_name
-    best_officer.busy = True
-    
-    # Execute the assignment immediately for feedback
-    engine.assignment_effect(gs, best_officer, city)
-    
+        template = i18n.t("menu.internal.no_officers")
+        if template != "menu.internal.no_officers":
+            return template.format(city=city_name)
+        return (
+            f"No available officers in {city_name} with sufficient energy ({energy_cost}+).\n\n"
+            f"Assign officers to {city_name} or wait for them to recover energy."
+        )
+
+    # Sort officers by suitability for the task
+    def officer_score(off):
+        base_stat = off.politics if task in ['farm', 'trade'] else off.intelligence
+        return utils.trait_mult(off, task) * base_stat
+
+    sorted_officers = sorted(
+        available_officers,
+        key=lambda o: (officer_score(o), o.energy),
+        reverse=True
+    )
+
+    options = i18n.t("menu.internal.options")
     action_names = {
-        'farm': i18n.t("menu.internal.options")[0] if isinstance(i18n.t("menu.internal.options"), list) else "Agriculture",
-        'trade': i18n.t("menu.internal.options")[2] if isinstance(i18n.t("menu.internal.options"), list) else "Commerce",
-        'research': i18n.t("menu.internal.options")[3] if isinstance(i18n.t("menu.internal.options"), list) else "Technology",
-        'flood': i18n.t("menu.internal.options")[1] if isinstance(i18n.t("menu.internal.options"), list) else "Flood Management"
+        'farm': options[0] if isinstance(options, list) and len(options) > 0 else "Agriculture",
+        'flood': options[1] if isinstance(options, list) and len(options) > 1 else "Flood Management",
+        'trade': options[2] if isinstance(options, list) and len(options) > 2 else "Commerce",
+        'research': options[3] if isinstance(options, list) and len(options) > 3 else "Technology"
     }
-    
-    officer_name = utils.get_officer_name(best_officer.name)
-    action_name = action_names.get(action_type, action_type)
-    
-    # Show results
-    result = f"[OK] {officer_name} assigned to {action_name} in {city_name}\n"
-    result += f"  Energy: {best_officer.energy}/100\n"
-    result += f"\nCity Status:\n"
-    result += f"  Agriculture: {city.agri}\n"
-    result += f"  Commerce: {city.commerce}\n"
-    result += f"  Technology: {city.tech}\n"
-    result += f"  Gold: {city.gold} | Food: {city.food}\n"
-    
-    return result
+
+    action_name = action_names.get(action_type, action_type.title())
+
+    # Store pending assignment info for follow-up selection
+    session_state['pending_assignment'] = {
+        'city': city_name,
+        'task': task,
+        'action_type': action_type,
+        'action_display': action_name,
+        'officers': [off.name for off in sorted_officers],
+        'gold_cost': gold_cost,
+        'energy_cost': energy_cost,
+    }
+
+    if i18n.lang == 'zh':
+        header = f"請選擇派遣至{city_name}負責{action_name}的武將。"
+        cost_line = f"需要金錢 {gold_cost}，消耗體力 {energy_cost}。"
+        footer = "輸入編號或姓名。輸入 'cancel' 取消。"
+        roster_header = "可用武將："
+    else:
+        header = f"Select an officer to handle {action_name} in {city_name}."
+        cost_line = f"Cost: {gold_cost} gold, {energy_cost} energy."
+        footer = "Enter the number or officer name. Type 'cancel' to choose another action."
+        roster_header = "Available officers:"
+
+    lines = [header, cost_line, "", roster_header]
+    for idx, officer in enumerate(sorted_officers, start=1):
+        display_name = utils.get_officer_name(officer.name)
+        lines.append(
+            f"  {idx}. {display_name} (POL {officer.politics} | INT {officer.intelligence} | EN {officer.energy})"
+        )
+    lines.append(footer)
+
+    return "\n".join(lines)
+
+
+def handle_internal_officer_selection(gs, session_state, input_text):
+    """Handle the officer selection step for internal affairs."""
+    lang = session_state.get('language', 'en')
+    i18n.load(lang)
+
+    pending = session_state.get('pending_assignment') or {}
+    city_name = pending.get('city')
+    city = gs.cities.get(city_name) if city_name else None
+    if not city:
+        session_state.pop('pending_assignment', None)
+        return "City not found."
+
+    selection = input_text.strip()
+
+    if selection.lower() == 'cancel':
+        session_state.pop('pending_assignment', None)
+        if i18n.lang == 'zh':
+            return "已取消指派。"
+        return "Assignment cancelled."
+
+    officer_names = pending.get('officers', [])
+    selected_officer = None
+
+    if selection.isdigit():
+        idx = int(selection) - 1
+        if 0 <= idx < len(officer_names):
+            selected_officer = gs.officers.get(officer_names[idx])
+    else:
+        for name in officer_names:
+            off = gs.officers.get(name)
+            if not off:
+                continue
+            display_name = utils.get_officer_name(off.name)
+            if selection.lower() in (off.name.lower(), display_name.lower()):
+                selected_officer = off
+                break
+
+    if not selected_officer:
+        if i18n.lang == 'zh':
+            return "請輸入有效的武將編號或姓名。"
+        return "Please choose a valid officer number or name."
+
+    energy_cost = pending.get('energy_cost', INTERNAL_ACTION_ENERGY_COST)
+    if selected_officer.energy < energy_cost:
+        if i18n.lang == 'zh':
+            return f"{utils.get_officer_name(selected_officer.name)} 體力不足 ({selected_officer.energy}/{energy_cost})。"
+        return f"{utils.get_officer_name(selected_officer.name)} does not have enough energy ({selected_officer.energy}/{energy_cost})."
+
+    if selected_officer.busy:
+        if i18n.lang == 'zh':
+            return f"{utils.get_officer_name(selected_officer.name)} 正在執行其他任務。"
+        return f"{utils.get_officer_name(selected_officer.name)} is already assigned elsewhere."
+
+    gold_cost = pending.get('gold_cost', 0)
+    if city.gold < gold_cost:
+        session_state.pop('pending_assignment', None)
+        if i18n.lang == 'zh':
+            return f"{city.name} 的金錢不足，需要 {gold_cost}。"
+        return f"{city.name} does not have enough gold (needs {gold_cost})."
+
+    # Deduct resources and assign the officer
+    city.gold -= gold_cost
+    selected_officer.city = city.name
+    selected_officer.task = pending.get('task')
+    selected_officer.task_city = city.name
+    selected_officer.busy = True
+    selected_officer.assignment_energy_spent = True
+    selected_officer.energy = utils.clamp(selected_officer.energy - energy_cost, 0, 100)
+
+    action_display = pending.get('action_display', pending.get('action_type', 'task'))
+    session_state.pop('pending_assignment', None)
+
+    officer_display = utils.get_officer_name(selected_officer.name)
+
+    if i18n.lang == 'zh':
+        lines = [
+            f"[OK] {officer_display} 已派往 {city.name} 負責{action_display}。",
+            f"  消耗金錢 {gold_cost} | 體力 {selected_officer.energy}/100",
+            "  成果將於月底結算。",
+            "",
+            "城市現況:",
+            f"  農業: {city.agri}",
+            f"  商業: {city.commerce}",
+            f"  科技: {city.tech}",
+            f"  金錢: {city.gold} | 糧草: {city.food}"
+        ]
+    else:
+        lines = [
+            f"[OK] {officer_display} assigned to {action_display} in {city.name} for the month.",
+            f"  Cost: {gold_cost} gold | Energy: {selected_officer.energy}/100",
+            "  Results will apply at the end of the month.",
+            "",
+            "City Status:",
+            f"  Agriculture: {city.agri}",
+            f"  Commerce: {city.commerce}",
+            f"  Technology: {city.tech}",
+            f"  Gold: {city.gold} | Food: {city.food}"
+        ]
+
+    return "\n".join(lines)
 
 
 def handle_build_school(gs, session_state, city_name):

@@ -44,6 +44,7 @@ class Officer:
     task: Optional[str] = None
     task_city: Optional[str] = None
     busy: bool = False
+    assignment_energy_spent: bool = False
 
 
 @dataclass
