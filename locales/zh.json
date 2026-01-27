@@ -345,5 +345,27 @@
     "category_diplomatic": "外交",
     "category_officer": "人事",
     "no_events": "平靜的一回合..."
+  },
+  "duel": {
+    "title": "单挑",
+    "round": "第{round}回合",
+    "vs": "对",
+    "hp": "生命值",
+    "actions": {
+      "title": "选择你的行动：",
+      "attack": "攻击",
+      "attack_desc": "标准攻击（85%命中率）",
+      "defend": "防御",
+      "defend_desc": "减少50%受到的伤害",
+      "special": "必杀技",
+      "special_desc": "强力攻击（2倍伤害，70%命中率）"
+    },
+    "combat_log": "战斗记录：",
+    "victory": "{winner}胜利！",
+    "defeat": "{loser}已被击败！",
+    "attacker": "挑战者",
+    "defender": "应战者",
+    "current_hp": "{current}/{max} 生命值",
+    "recent_actions": "最近行动"
   }
 }

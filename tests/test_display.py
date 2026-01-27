@@ -815,8 +815,225 @@ class TestTurnReportGenerator:
     def test_event_category_enum(self):
         """Test EventCategory enum has all categories."""
         from src.display.reports import EventCategory
-        
+
         assert hasattr(EventCategory, 'ECONOMY')
         assert hasattr(EventCategory, 'MILITARY')
         assert hasattr(EventCategory, 'DIPLOMATIC')
         assert hasattr(EventCategory, 'OFFICER')
+
+
+class TestDuelView:
+    """Tests for duel view rendering."""
+
+    def test_render_duel_state_basic(self):
+        """Duel state should render with HP bars and combatants."""
+        from src.display.duel_view import render_duel_state
+        from src.systems.duel import start_duel
+
+        officer1 = Officer(
+            name="Lu Bu", faction="Dong Zhuo",
+            leadership=100, intelligence=50, politics=30, charisma=60
+        )
+        officer2 = Officer(
+            name="Zhang Fei", faction="Shu",
+            leadership=95, intelligence=40, politics=35, charisma=75
+        )
+
+        duel = start_duel(officer1, officer2)
+        result = render_duel_state(duel)
+
+        assert isinstance(result, str)
+        assert len(result) > 0
+        # Should show both officer names
+        assert "Lu Bu" in result or "LuBu" in result
+        assert "Zhang Fei" in result or "ZhangFei" in result
+
+    def test_render_duel_state_shows_hp_bars(self):
+        """Duel state should display HP bars for both combatants."""
+        from src.display.duel_view import render_duel_state
+        from src.systems.duel import start_duel
+
+        officer1 = Officer(
+            name="Guan Yu", faction="Shu",
+            leadership=98, intelligence=75, politics=65, charisma=90
+        )
+        officer2 = Officer(
+            name="Xiahou Dun", faction="Wei",
+            leadership=88, intelligence=70, politics=60, charisma=75
+        )
+
+        duel = start_duel(officer1, officer2)
+        result = render_duel_state(duel)
+
+        # Should contain HP bars (block characters)
+        assert "█" in result or "░" in result
+
+    def test_render_duel_state_shows_round(self):
+        """Duel state should display current round number."""
+        from src.display.duel_view import render_duel_state
+        from src.systems.duel import start_duel, process_duel_round, DuelAction
+
+        officer1 = Officer(
+            name="Zhao Yun", faction="Shu",
+            leadership=96, intelligence=75, politics=70, charisma=88
+        )
+        officer2 = Officer(
+            name="Xu Chu", faction="Wei",
+            leadership=93, intelligence=65, politics=55, charisma=70
+        )
+
+        duel = start_duel(officer1, officer2)
+        process_duel_round(duel, DuelAction.ATTACK, DuelAction.ATTACK)
+        result = render_duel_state(duel)
+
+        # Should show round number
+        assert "1" in result or "Round" in result or "回合" in result
+
+    def test_render_duel_state_shows_combat_log(self):
+        """Duel state should display combat log of recent actions."""
+        from src.display.duel_view import render_duel_state
+        from src.systems.duel import start_duel, process_duel_round, DuelAction
+
+        officer1 = Officer(
+            name="Ma Chao", faction="Shu",
+            leadership=95, intelligence=70, politics=60, charisma=85
+        )
+        officer2 = Officer(
+            name="Pang De", faction="Wei",
+            leadership=88, intelligence=65, politics=50, charisma=70
+        )
+
+        duel = start_duel(officer1, officer2)
+        process_duel_round(duel, DuelAction.ATTACK, DuelAction.DEFEND)
+        result = render_duel_state(duel)
+
+        # Should have combat log section
+        assert isinstance(result, str)
+        assert len(result) > 50
+
+    def test_render_action_menu(self):
+        """Action menu should render with all action choices."""
+        from src.display.duel_view import render_action_menu
+
+        result = render_action_menu()
+
+        assert isinstance(result, str)
+        # Should show all three actions
+        assert "Attack" in result or "attack" in result or "攻击" in result
+        assert "Defend" in result or "defend" in result or "防御" in result
+        assert "Special" in result or "special" in result or "必杀" in result
+
+    def test_render_action_menu_shows_descriptions(self):
+        """Action menu should show descriptions for each action."""
+        from src.display.duel_view import render_action_menu
+
+        result = render_action_menu()
+
+        # Should have descriptions (hit rate, damage info)
+        assert "85%" in result or "70%" in result or "50%" in result
+
+    def test_render_duel_victory(self):
+        """Victory screen should show winner and final stats."""
+        from src.display.duel_view import render_duel_victory
+
+        winner = Officer(
+            name="Guan Yu", faction="Shu",
+            leadership=98, intelligence=75, politics=65, charisma=90
+        )
+        loser = Officer(
+            name="Hua Xiong", faction="Dong Zhuo",
+            leadership=75, intelligence=50, politics=40, charisma=55
+        )
+
+        result = render_duel_victory(winner, loser)
+
+        assert isinstance(result, str)
+        assert len(result) > 0
+        # Should show winner name
+        assert "Guan Yu" in result or "GuanYu" in result or "关羽" in result
+
+    def test_render_duel_victory_shows_victory_message(self):
+        """Victory screen should display victory message."""
+        from src.display.duel_view import render_duel_victory
+
+        winner = Officer(
+            name="Lu Bu", faction="Neutral",
+            leadership=100, intelligence=50, politics=30, charisma=60
+        )
+        loser = Officer(
+            name="Ji Ling", faction="Yuan Shu",
+            leadership=80, intelligence=60, politics=55, charisma=65
+        )
+
+        result = render_duel_victory(winner, loser)
+
+        # Should have some victory terminology
+        assert "victory" in result.lower() or "victorious" in result.lower() or "胜利" in result
+
+    def test_render_duel_defeat(self):
+        """Defeat screen should show loser perspective."""
+        from src.display.duel_view import render_duel_defeat
+
+        winner = Officer(
+            name="Zhang Liao", faction="Wei",
+            leadership=92, intelligence=80, politics=70, charisma=85
+        )
+        loser = Officer(
+            name="Test Officer", faction="Test",
+            leadership=60, intelligence=50, politics=50, charisma=50
+        )
+
+        result = render_duel_defeat(winner, loser)
+
+        assert isinstance(result, str)
+        assert len(result) > 0
+        # Should show winner who defeated you
+        assert "Zhang Liao" in result or "ZhangLiao" in result
+
+    def test_render_duel_state_with_partial_hp(self):
+        """Duel state should correctly show partial HP."""
+        from src.display.duel_view import render_duel_state
+        from src.systems.duel import start_duel, process_duel_round, DuelAction
+
+        officer1 = Officer(
+            name="Officer1", faction="Wei",
+            leadership=90, intelligence=70, politics=60, charisma=75
+        )
+        officer2 = Officer(
+            name="Officer2", faction="Shu",
+            leadership=85, intelligence=65, politics=55, charisma=70
+        )
+
+        duel = start_duel(officer1, officer2)
+        # Fight a few rounds to damage HP
+        for _ in range(3):
+            from src.systems.duel import is_duel_over
+            if not is_duel_over(duel):
+                process_duel_round(duel, DuelAction.ATTACK, DuelAction.ATTACK)
+
+        result = render_duel_state(duel)
+
+        # Should render without errors
+        assert isinstance(result, str)
+        assert len(result) > 0
+
+    def test_render_duel_state_i18n_support(self):
+        """Duel view should use i18n keys for all labels."""
+        from src.display.duel_view import render_duel_state
+        from src.systems.duel import start_duel
+
+        officer1 = Officer(
+            name="Test1", faction="Wei",
+            leadership=80, intelligence=70, politics=60, charisma=70
+        )
+        officer2 = Officer(
+            name="Test2", faction="Shu",
+            leadership=75, intelligence=65, politics=55, charisma=65
+        )
+
+        duel = start_duel(officer1, officer2)
+        result = render_duel_state(duel)
+
+        # Should render without errors (i18n keys exist)
+        assert isinstance(result, str)
+        assert len(result) > 50

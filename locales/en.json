@@ -344,5 +344,27 @@
     "category_diplomatic": "Diplomatic",
     "category_officer": "Officer Affairs",
     "no_events": "A quiet turn passes..."
+  },
+  "duel": {
+    "title": "DUEL",
+    "round": "Round {round}",
+    "vs": "vs",
+    "hp": "HP",
+    "actions": {
+      "title": "Choose Your Action:",
+      "attack": "Attack",
+      "attack_desc": "Standard attack (85% hit rate)",
+      "defend": "Defend",
+      "defend_desc": "Reduce incoming damage by 50%",
+      "special": "Special Attack",
+      "special_desc": "Powerful attack (2x damage, 70% hit rate)"
+    },
+    "combat_log": "Combat Log:",
+    "victory": "{winner} is victorious!",
+    "defeat": "{loser} has been defeated!",
+    "attacker": "Attacker",
+    "defender": "Defender",
+    "current_hp": "{current}/{max} HP",
+    "recent_actions": "Recent Actions"
   }
 }
