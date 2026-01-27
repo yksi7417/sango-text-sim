@@ -92,7 +92,7 @@
         "Tests in tests/test_display.py",
         "Works with both 6-city and planned 40-city maps"
       ],
-      "status": "in_progress",
+      "status": "passed",
       "depends_on": ["p1-02"],
       "estimated_files": ["src/display/__init__.py", "src/display/map_view.py", "tests/test_display.py"]
     },
