@@ -537,7 +537,7 @@
         "Save/load preserves battle state",
         "AI makes tactical decisions"
       ],
-      "status": "pending",
+      "status": "passed",
       "depends_on": [
         "p2-06",
         "p2-05",
