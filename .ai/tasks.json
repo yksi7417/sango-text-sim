@@ -55,7 +55,7 @@
         "Document JSON schema in src/data/README.md",
         "Tests verify JSON loads correctly"
       ],
-      "status": "pending",
+      "status": "passed",
       "estimated_files": ["src/data/maps/china_208.json", "src/data/README.md", "tests/test_data_loading.py"]
     },
     {
@@ -72,7 +72,7 @@
         "All 201+ tests still pass",
         "Easy to add new scenarios/maps"
       ],
-      "status": "pending",
+      "status": "passed",
       "depends_on": ["p1-01"],
       "estimated_files": ["src/world.py", "tests/test_world.py"]
     },
