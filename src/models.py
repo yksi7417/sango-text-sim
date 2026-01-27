@@ -92,6 +92,47 @@ class TurnEvent:
 
 
 @dataclass
+class BattleState:
+    """
+    Represents the state of an ongoing tactical battle.
+
+    Attributes:
+        attacker_city: Name of the attacking city
+        defender_city: Name of the defending city
+        attacker_faction: Name of the attacking faction
+        defender_faction: Name of the defending faction
+        attacker_commander: Name of the officer commanding the attack
+        defender_commander: Name of the officer commanding the defense
+        attacker_troops: Number of attacking troops
+        defender_troops: Number of defending troops
+        terrain: Terrain type of the battlefield
+        weather: Current weather conditions (optional)
+        round: Current battle round number
+        attacker_morale: Morale of attacking forces (0-100)
+        defender_morale: Morale of defending forces (0-100)
+        supply_days: Days of supply remaining for attacker
+        siege_progress: Progress toward breaking city walls (0-100)
+        combat_log: List of battle events
+    """
+    attacker_city: str
+    defender_city: str
+    attacker_faction: str
+    defender_faction: str
+    attacker_commander: str
+    defender_commander: str
+    attacker_troops: int
+    defender_troops: int
+    terrain: TerrainType
+    weather: Optional[str] = None
+    round: int = 0
+    attacker_morale: int = 70
+    defender_morale: int = 70
+    supply_days: int = 10
+    siege_progress: int = 0
+    combat_log: List[str] = field(default_factory=list)
+
+
+@dataclass
 class Officer:
     """
     Represents a military/political officer in the game.

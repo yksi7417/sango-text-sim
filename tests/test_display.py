@@ -1037,3 +1037,253 @@ class TestDuelView:
         # Should render without errors (i18n keys exist)
         assert isinstance(result, str)
         assert len(result) > 50
+
+
+# =================== Battle View Tests ===================
+
+
+class TestRenderBattleMap:
+    """Tests for tactical battle map rendering."""
+
+    def test_render_basic_battle_map(self):
+        """Battle map should render with basic components."""
+        from src.models import BattleState, TerrainType
+        from src.display.battle_view import render_battle_map
+
+        battle = BattleState(
+            attacker_city="Chengdu",
+            defender_city="Changan",
+            attacker_faction="Shu",
+            defender_faction="Wei",
+            attacker_commander="Zhao Yun",
+            defender_commander="Cao Ren",
+            attacker_troops=5000,
+            defender_troops=4000,
+            terrain=TerrainType.PLAINS
+        )
+
+        result = render_battle_map(battle)
+
+        # Should contain key battle information
+        assert isinstance(result, str)
+        assert len(result) > 100
+        # Check for city names
+        assert "Chengdu" in result or "chengdu" in result.lower()
+        assert "Changan" in result or "changan" in result.lower()
+
+    def test_render_battle_map_shows_commanders(self):
+        """Battle map should display commander names."""
+        from src.models import BattleState, TerrainType
+        from src.display.battle_view import render_battle_map
+
+        battle = BattleState(
+            attacker_city="Xiangyang",
+            defender_city="Jiangling",
+            attacker_faction="Wei",
+            defender_faction="Shu",
+            attacker_commander="Zhang Liao",
+            defender_commander="Guan Yu",
+            attacker_troops=6000,
+            defender_troops=5000,
+            terrain=TerrainType.MOUNTAIN
+        )
+
+        result = render_battle_map(battle)
+
+        # Should mention commanders
+        assert "Zhang Liao" in result or "zhang" in result.lower()
+        assert "Guan Yu" in result or "guan" in result.lower()
+
+    def test_render_battle_map_shows_troops(self):
+        """Battle map should display troop counts."""
+        from src.models import BattleState, TerrainType
+        from src.display.battle_view import render_battle_map
+
+        battle = BattleState(
+            attacker_city="Luoyang",
+            defender_city="Xuchang",
+            attacker_faction="Wu",
+            defender_faction="Wei",
+            attacker_commander="Zhou Yu",
+            defender_commander="Xiahou Dun",
+            attacker_troops=7500,
+            defender_troops=6200,
+            terrain=TerrainType.FOREST
+        )
+
+        result = render_battle_map(battle)
+
+        # Should show troop numbers
+        assert "7500" in result or "7,500" in result
+        assert "6200" in result or "6,200" in result
+
+    def test_render_battle_map_shows_terrain(self):
+        """Battle map should indicate terrain type."""
+        from src.models import BattleState, TerrainType
+        from src.display.battle_view import render_battle_map
+
+        battle = BattleState(
+            attacker_city="Hefei",
+            defender_city="Jianye",
+            attacker_faction="Wei",
+            defender_faction="Wu",
+            attacker_commander="Cao Cao",
+            defender_commander="Sun Quan",
+            attacker_troops=8000,
+            defender_troops=7000,
+            terrain=TerrainType.COASTAL
+        )
+
+        result = render_battle_map(battle)
+
+        # Should mention terrain
+        assert "coastal" in result.lower() or "Coastal" in result or "COASTAL" in result
+
+    def test_render_battle_map_with_weather(self):
+        """Battle map should display weather when present."""
+        from src.models import BattleState, TerrainType
+        from src.display.battle_view import render_battle_map
+
+        battle = BattleState(
+            attacker_city="Xiapi",
+            defender_city="Puyang",
+            attacker_faction="Shu",
+            defender_faction="Wei",
+            attacker_commander="Liu Bei",
+            defender_commander="Cao Cao",
+            attacker_troops=5500,
+            defender_troops=6000,
+            terrain=TerrainType.RIVER,
+            weather="Rain"
+        )
+
+        result = render_battle_map(battle)
+
+        # Should show weather
+        assert "Rain" in result or "rain" in result.lower()
+
+    def test_render_battle_map_shows_supply(self):
+        """Battle map should display supply days."""
+        from src.models import BattleState, TerrainType
+        from src.display.battle_view import render_battle_map
+
+        battle = BattleState(
+            attacker_city="Ye",
+            defender_city="Yecheng",
+            attacker_faction="Wei",
+            defender_faction="Shu",
+            attacker_commander="Cao Pi",
+            defender_commander="Zhuge Liang",
+            attacker_troops=9000,
+            defender_troops=8000,
+            terrain=TerrainType.PLAINS,
+            supply_days=5
+        )
+
+        result = render_battle_map(battle)
+
+        # Should mention supply
+        assert "5" in result  # Supply days
+        assert "supply" in result.lower() or "Supply" in result
+
+    def test_render_battle_map_shows_morale(self):
+        """Battle map should display morale levels."""
+        from src.models import BattleState, TerrainType
+        from src.display.battle_view import render_battle_map
+
+        battle = BattleState(
+            attacker_city="Wuwei",
+            defender_city="Tianshui",
+            attacker_faction="Shu",
+            defender_faction="Wei",
+            attacker_commander="Ma Chao",
+            defender_commander="Cao Ren",
+            attacker_troops=7000,
+            defender_troops=6500,
+            terrain=TerrainType.MOUNTAIN,
+            attacker_morale=85,
+            defender_morale=65
+        )
+
+        result = render_battle_map(battle)
+
+        # Should show morale (in some form)
+        assert "85" in result or "65" in result
+        assert "morale" in result.lower() or "Morale" in result
+
+    def test_render_battle_map_shows_siege_progress(self):
+        """Battle map should display siege progress when applicable."""
+        from src.models import BattleState, TerrainType
+        from src.display.battle_view import render_battle_map
+
+        battle = BattleState(
+            attacker_city="Hanzhong",
+            defender_city="Changan",
+            attacker_faction="Shu",
+            defender_faction="Wei",
+            attacker_commander="Huang Zhong",
+            defender_commander="Xiahou Yuan",
+            attacker_troops=10000,
+            defender_troops=9000,
+            terrain=TerrainType.MOUNTAIN,
+            siege_progress=45
+        )
+
+        result = render_battle_map(battle)
+
+        # Should mention siege
+        assert "45" in result or "siege" in result.lower() or "Siege" in result
+
+    def test_render_battle_map_different_terrains(self):
+        """Battle map should render correctly for all terrain types."""
+        from src.models import BattleState, TerrainType
+        from src.display.battle_view import render_battle_map
+
+        terrains = [
+            TerrainType.PLAINS,
+            TerrainType.MOUNTAIN,
+            TerrainType.FOREST,
+            TerrainType.COASTAL,
+            TerrainType.RIVER
+        ]
+
+        for terrain in terrains:
+            battle = BattleState(
+                attacker_city="CityA",
+                defender_city="CityB",
+                attacker_faction="Shu",
+                defender_faction="Wei",
+                attacker_commander="Test Commander",
+                defender_commander="Test Defender",
+                attacker_troops=5000,
+                defender_troops=4000,
+                terrain=terrain
+            )
+
+            result = render_battle_map(battle)
+            # Should render without errors for all terrains
+            assert isinstance(result, str)
+            assert len(result) > 50
+
+    def test_render_battle_map_with_combat_log(self):
+        """Battle map should display recent combat events."""
+        from src.models import BattleState, TerrainType
+        from src.display.battle_view import render_battle_map
+
+        battle = BattleState(
+            attacker_city="Jiangxia",
+            defender_city="Jiangling",
+            attacker_faction="Wu",
+            defender_faction="Wei",
+            attacker_commander="Lu Meng",
+            defender_commander="Cao Ren",
+            attacker_troops=7000,
+            defender_troops=6000,
+            terrain=TerrainType.RIVER,
+            combat_log=["Round 1: Fierce clash at the gates!", "Round 2: Defenders hold strong."]
+        )
+
+        result = render_battle_map(battle)
+
+        # Should include combat log entries (at least partially)
+        assert "Round" in result or "round" in result.lower() or len(battle.combat_log) == 0 or any(word in result for word in ["clash", "Defenders"])

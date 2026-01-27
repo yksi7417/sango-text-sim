@@ -386,5 +386,26 @@
       "captured": "{loser} has been captured by {winner}!",
       "injured": "{loser} survives but is injured and demoralized."
     }
+  },
+  "battle": {
+    "title": "Battle: {attacker_city} attacks {defender_city}",
+    "attacker": "Attacker",
+    "defender": "Defender",
+    "commander": "Commander",
+    "troops": "Troops",
+    "morale": "Morale",
+    "status": "Battle Status",
+    "round": "Round",
+    "supply_days": "Supply: {days} days remaining",
+    "weather_current": "Weather: {weather}",
+    "siege_progress": "Siege Progress",
+    "combat_log": "Combat Log"
+  },
+  "terrain": {
+    "plains": "Plains",
+    "mountain": "Mountain",
+    "forest": "Forest",
+    "coastal": "Coastal",
+    "river": "River Crossing"
   }
 }

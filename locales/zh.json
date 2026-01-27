@@ -387,5 +387,26 @@
       "captured": "{loser}被{winner}俘虏！",
       "injured": "{loser}幸存但受伤且士气低落。"
     }
+  },
+  "battle": {
+    "title": "戰役：{attacker_city}進攻{defender_city}",
+    "attacker": "進攻方",
+    "defender": "防守方",
+    "commander": "指揮官",
+    "troops": "兵力",
+    "morale": "士氣",
+    "status": "戰況",
+    "round": "回合",
+    "supply_days": "糧草：剩餘{days}天",
+    "weather_current": "天氣：{weather}",
+    "siege_progress": "攻城進度",
+    "combat_log": "戰鬥記錄"
+  },
+  "terrain": {
+    "plains": "平原",
+    "mountain": "山地",
+    "forest": "森林",
+    "coastal": "沿海",
+    "river": "渡河"
   }
 }
