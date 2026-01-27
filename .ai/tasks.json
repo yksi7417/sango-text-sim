@@ -355,7 +355,7 @@
         "Duel ends when HP <= 0",
         "Tests for all action combinations"
       ],
-      "status": "pending",
+      "status": "passed",
       "estimated_files": [
         "src/systems/__init__.py",
         "src/systems/duel.py",
