@@ -89,3 +89,6 @@
 [2026-01-26T22:08:31Z] [ITER-7] [SUCCESS] Completed in 605.3s
 [2026-01-26T22:08:37Z] [ITER-8] [START] Beginning iteration
 [2026-01-27T03:16:32Z] [ITER-8] [PASS] Completed p1-10: Integrate Turn Reports into Game Loop - Moved TurnEvent/EventCategory to models.py, modified engine.py end_turn() to collect and return events, added categorize_message() function, updated game.py and web_server.py to display turn reports with seasonal flavor, added 5 new tests - All 279 tests passing
+[2026-01-26T22:17:28Z] [ITER-8] [SUCCESS] Completed in 530.6s
+[2026-01-26T22:17:34Z] [ITER-9] [START] Beginning iteration
+[2026-01-27T03:23:02Z] [ITER-9] [PASS] Completed p1-11: Create Officer JSON Data Files - Created src/data/officers/legendary.json with 31 officers (Wei: 10, Shu: 10, Wu: 11), all with stats/traits/quotes/relationships/special_abilities, added i18n to en.json and zh.json, 16 comprehensive tests added - All 295 tests passing

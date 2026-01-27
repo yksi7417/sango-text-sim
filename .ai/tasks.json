@@ -305,7 +305,7 @@
         "Special ability placeholders",
         "i18n names in locales"
       ],
-      "status": "pending",
+      "status": "passed",
       "depends_on": [
         "p1-01"
       ],
