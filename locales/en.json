@@ -240,5 +240,18 @@
       "not_implemented": "This feature is not yet implemented.",
       "current_city": "Current City: {city}"
     }
+  },
+  "map": {
+    "title": "=== Strategic Map ===",
+    "empty": "No cities on map.",
+    "legend": {
+      "symbols": "Symbols:",
+      "capital": "Capital",
+      "plains": "Plains",
+      "mountain": "Mountain",
+      "coastal": "Coastal",
+      "factions": "Factions:",
+      "cities": "{count} cities"
+    }
   }
 }

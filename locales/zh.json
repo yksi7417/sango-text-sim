@@ -241,5 +241,18 @@
       "not_implemented": "此功能尚未實裝。",
       "current_city": "當前城池：{city}"
     }
+  },
+  "map": {
+    "title": "=== 戰略地圖 ===",
+    "empty": "地圖上無城池。",
+    "legend": {
+      "symbols": "符號說明：",
+      "capital": "都城",
+      "plains": "平原",
+      "mountain": "山地",
+      "coastal": "沿海",
+      "factions": "勢力：",
+      "cities": "{count}座城池"
+    }
   }
 }
