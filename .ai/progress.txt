@@ -1,0 +1,18 @@
+# Progress Log
+# Append-only log of learnings and iteration outcomes
+# Format: [TIMESTAMP] [STATUS] Message
+
+[2026-01-26T00:00:00Z] [INIT] Progress tracking initialized for sango-text-sim
+[2026-01-26T00:00:00Z] [INFO] Project has 200+ tests, 96%+ coverage requirement
+[2026-01-26T00:00:00Z] [INFO] Bilingual support required: en.json + zh.json
+
+# === LEARNINGS ===
+# Add discovered patterns, gotchas, and important notes below:
+
+# - Always run full test suite before committing
+# - Both locale files must be updated for any UI text changes
+# - Game state validation: check game_started flag before menu operations
+
+# === ITERATION LOG ===
+# Loop iterations will be logged below:
+

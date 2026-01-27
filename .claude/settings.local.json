@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:ghuntley.com)",
+      "WebFetch(domain:github.com)",
+      "Bash(wc -l:*)",
+      "Bash(python -m pytest:*)"
+    ]
+  }
+}

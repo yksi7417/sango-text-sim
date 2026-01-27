@@ -1,0 +1,24 @@
+{
+  "metadata": {
+    "project": "sango-text-sim",
+    "created": "2026-01-26",
+    "version": "1.0.0"
+  },
+  "tasks": [
+    {
+      "id": "example-001",
+      "priority": 999,
+      "title": "Example Task - Delete This",
+      "description": "This is an example task to demonstrate the format. Delete this and add real tasks.",
+      "acceptance_criteria": [
+        "Specific criterion 1",
+        "Specific criterion 2"
+      ],
+      "status": "pending",
+      "model_hint": "haiku",
+      "files_to_modify": [],
+      "notes": "This is a placeholder - replace with real tasks"
+    }
+  ],
+  "completed": []
+}

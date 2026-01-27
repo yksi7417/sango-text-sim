@@ -40,6 +40,24 @@ This repository follows strict development practices to maintain code quality an
 
 See [`COPILOT_INSTRUCTIONS.md`](../COPILOT_INSTRUCTIONS.md) for complete development guidelines, architecture patterns, and best practices.
 
+## AI Autonomous Loop Mode
+
+For autonomous development using Claude Code (Ralph methodology):
+
+```powershell
+# Run autonomous loop
+.\.ai\loop.ps1
+
+# With custom settings
+.\.ai\loop.ps1 -MaxIterations 50 -Model opus
+```
+
+See `.ai/README.md` for full documentation on:
+- Task tracking with `tasks.json`
+- Writing acceptance criteria
+- Token optimization strategies
+- Best practices for AI-assisted development
+
 ## Before Every Commit
 
 - [ ] All tests pass (201/201)
