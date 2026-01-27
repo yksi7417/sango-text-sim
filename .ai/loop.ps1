@@ -249,8 +249,23 @@ try {
                 Update-ProgressLog -Iteration $iteration -Status "WARNING" -Message "Exit code: $exitCode"
             }
 
+
             # Show metrics
             Write-ColorLog "Duration: $([math]::Round($duration, 1))s" -Level "METRIC"
+
+            # Auto-commit and push if there are changes
+            Write-ColorLog "Checking for code changes to commit..." -Level "INFO"
+            $status = git status --porcelain
+            if ($status) {
+                git add -A
+                $commitMsg = "loop.ps1: auto-commit after iteration $iteration"
+                git commit -m $commitMsg
+                Write-ColorLog "Committed changes: $commitMsg" -Level "SUCCESS"
+                git push
+                Write-ColorLog "Pushed changes to remote." -Level "SUCCESS"
+            } else {
+                Write-ColorLog "No changes to commit." -Level "INFO"
+            }
 
         } catch {
             Write-ColorLog "Error in iteration $iteration`: $_" -Level "ERROR"
