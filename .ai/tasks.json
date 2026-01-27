@@ -179,7 +179,7 @@
         "All components tested",
         "Used by map_view, city_view, officer_view"
       ],
-      "status": "pending",
+      "status": "passed",
       "estimated_files": [
         "src/display/components.py",
         "tests/test_display.py"
