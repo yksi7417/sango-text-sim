@@ -511,7 +511,7 @@
         "Special abilities get dramatic description",
         "i18n for all narrative templates"
       ],
-      "status": "pending",
+      "status": "passed",
       "depends_on": [
         "p2-06"
       ],
