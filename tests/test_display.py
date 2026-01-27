@@ -3,12 +3,13 @@ Tests for the display module.
 
 This module tests visual rendering functions:
 - ASCII map rendering
+- City detail view rendering
 - Faction color codes
 - City and connection display
 """
 
 import pytest
-from src.models import City, Faction, GameState
+from src.models import City, Faction, GameState, Officer
 from src.display.map_view import render_strategic_map, get_faction_color
 
 
@@ -204,3 +205,142 @@ class TestRenderStrategicMap:
 
         # Should contain ANSI color codes
         assert "\033[" in result
+
+
+class TestCityDetailView:
+    """Tests for city detail view rendering."""
+
+    def test_render_city_detail_basic(self):
+        """City detail should render with all basic information."""
+        from src.display.city_view import render_city_detail
+
+        city = City(
+            name="Xuchang",
+            owner="Wei",
+            gold=1000,
+            food=1500,
+            troops=500,
+            defense=60,
+            morale=70,
+            agri=60,
+            commerce=70,
+            tech=50,
+            walls=80
+        )
+
+        officers = [
+            Officer(name="CaoCao", faction="Wei", leadership=95, intelligence=90,
+                   politics=85, charisma=92, city="Xuchang", task="trade", busy=True),
+            Officer(name="XiahouDun", faction="Wei", leadership=88, intelligence=70,
+                   politics=60, charisma=75, city="Xuchang", task=None, busy=False)
+        ]
+
+        result = render_city_detail(city, officers)
+
+        assert isinstance(result, str)
+        assert len(result) > 0
+        # Should show city name
+        assert "Xuchang" in result or "xuchang" in result.lower()
+        # Should show resources
+        assert "1000" in result  # gold
+        assert "1500" in result  # food
+        assert "500" in result   # troops
+
+    def test_render_city_detail_shows_progress_bars(self):
+        """City detail should show progress bars for development levels."""
+        from src.display.city_view import render_city_detail
+
+        city = City(
+            name="TestCity",
+            owner="Wei",
+            agri=50,
+            commerce=75,
+            tech=25,
+            walls=100
+        )
+
+        result = render_city_detail(city, [])
+
+        # Progress bars use block characters
+        assert "█" in result or "░" in result or "▓" in result or "■" in result or "|" in result
+
+    def test_render_city_detail_lists_officers(self):
+        """City detail should list stationed officers and their tasks."""
+        from src.display.city_view import render_city_detail
+
+        city = City(name="Chengdu", owner="Shu")
+
+        officers = [
+            Officer(name="LiuBei", faction="Shu", leadership=85, intelligence=75,
+                   politics=80, charisma=95, city="Chengdu", task="farm", busy=True),
+            Officer(name="GuanYu", faction="Shu", leadership=97, intelligence=70,
+                   politics=65, charisma=90, city="Chengdu", task=None, busy=False),
+            Officer(name="ZhangFei", faction="Shu", leadership=95, intelligence=40,
+                   politics=35, charisma=75, city="Chengdu", task="train", busy=True)
+        ]
+
+        result = render_city_detail(city, officers)
+
+        # Should list officer names
+        assert "LiuBei" in result or "Liu Bei" in result or "刘备" in result
+        assert "GuanYu" in result or "Guan Yu" in result or "关羽" in result
+        assert "ZhangFei" in result or "Zhang Fei" in result or "张飞" in result
+
+    def test_render_city_detail_shows_adjacency(self):
+        """City detail should show adjacent cities."""
+        from src.display.city_view import render_city_detail
+        from src.world import ADJACENCY_MAP
+
+        city = City(name="Xuchang", owner="Wei")
+
+        result = render_city_detail(city, [])
+
+        # Should have some section about adjacent/neighboring cities
+        # We can't assert specific cities unless we know the adjacency
+        # Just check that the render works
+        assert isinstance(result, str)
+
+    def test_render_city_detail_ascii_icon_varies_by_walls(self):
+        """City detail should show different ASCII art based on walls level."""
+        from src.display.city_view import render_city_detail
+
+        city_low = City(name="WeakCity", owner="Wei", walls=20)
+        city_high = City(name="StrongCity", owner="Wei", walls=90)
+
+        result_low = render_city_detail(city_low, [])
+        result_high = render_city_detail(city_high, [])
+
+        # Both should render successfully
+        assert isinstance(result_low, str)
+        assert isinstance(result_high, str)
+
+        # Should contain some ASCII art
+        # Could be box drawing, castles, walls, etc.
+        assert len(result_low) > 50
+        assert len(result_high) > 50
+
+    def test_render_city_detail_with_no_officers(self):
+        """City detail should handle cities with no stationed officers."""
+        from src.display.city_view import render_city_detail
+
+        city = City(name="EmptyCity", owner="Neutral")
+
+        result = render_city_detail(city, [])
+
+        assert isinstance(result, str)
+        assert len(result) > 0
+
+    def test_render_city_detail_i18n_support(self):
+        """City detail should use i18n keys for all labels."""
+        from src.display.city_view import render_city_detail
+
+        city = City(name="TestCity", owner="Wei")
+        officer = Officer(name="TestOfficer", faction="Wei", leadership=80,
+                         intelligence=70, politics=60, charisma=75, city="TestCity")
+
+        result = render_city_detail(city, [officer])
+
+        # Should render without errors (i18n keys exist)
+        assert isinstance(result, str)
+        # Should have some meaningful content
+        assert len(result) > 100

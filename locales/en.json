@@ -253,5 +253,25 @@
       "factions": "Factions:",
       "cities": "{count} cities"
     }
+  },
+  "city_view": {
+    "header": "═══ {city} [{owner}] ═══",
+    "resources_title": "Resources:",
+    "gold": "Gold",
+    "food": "Food",
+    "troops": "Troops",
+    "defense": "Defense",
+    "morale": "Morale",
+    "development_title": "Development:",
+    "agriculture": "Agriculture",
+    "commerce": "Commerce",
+    "technology": "Technology",
+    "walls": "Walls",
+    "officers_title": "Stationed Officers:",
+    "officer_busy": "(Working: {task})",
+    "officer_idle": "(Idle)",
+    "no_officers": "  (No officers stationed)",
+    "adjacent_title": "Adjacent Cities:",
+    "no_adjacent": "  (Isolated)"
   }
 }

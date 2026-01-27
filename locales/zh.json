@@ -254,5 +254,25 @@
       "factions": "勢力：",
       "cities": "{count}座城池"
     }
+  },
+  "city_view": {
+    "header": "═══ {city} [{owner}] ═══",
+    "resources_title": "資源：",
+    "gold": "金庫",
+    "food": "糧草",
+    "troops": "兵力",
+    "defense": "防禦",
+    "morale": "士氣",
+    "development_title": "發展：",
+    "agriculture": "農業",
+    "commerce": "商業",
+    "technology": "科技",
+    "walls": "城牆",
+    "officers_title": "駐守武將：",
+    "officer_busy": "（執行：{task}）",
+    "officer_idle": "（待命）",
+    "no_officers": "  （無武將駐守）",
+    "adjacent_title": "鄰近城池：",
+    "no_adjacent": "  （孤立）"
   }
 }
