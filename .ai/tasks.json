@@ -199,7 +199,7 @@
         "i18n keys for map legend",
         "All existing tests pass"
       ],
-      "status": "in_progress",
+      "status": "passed",
       "depends_on": [
         "p1-03",
         "p1-06"

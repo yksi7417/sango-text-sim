@@ -79,3 +79,6 @@
 [2026-01-26T21:45:39Z] [ITER-4] [SUCCESS] Completed in 334.6s
 [2026-01-26T21:45:45Z] [ITER-5] [START] Beginning iteration
 [2026-01-27T02:52:00Z] [ITER-5] [PASS] Completed p1-06: Create UI Components Library - Created src/display/components.py with render_progress_bar(), render_box(), render_table(), render_separator(), centralized FACTION_COLORS and get_faction_color(), refactored city_view/officer_view/map_view to use components, 9 new tests - All 259 tests passing, 95% coverage
+[2026-01-26T21:50:50Z] [ITER-5] [SUCCESS] Completed in 305.2s
+[2026-01-26T21:50:56Z] [ITER-6] [START] Beginning iteration
+[2026-01-27T03:00:00Z] [ITER-6] [PASS] Completed p1-07: Integrate Map Display into Game - Added 'map' command to CLI, map shown at turn start, /api/map endpoint to web server, Map button in web UI with toggle functionality, ui.map i18n keys to both locale files - All 259 tests passing
