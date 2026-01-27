@@ -459,7 +459,7 @@
         "Weather indicator",
         "i18n support"
       ],
-      "status": "pending",
+      "status": "passed",
       "depends_on": [
         "p2-04",
         "p1-06"
