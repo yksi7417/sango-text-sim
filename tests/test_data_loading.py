@@ -248,3 +248,61 @@ class TestMapDataLoading:
             assert city_name in json_adjacency
             assert json_adjacency[city_name] == set(neighbors), \
                 f"Adjacency mismatch for {city_name}"
+
+
+class TestLoadScenario:
+    """Test load_scenario function."""
+
+    def test_load_scenario_default(self):
+        """Verify load_scenario loads china_208 by default."""
+        from src.world import load_scenario
+
+        data = load_scenario()
+        assert "metadata" in data
+        assert "cities" in data
+        assert "provinces" in data
+
+    def test_load_scenario_specific(self):
+        """Verify load_scenario can load specific scenario."""
+        from src.world import load_scenario
+
+        data = load_scenario("china_208")
+        assert data["metadata"]["scenario_id"] == "china_208"
+
+    def test_load_scenario_nonexistent(self):
+        """Verify load_scenario raises error for missing file."""
+        from src.world import load_scenario
+        import pytest
+
+        with pytest.raises(FileNotFoundError):
+            load_scenario("nonexistent")
+
+    def test_world_loads_from_json(self):
+        """Verify world.py actually loads data from JSON."""
+        from src.world import CITY_DATA, load_scenario
+
+        # Load JSON directly
+        scenario_data = load_scenario("china_208")
+
+        # Verify CITY_DATA was populated from JSON
+        for city in scenario_data["cities"]:
+            city_id = city["id"]
+            assert city_id in CITY_DATA
+            assert CITY_DATA[city_id]["owner"] == city["owner"]
+            assert CITY_DATA[city_id]["gold"] == city["resources"]["gold"]
+
+    def test_init_world_with_json_data(self):
+        """Verify init_world works with JSON-loaded data."""
+        from src.models import GameState
+        from src.world import init_world
+
+        game_state = GameState()
+        init_world(game_state, player_choice="Wei", seed=42)
+
+        # Verify cities were created
+        assert len(game_state.cities) == 6
+
+        # Verify all expected cities exist
+        expected_cities = ["Xuchang", "Luoyang", "Chengdu", "Hanzhong", "Jianye", "Wuchang"]
+        for city_name in expected_cities:
+            assert city_name in game_state.cities

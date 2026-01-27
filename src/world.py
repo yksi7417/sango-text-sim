@@ -8,7 +8,9 @@ This module contains functions for initializing the game world:
 - Map adjacency configuration
 """
 
+import json
 import random
+from pathlib import Path
 from typing import Optional, Dict
 from .models import Officer, City, Faction, GameState
 from i18n import i18n
@@ -188,6 +190,83 @@ FACTION_RULERS = {
     "Shu": "LiuBei",
     "Wu": "SunQuan"
 }
+
+
+def load_scenario(scenario_name: str = "china_208") -> Dict:
+    """
+    Load scenario data from JSON file.
+
+    Args:
+        scenario_name: Name of the scenario to load (default: "china_208")
+
+    Returns:
+        Dictionary containing scenario data with keys:
+        - metadata: scenario information
+        - provinces: list of province data
+        - cities: list of city data
+
+    Raises:
+        FileNotFoundError: If the scenario file doesn't exist
+        json.JSONDecodeError: If the file is not valid JSON
+    """
+    scenario_path = Path(__file__).parent / "data" / "maps" / f"{scenario_name}.json"
+
+    with open(scenario_path, "r", encoding="utf-8") as f:
+        return json.load(f)
+
+
+def _load_city_data_from_json(scenario_name: str = "china_208") -> tuple:
+    """
+    Load city data and adjacency from JSON scenario file.
+
+    Args:
+        scenario_name: Name of the scenario to load
+
+    Returns:
+        Tuple of (city_data_dict, adjacency_map_dict)
+    """
+    try:
+        scenario_data = load_scenario(scenario_name)
+
+        # Build city data dictionary
+        city_data = {}
+        adjacency_map = {}
+
+        for city in scenario_data["cities"]:
+            city_id = city["id"]
+
+            # Convert JSON structure to legacy CITY_DATA format
+            city_data[city_id] = {
+                "owner": city["owner"],
+                "gold": city["resources"]["gold"],
+                "food": city["resources"]["food"],
+                "troops": city["resources"]["troops"],
+                "defense": city["military"]["defense"],
+                "morale": city["military"]["morale"],
+                "agri": city["development"]["agriculture"],
+                "commerce": city["development"]["commerce"],
+                "tech": city["development"]["technology"],
+                "walls": city["development"]["walls"]
+            }
+
+            # Build adjacency map
+            adjacency_map[city_id] = city["adjacency"]
+
+        return city_data, adjacency_map
+
+    except (FileNotFoundError, json.JSONDecodeError, KeyError):
+        # Fall back to hardcoded data if JSON loading fails
+        return None, None
+
+
+# Try to load from JSON, fall back to hardcoded if it fails
+_json_city_data, _json_adjacency = _load_city_data_from_json()
+
+if _json_city_data is not None:
+    # Use JSON data as primary source
+    CITY_DATA = _json_city_data
+    ADJACENCY_MAP = _json_adjacency
+# else: CITY_DATA and ADJACENCY_MAP already defined above with hardcoded values
 
 
 def add_officer(game_state: GameState, officer: Officer) -> None:
