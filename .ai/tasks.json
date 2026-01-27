@@ -229,7 +229,7 @@
         "i18n for season names and descriptions",
         "Tests for season calculations"
       ],
-      "status": "pending",
+      "status": "passed",
       "estimated_files": [
         "src/models.py",
         "src/constants.py",
