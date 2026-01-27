@@ -215,6 +215,28 @@ def load_scenario(scenario_name: str = "china_208") -> Dict:
         return json.load(f)
 
 
+def load_officers(roster_name: str = "legendary") -> Dict:
+    """
+    Load officer roster data from JSON file.
+
+    Args:
+        roster_name: Name of the officer roster to load (default: "legendary")
+
+    Returns:
+        Dictionary containing officer roster data with keys:
+        - metadata: roster information
+        - officers: list of officer data
+
+    Raises:
+        FileNotFoundError: If the roster file doesn't exist
+        json.JSONDecodeError: If the file is not valid JSON
+    """
+    roster_path = Path(__file__).parent / "data" / "officers" / f"{roster_name}.json"
+
+    with open(roster_path, "r", encoding="utf-8") as f:
+        return json.load(f)
+
+
 def _load_city_data_from_json(scenario_name: str = "china_208") -> tuple:
     """
     Load city data and adjacency from JSON scenario file.
@@ -259,6 +281,41 @@ def _load_city_data_from_json(scenario_name: str = "china_208") -> tuple:
         return None, None
 
 
+def _load_officer_data_from_json(roster_name: str = "legendary") -> Optional[list]:
+    """
+    Load officer data from JSON roster file.
+
+    Args:
+        roster_name: Name of the officer roster to load
+
+    Returns:
+        List of officer data dictionaries, or None if loading fails
+    """
+    try:
+        roster_data = load_officers(roster_name)
+
+        # Convert JSON structure to legacy OFFICER_DATA format
+        officer_list = []
+        for officer in roster_data["officers"]:
+            officer_list.append({
+                "id": officer["id"],
+                "faction": officer["faction"],
+                "leadership": officer["leadership"],
+                "intelligence": officer["intelligence"],
+                "politics": officer["politics"],
+                "charisma": officer["charisma"],
+                "loyalty": officer["loyalty"],
+                "traits": officer["traits"]
+                # Note: city assignment will be done by init_world based on faction
+            })
+
+        return officer_list
+
+    except (FileNotFoundError, json.JSONDecodeError, KeyError):
+        # Fall back to hardcoded data if JSON loading fails
+        return None
+
+
 # Try to load from JSON, fall back to hardcoded if it fails
 _json_city_data, _json_adjacency = _load_city_data_from_json()
 
@@ -267,6 +324,14 @@ if _json_city_data is not None:
     CITY_DATA = _json_city_data
     ADJACENCY_MAP = _json_adjacency
 # else: CITY_DATA and ADJACENCY_MAP already defined above with hardcoded values
+
+# Try to load officers from JSON
+_json_officer_data = _load_officer_data_from_json()
+
+if _json_officer_data is not None:
+    # Use JSON data as primary source
+    OFFICER_DATA = _json_officer_data
+# else: OFFICER_DATA already defined above with hardcoded values
 
 
 def add_officer(game_state: GameState, officer: Officer) -> None:
@@ -349,6 +414,23 @@ def init_world(game_state: GameState, player_choice: Optional[str] = None, seed:
     
     # Add officers
     for officer_data in OFFICER_DATA:
+        # Assign city: use explicit city if provided, otherwise find a capital for their faction
+        if "city" in officer_data:
+            assigned_city = officer_data["city"]
+        else:
+            # Find the capital city for this officer's faction
+            faction_name = officer_data["faction"]
+            faction_cities = factions_map[faction_name].cities
+            # Find capital or use first city
+            assigned_city = None
+            for city_name in faction_cities:
+                if cities[city_name].owner == faction_name:
+                    assigned_city = city_name
+                    break
+            # If no city found (shouldn't happen), use first available city
+            if not assigned_city and faction_cities:
+                assigned_city = faction_cities[0]
+
         officer = Officer(
             name=officer_data["id"],
             faction=officer_data["faction"],
@@ -358,7 +440,7 @@ def init_world(game_state: GameState, player_choice: Optional[str] = None, seed:
             charisma=officer_data["charisma"],
             loyalty=officer_data["loyalty"],
             traits=officer_data["traits"],
-            city=officer_data["city"]
+            city=assigned_city
         )
         add_officer(game_state, officer)
     

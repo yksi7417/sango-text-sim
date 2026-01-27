@@ -86,9 +86,9 @@ class TestInitWorld:
     def test_init_world_creates_officers(self, empty_game_state):
         """World initialization should create all officers."""
         world.init_world(empty_game_state)
-        
-        # Should create 7 officers
-        assert len(empty_game_state.officers) == 7
+
+        # Should create 31 officers (loaded from legendary.json)
+        assert len(empty_game_state.officers) >= 30  # At least 30 from JSON
         assert "LiuBei" in empty_game_state.officers
         assert "GuanYu" in empty_game_state.officers
         assert "ZhangFei" in empty_game_state.officers
@@ -244,7 +244,7 @@ class TestOfficerData:
             assert "charisma" in officer_data
             assert "loyalty" in officer_data
             assert "traits" in officer_data
-            assert "city" in officer_data
+            # Note: "city" is optional - will be assigned by init_world if not present
     
     def test_officer_data_reasonable_stats(self):
         """Officer stats should be in reasonable ranges."""
@@ -286,9 +286,88 @@ class TestAdjacencyMap:
         assert cities_in_data == cities_in_adj
 
 
+class TestLoadOfficers:
+    """Test load_officers function."""
+
+    def test_load_officers_default(self):
+        """Verify load_officers loads legendary roster by default."""
+        data = world.load_officers()
+        assert "metadata" in data
+        assert "officers" in data
+        assert data["metadata"]["roster_id"] == "legendary"
+
+    def test_load_officers_specific(self):
+        """Verify load_officers can load specific roster."""
+        data = world.load_officers("legendary")
+        assert data["metadata"]["roster_id"] == "legendary"
+
+    def test_load_officers_nonexistent(self):
+        """Verify load_officers raises error for missing file."""
+        import pytest
+
+        with pytest.raises(FileNotFoundError):
+            world.load_officers("nonexistent")
+
+    def test_officer_data_loaded_from_json(self):
+        """Verify OFFICER_DATA is populated from JSON."""
+        # Load JSON directly
+        roster_data = world.load_officers("legendary")
+
+        # Verify OFFICER_DATA has officers from JSON
+        officer_ids = {officer["id"] for officer in world.OFFICER_DATA}
+
+        # Should have more than the original 7 hardcoded officers
+        assert len(officer_ids) >= 30, "Should have at least 30 officers from legendary.json"
+
+        # Verify some new officers are present
+        new_officers = ["ZhaoYun", "MaChao", "HuangZhong", "XuChu", "LuSu", "GanNing"]
+        for officer_id in new_officers:
+            assert officer_id in officer_ids, f"Officer {officer_id} should be loaded from JSON"
+
+    def test_officer_data_maintains_backward_compatibility(self):
+        """Verify OFFICER_DATA structure is compatible with existing code."""
+        required_fields = ["id", "faction", "leadership", "intelligence",
+                          "politics", "charisma", "loyalty", "traits"]
+
+        for officer_data in world.OFFICER_DATA:
+            for field in required_fields:
+                assert field in officer_data, \
+                    f"Officer {officer_data.get('id', 'unknown')} missing field {field}"
+
+    def test_init_world_with_json_officers(self, empty_game_state):
+        """Verify init_world works with JSON-loaded officers."""
+        world.init_world(empty_game_state, player_choice="Wei", seed=42)
+
+        # Should have more officers than the original 7
+        assert len(empty_game_state.officers) >= 30, "Should have at least 30 officers"
+
+        # Verify all officers are assigned to valid cities
+        for officer in empty_game_state.officers.values():
+            assert officer.city in empty_game_state.cities, \
+                f"Officer {officer.name} assigned to invalid city {officer.city}"
+
+        # Verify officers are assigned to their faction's cities
+        for officer in empty_game_state.officers.values():
+            city = empty_game_state.cities[officer.city]
+            assert city.owner == officer.faction, \
+                f"Officer {officer.name} ({officer.faction}) assigned to enemy city {city.name} ({city.owner})"
+
+    def test_json_officers_have_valid_stats(self, empty_game_state):
+        """Verify officers loaded from JSON have valid stats."""
+        world.init_world(empty_game_state, player_choice="Wei", seed=42)
+
+        stat_fields = ["leadership", "intelligence", "politics", "charisma", "loyalty"]
+
+        for officer in empty_game_state.officers.values():
+            for stat in stat_fields:
+                value = getattr(officer, stat)
+                assert 0 <= value <= 100, \
+                    f"Officer {officer.name} has invalid {stat}: {value}"
+
+
 class TestWorldIntegration:
     """Integration tests for world setup."""
-    
+
     def test_full_world_setup(self, empty_game_state):
         """Complete world setup should create a playable game state."""
         world.init_world(empty_game_state)
