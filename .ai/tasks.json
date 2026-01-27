@@ -279,7 +279,7 @@
         "Seasonal description shown",
         "Existing tests updated and passing"
       ],
-      "status": "pending",
+      "status": "passed",
       "depends_on": [
         "p1-09"
       ],
