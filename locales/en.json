@@ -273,5 +273,33 @@
     "no_officers": "  (No officers stationed)",
     "adjacent_title": "Adjacent Cities:",
     "no_adjacent": "  (Isolated)"
+  },
+  "officer_view": {
+    "header": "═══ {officer} [{faction}] ═══",
+    "stats_title": "Statistics:",
+    "leadership": "Leadership",
+    "intelligence": "Intelligence",
+    "politics": "Politics",
+    "charisma": "Charisma",
+    "condition_title": "Condition:",
+    "energy": "Energy",
+    "loyalty": "Loyalty",
+    "traits_title": "Traits:",
+    "no_traits": "  (No special traits)",
+    "relationships_title": "Relationships:",
+    "relationships_placeholder": "  (Relationship system coming in Phase 3)",
+    "location": "Location",
+    "status_busy": "Currently working: {task}",
+    "status_idle": "Currently idle",
+    "quote": {
+      "brave": "Victory or death!",
+      "scholar": "Knowledge is the path to victory.",
+      "charismatic": "Together, we shall achieve greatness.",
+      "merchant": "Prosperity brings power.",
+      "loyal": "My loyalty is unwavering.",
+      "ambitious": "The realm shall be mine.",
+      "brilliant": "Strategy wins wars, not strength alone.",
+      "default": "I serve with honor."
+    }
   }
 }

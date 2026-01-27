@@ -274,5 +274,33 @@
     "no_officers": "  （無武將駐守）",
     "adjacent_title": "鄰近城池：",
     "no_adjacent": "  （孤立）"
+  },
+  "officer_view": {
+    "header": "═══ {officer} [{faction}] ═══",
+    "stats_title": "能力：",
+    "leadership": "統率",
+    "intelligence": "智力",
+    "politics": "政治",
+    "charisma": "魅力",
+    "condition_title": "狀態：",
+    "energy": "精力",
+    "loyalty": "忠誠",
+    "traits_title": "特性：",
+    "no_traits": "  （無特殊特性）",
+    "relationships_title": "人際關係：",
+    "relationships_placeholder": "  （人際關係系統將於第三階段推出）",
+    "location": "駐地",
+    "status_busy": "當前任務：{task}",
+    "status_idle": "當前待命",
+    "quote": {
+      "brave": "不成功，便成仁！",
+      "scholar": "知識乃致勝之道。",
+      "charismatic": "眾志成城，共創霸業。",
+      "merchant": "富國強兵，財為根本。",
+      "loyal": "吾之忠誠，至死不渝。",
+      "ambitious": "天下當歸於吾手！",
+      "brilliant": "兵者詭道，謀勝千里。",
+      "default": "盡忠職守，義無反顧。"
+    }
   }
 }

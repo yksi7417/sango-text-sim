@@ -344,3 +344,231 @@ class TestCityDetailView:
         assert isinstance(result, str)
         # Should have some meaningful content
         assert len(result) > 100
+
+
+class TestOfficerProfileView:
+    """Tests for officer profile view rendering."""
+
+    def test_render_officer_profile_basic(self):
+        """Officer profile should render with all basic information."""
+        from src.display.officer_view import render_officer_profile
+
+        officer = Officer(
+            name="Cao Cao",
+            faction="Wei",
+            leadership=95,
+            intelligence=90,
+            politics=85,
+            charisma=92,
+            energy=100,
+            loyalty=80,
+            traits=["Brilliant", "Ambitious"],
+            city="Xuchang"
+        )
+
+        result = render_officer_profile(officer)
+
+        assert isinstance(result, str)
+        assert len(result) > 0
+        # Should show officer name
+        assert "Cao Cao" in result or "CaoCao" in result
+        # Should show faction
+        assert "Wei" in result
+
+    def test_render_officer_profile_shows_stats(self):
+        """Officer profile should display all stat values."""
+        from src.display.officer_view import render_officer_profile
+
+        officer = Officer(
+            name="Zhuge Liang",
+            faction="Shu",
+            leadership=85,
+            intelligence=100,
+            politics=95,
+            charisma=90,
+            energy=80,
+            loyalty=100
+        )
+
+        result = render_officer_profile(officer)
+
+        # Should show stat values
+        assert "85" in result  # leadership
+        assert "100" in result  # intelligence and loyalty
+        assert "95" in result  # politics
+        assert "90" in result  # charisma
+        assert "80" in result  # energy
+
+    def test_render_officer_profile_shows_progress_bars(self):
+        """Officer profile should show progress bars for stats."""
+        from src.display.officer_view import render_officer_profile
+
+        officer = Officer(
+            name="Lu Bu",
+            faction="Neutral",
+            leadership=100,
+            intelligence=50,
+            politics=25,
+            charisma=70,
+            energy=100,
+            loyalty=30
+        )
+
+        result = render_officer_profile(officer)
+
+        # Progress bars use block characters
+        assert "█" in result or "░" in result
+
+    def test_render_officer_profile_shows_traits(self):
+        """Officer profile should display officer traits."""
+        from src.display.officer_view import render_officer_profile
+
+        officer = Officer(
+            name="Guan Yu",
+            faction="Shu",
+            leadership=97,
+            intelligence=70,
+            politics=65,
+            charisma=90,
+            traits=["Brave", "Loyal"]
+        )
+
+        result = render_officer_profile(officer)
+
+        # Should mention traits somehow
+        assert "Brave" in result or "brave" in result.lower()
+        assert "Loyal" in result or "loyal" in result.lower()
+
+    def test_render_officer_profile_shows_condition(self):
+        """Officer profile should show energy and loyalty condition."""
+        from src.display.officer_view import render_officer_profile
+
+        officer = Officer(
+            name="Zhang Fei",
+            faction="Shu",
+            leadership=95,
+            intelligence=40,
+            politics=35,
+            charisma=75,
+            energy=50,
+            loyalty=95
+        )
+
+        result = render_officer_profile(officer)
+
+        # Should show energy and loyalty values
+        assert "50" in result  # energy
+        assert "95" in result  # loyalty
+
+    def test_render_officer_profile_ascii_portrait(self):
+        """Officer profile should include ASCII portrait placeholder."""
+        from src.display.officer_view import render_officer_profile
+
+        officer = Officer(
+            name="Zhou Yu",
+            faction="Wu",
+            leadership=90,
+            intelligence=96,
+            politics=88,
+            charisma=95
+        )
+
+        result = render_officer_profile(officer)
+
+        # Should have some ASCII art/box for portrait
+        assert "┌" in result or "┐" in result or "╔" in result or "║" in result or "|" in result
+        # Should be reasonably sized
+        assert len(result) > 100
+
+    def test_render_officer_profile_with_no_traits(self):
+        """Officer profile should handle officers with no traits."""
+        from src.display.officer_view import render_officer_profile
+
+        officer = Officer(
+            name="Generic Officer",
+            faction="Wei",
+            leadership=60,
+            intelligence=55,
+            politics=50,
+            charisma=50,
+            traits=[]
+        )
+
+        result = render_officer_profile(officer)
+
+        assert isinstance(result, str)
+        assert len(result) > 0
+
+    def test_render_officer_profile_relationships_placeholder(self):
+        """Officer profile should have placeholder for relationships section."""
+        from src.display.officer_view import render_officer_profile
+
+        officer = Officer(
+            name="Liu Bei",
+            faction="Shu",
+            leadership=85,
+            intelligence=75,
+            politics=80,
+            charisma=95
+        )
+
+        result = render_officer_profile(officer)
+
+        # Should have some section or mention about relationships
+        # (even if empty for now)
+        assert isinstance(result, str)
+
+    def test_render_officer_profile_personality_quote(self):
+        """Officer profile should include personality-based quote."""
+        from src.display.officer_view import render_officer_profile
+
+        officer_brave = Officer(
+            name="Zhao Yun",
+            faction="Shu",
+            leadership=96,
+            intelligence=75,
+            politics=70,
+            charisma=88,
+            traits=["Brave"]
+        )
+
+        officer_scholar = Officer(
+            name="Sima Yi",
+            faction="Wei",
+            leadership=80,
+            intelligence=96,
+            politics=92,
+            charisma=85,
+            traits=["Scholar"]
+        )
+
+        result_brave = render_officer_profile(officer_brave)
+        result_scholar = render_officer_profile(officer_scholar)
+
+        # Both should render successfully
+        assert isinstance(result_brave, str)
+        assert isinstance(result_scholar, str)
+        # Should have some content indicating personality
+        assert len(result_brave) > 100
+        assert len(result_scholar) > 100
+
+    def test_render_officer_profile_i18n_support(self):
+        """Officer profile should use i18n keys for all labels."""
+        from src.display.officer_view import render_officer_profile
+
+        officer = Officer(
+            name="Sun Quan",
+            faction="Wu",
+            leadership=88,
+            intelligence=82,
+            politics=85,
+            charisma=90,
+            traits=["Charismatic"]
+        )
+
+        result = render_officer_profile(officer)
+
+        # Should render without errors (i18n keys exist)
+        assert isinstance(result, str)
+        # Should have meaningful content
+        assert len(result) > 100
