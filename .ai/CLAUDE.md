@@ -1,90 +1,170 @@
-# Claude Code Instructions
+# Claude Code Autonomous Instructions
 
-> This file provides instructions for Claude Code when operating in autonomous loop mode (Ralph methodology).
+> Instructions for Claude Code when operating in autonomous loop mode.
 
-## Identity & Context
+## Project: Sango Text Sim
 
-You are working on **sango-text-sim**, a bilingual (English/Chinese) text-based Three Kingdoms strategy game built with Python/Flask.
+Bilingual (English/Chinese) text-based Three Kingdoms strategy game.
+
+**Vision**: Transform into an addictive ROTK-like experience through ASCII maps, narrative battles, officer conversations, and strategic depth. See `.ai/VISION.md` for full details.
 
 ## Operational Mode
 
 You are running in **autonomous loop mode**. Each iteration:
-1. Read `tasks.json` to find the highest-priority incomplete task
-2. Implement the task following all quality standards
-3. Run tests to verify
-4. Commit changes with descriptive message
-5. Update `tasks.json` and `progress.txt`
-6. Output `<promise>COMPLETE</promise>` when ALL tasks pass
+
+1. Read `tasks.json` to find the highest-priority pending task (lowest priority number)
+2. Check `depends_on` - skip if dependencies not yet passed
+3. Implement the task following all quality standards
+4. Run tests to verify: `python -m pytest --no-cov -v`
+5. If tests pass: commit changes, update task status to "passed"
+6. Log learnings to `progress.txt`
+7. If ALL tasks have `"status": "passed"`, output: `<promise>COMPLETE</promise>`
 
 ## Critical Rules
 
-### Testing (Non-Negotiable)
-- **ALL 200+ tests MUST pass** before any commit
-- Run: `python -m pytest --no-cov -v`
-- Maintain 96%+ code coverage
-- Write tests FIRST (TDD approach)
+### Testing (MANDATORY)
+```bash
+# ALL 201+ tests MUST pass before any commit
+python -m pytest --no-cov -v
 
-### Internationalization (Non-Negotiable)
-- NEVER hardcode display text
+# Maintain 96%+ coverage
+python -m pytest --cov=src --cov-report=term-missing
+```
+
+### Internationalization (MANDATORY)
+- NEVER hardcode display text in Python code
 - Update BOTH `locales/en.json` AND `locales/zh.json`
-- Test both language modes
+- Use `i18n.t("key.subkey", param=value)` pattern
 
 ### Code Quality
-- Follow PEP 8
+- Follow PEP 8 style guide
 - Use type hints where appropriate
-- No lint errors
+- Write tests FIRST (TDD approach)
 - Keep changes minimal and focused
 
-## Task Sizing Guidelines
+## Task Structure
 
-Each task should be completable in ONE context window. Good examples:
-- "Add validation for officer energy before assignment"
-- "Create test for battle resolution edge case"
-- "Add Chinese translation for new menu option"
+Tasks in `tasks.json`:
+```json
+{
+  "id": "p1-01",          // Phase 1, Task 1
+  "phase": 1,             // Development phase
+  "priority": 1,          // Lower = higher priority
+  "title": "Short title",
+  "description": "What to build",
+  "acceptance_criteria": ["List", "of", "requirements"],
+  "depends_on": ["p1-00"], // Must complete first
+  "status": "pending"     // pending | in_progress | passed | blocked
+}
+```
 
-Bad examples (too large):
-- "Refactor entire combat system"
-- "Add multiplayer support"
+## Per-Iteration Workflow
+
+### 1. Select Task
+```
+Read tasks.json
+Find lowest priority number with status="pending"
+Check depends_on - all must be "passed"
+Update status to "in_progress"
+```
+
+### 2. Implement
+```
+Read relevant source files
+Write tests first (tests/test_*.py)
+Implement minimal solution
+Update both locale files if UI text added
+```
+
+### 3. Verify
+```bash
+python -m pytest --no-cov -v
+# Must see: "X passed in Ys"
+# Zero failures allowed
+```
+
+### 4. Complete
+```bash
+# Stage and commit
+git add <specific files>
+git commit -m "feat: <description>
+
+Implements task <id>
+- <change 1>
+- <change 2>
+
+Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>"
+```
+
+### 5. Update Status
+In `tasks.json`, change task status to "passed"
+
+### 6. Log Progress
+Append to `progress.txt`:
+```
+[TIMESTAMP] [ITER-N] [PASS] Completed <task-id>: <brief summary>
+```
 
 ## File Organization
 
 ```
-src/           - Core game logic (models, engine, utils)
-tests/         - Test files (must mirror src/ structure)
-templates/     - Web interface templates
-locales/       - Translation files (en.json, zh.json)
-doc/           - Documentation
-.ai/           - AI automation files (you are here)
+src/                 - Core game logic
+  models.py          - Data classes (Officer, City, Faction, GameState)
+  engine.py          - Game mechanics (end_turn, attack, etc.)
+  constants.py       - Game balance numbers
+  utils.py           - Helper functions
+  world.py           - Initial game data
+  persistence.py     - Save/load
+
+tests/               - Test suite (mirrors src/)
+  test_*.py          - One test file per module
+
+locales/             - Translations
+  en.json            - English strings
+  zh.json            - Chinese strings
+
+templates/           - Web interface
+  game.html          - Main template
+
+.ai/                 - Automation config
+  tasks.json         - Task tracking
+  progress.txt       - Iteration log
+  VISION.md          - Feature roadmap
+  QUICKSTART.md      - Usage guide
 ```
 
-## Before Each Commit
+## New Module Pattern
 
-- [ ] All tests pass (200+)
-- [ ] Coverage maintained (96%+)
-- [ ] Both language files updated if UI text changed
-- [ ] No lint errors
-- [ ] Changes are minimal and focused
+When creating a new module (e.g., `src/map_renderer.py`):
 
-## Memory Architecture
+1. Create test file first: `tests/test_map_renderer.py`
+2. Write failing tests
+3. Create source file: `src/map_renderer.py`
+4. Make tests pass
+5. Add i18n keys to both locale files
+6. Verify coverage: `python -m pytest --cov=src/map_renderer`
 
-Fresh context each iteration. Persistence through:
-- **Git history** - All committed changes
-- **progress.txt** - Learnings and gotchas discovered
-- **tasks.json** - Task status tracking
+## Common Gotchas
+
+- **game_started flag**: Check `game_state.game_started` before operations
+- **Locale keys**: Must exist in BOTH en.json and zh.json
+- **Type hints**: Use `Optional[T]` for nullable parameters
+- **Test isolation**: Each test should work independently
 
 ## Token Optimization
 
-- Use `haiku` model for simple tasks (formatting, simple tests)
-- Use `sonnet` model for standard development
+- Use `haiku` for simple tasks (formatting, small fixes)
+- Use `sonnet` for standard development
 - Reserve `opus` for complex architectural decisions
-- Prefer targeted file reads over full codebase scans
-- Use grep/glob for specific searches, not exploration
+- Read only necessary files, not entire codebase
+- Use grep/glob for targeted searches
 
 ## Stop Condition
 
-Output exactly: `<promise>COMPLETE</promise>`
+When ALL tasks in tasks.json have `"status": "passed"`:
 
-This signals the loop to stop when:
-- All tasks in `tasks.json` have `"status": "passed"`
-- All tests pass
-- No pending work remains
+```
+<promise>COMPLETE</promise>
+```
+
+This signals the loop to stop.

@@ -2,10 +2,940 @@
   "metadata": {
     "project": "sango-text-sim",
     "created": "2026-01-26",
-    "version": "1.0.0",
-    "updated": "2026-01-26T20:40:00Z"
+    "version": "3.0.0",
+    "updated": "2026-01-26T22:00:00Z",
+    "vision": "ROTK11-inspired text strategy with extensible 40+ city support",
+    "current_phase": 1
   },
-  "tasks": [],
+  "phases": {
+    "1": {
+      "name": "Extensible Foundation & Visual Enhancement",
+      "goal": "Data-driven architecture and ASCII visualization",
+      "status": "in_progress",
+      "tasks": 12
+    },
+    "2": {
+      "name": "Interactive Combat Systems",
+      "goal": "Duels, tactical battles, and dramatic combat",
+      "status": "pending",
+      "tasks": 10
+    },
+    "3": {
+      "name": "Deep Strategy Layer",
+      "goal": "Council system, relationships, events",
+      "status": "pending",
+      "tasks": 10
+    },
+    "4": {
+      "name": "Narrative & Polish",
+      "goal": "Historical events, achievements, turn preview",
+      "status": "pending",
+      "tasks": 8
+    },
+    "5": {
+      "name": "Full Game Scale",
+      "goal": "40+ cities, naval, alliances, scenarios",
+      "status": "pending",
+      "tasks": 8
+    }
+  },
+  "tasks": [
+    {
+      "id": "p1-01",
+      "phase": 1,
+      "priority": 1,
+      "title": "Create Data-Driven Map/City JSON Schema",
+      "description": "Create src/data/ directory structure with JSON schemas for maps, cities, and adjacency. Design for extensibility - should easily support 6 cities (current) or 40+ cities (full game). Include terrain types, coordinates, province groupings.",
+      "acceptance_criteria": [
+        "Create src/data/ directory",
+        "Create src/data/maps/china_208.json with current 6 cities",
+        "Include city coordinates for map rendering",
+        "Include terrain type per city (plains, mountain, coastal)",
+        "Include province groupings",
+        "Document JSON schema in src/data/README.md",
+        "Tests verify JSON loads correctly"
+      ],
+      "status": "pending",
+      "estimated_files": ["src/data/maps/china_208.json", "src/data/README.md", "tests/test_data_loading.py"]
+    },
+    {
+      "id": "p1-02",
+      "phase": 1,
+      "priority": 2,
+      "title": "Refactor world.py to Load from JSON",
+      "description": "Modify world.py to load city/map data from JSON files instead of hardcoded CITY_DATA dict. Maintain backward compatibility. Add function to load different scenarios.",
+      "acceptance_criteria": [
+        "world.py loads city data from JSON",
+        "CITY_DATA and ADJACENCY_MAP derived from JSON",
+        "load_scenario(scenario_name) function added",
+        "Existing init_world() still works",
+        "All 201+ tests still pass",
+        "Easy to add new scenarios/maps"
+      ],
+      "status": "pending",
+      "depends_on": ["p1-01"],
+      "estimated_files": ["src/world.py", "tests/test_world.py"]
+    },
+    {
+      "id": "p1-03",
+      "phase": 1,
+      "priority": 3,
+      "title": "Create ASCII Map Renderer Module",
+      "description": "Create src/display/map_view.py that generates ASCII strategic map from JSON data. Use Unicode box drawing. Support variable number of cities. Show faction colors, capitals, connections.",
+      "acceptance_criteria": [
+        "New src/display/ directory created",
+        "map_view.py with render_strategic_map(game_state) function",
+        "Cities show faction ownership with color codes",
+        "Connections between adjacent cities shown",
+        "Capital cities marked with special symbol (★)",
+        "Map scales based on city count",
+        "Tests in tests/test_display.py",
+        "Works with both 6-city and planned 40-city maps"
+      ],
+      "status": "pending",
+      "depends_on": ["p1-02"],
+      "estimated_files": ["src/display/__init__.py", "src/display/map_view.py", "tests/test_display.py"]
+    },
+    {
+      "id": "p1-04",
+      "phase": 1,
+      "priority": 4,
+      "title": "Create City Detail View Renderer",
+      "description": "Create src/display/city_view.py that renders detailed city view with ASCII art, progress bars for development levels, stationed officers list, and resources.",
+      "acceptance_criteria": [
+        "city_view.py with render_city_detail(city, officers) function",
+        "Shows resources (gold, food, troops)",
+        "Progress bars for agriculture, commerce, tech, walls (████░░)",
+        "Lists stationed officers with their current tasks",
+        "Shows adjacent cities",
+        "ASCII city icon based on walls level",
+        "i18n support for all labels"
+      ],
+      "status": "pending",
+      "depends_on": ["p1-03"],
+      "estimated_files": ["src/display/city_view.py", "tests/test_display.py", "locales/en.json", "locales/zh.json"]
+    },
+    {
+      "id": "p1-05",
+      "phase": 1,
+      "priority": 5,
+      "title": "Create Officer Profile View with ASCII Portrait",
+      "description": "Create src/display/officer_view.py that renders officer profile with ASCII portrait placeholder, stat bars, traits, and relationships section (placeholder for now).",
+      "acceptance_criteria": [
+        "officer_view.py with render_officer_profile(officer) function",
+        "ASCII portrait box (placeholder character based on first name char)",
+        "Progress bars for all stats (leadership, intelligence, etc.)",
+        "Traits displayed with descriptions",
+        "Condition section (energy, loyalty)",
+        "Relationships section (empty placeholder for Phase 3)",
+        "Officer quote based on personality",
+        "i18n support"
+      ],
+      "status": "pending",
+      "depends_on": ["p1-03"],
+      "estimated_files": ["src/display/officer_view.py", "tests/test_display.py", "locales/en.json", "locales/zh.json"]
+    },
+    {
+      "id": "p1-06",
+      "phase": 1,
+      "priority": 6,
+      "title": "Create UI Components Library",
+      "description": "Create src/display/components.py with reusable ASCII UI components: progress bars, boxes, tables, separators, faction color codes.",
+      "acceptance_criteria": [
+        "render_progress_bar(value, max, width) function",
+        "render_box(content, title, width) function",
+        "render_table(headers, rows) function",
+        "FACTION_COLORS dict with ANSI codes",
+        "render_separator(width, style) function",
+        "All components tested",
+        "Used by map_view, city_view, officer_view"
+      ],
+      "status": "pending",
+      "estimated_files": ["src/display/components.py", "tests/test_display.py"]
+    },
+    {
+      "id": "p1-07",
+      "phase": 1,
+      "priority": 7,
+      "title": "Integrate Map Display into Game",
+      "description": "Add map display to CLI (game.py) and web interface. Show at turn start, add 'map' command. Update templates.",
+      "acceptance_criteria": [
+        "'map' command shows strategic map in CLI",
+        "Map shown at start of each turn",
+        "Web interface has map section",
+        "Status bar shows faction summary",
+        "i18n keys for map legend",
+        "All existing tests pass"
+      ],
+      "status": "pending",
+      "depends_on": ["p1-03", "p1-06"],
+      "estimated_files": ["game.py", "web_server.py", "templates/game.html", "locales/en.json", "locales/zh.json"]
+    },
+    {
+      "id": "p1-08",
+      "phase": 1,
+      "priority": 8,
+      "title": "Add Seasonal System to Models",
+      "description": "Add Season enum and effects to models/constants. Seasons based on month: Spring (3-5), Summer (6-8), Autumn (9-11), Winter (12-2). Each has gameplay effects.",
+      "acceptance_criteria": [
+        "Season enum (Spring, Summer, Autumn, Winter)",
+        "get_current_season(month) function",
+        "Seasonal effects in constants.py",
+        "Spring: +20% farming, rain possible",
+        "Summer: normal, drought possible",
+        "Autumn: harvest bonus, clear weather",
+        "Winter: -30% movement, attrition",
+        "i18n for season names and descriptions",
+        "Tests for season calculations"
+      ],
+      "status": "pending",
+      "estimated_files": ["src/models.py", "src/constants.py", "tests/test_models.py", "locales/en.json", "locales/zh.json"]
+    },
+    {
+      "id": "p1-09",
+      "phase": 1,
+      "priority": 9,
+      "title": "Create Turn Report Generator",
+      "description": "Create src/display/reports.py that generates narrative turn summaries with seasonal flavor text, categorized events (Economy, Military, Diplomatic, Officer).",
+      "acceptance_criteria": [
+        "reports.py with generate_turn_report(events, season) function",
+        "Events categorized and formatted narratively",
+        "Seasonal flavor text ('Cherry blossoms fall...')",
+        "Economy: income, expenses, development",
+        "Military: battles, movements, training",
+        "Officer: assignments, loyalty changes, defections",
+        "i18n for all narrative text",
+        "Tests verify report generation"
+      ],
+      "status": "pending",
+      "depends_on": ["p1-08"],
+      "estimated_files": ["src/display/reports.py", "tests/test_display.py", "locales/en.json", "locales/zh.json"]
+    },
+    {
+      "id": "p1-10",
+      "phase": 1,
+      "priority": 10,
+      "title": "Integrate Turn Reports into Game Loop",
+      "description": "Modify engine.py end_turn() to collect and return events. Display turn report in CLI and web after each turn ends.",
+      "acceptance_criteria": [
+        "end_turn() returns list of TurnEvent objects",
+        "TurnEvent dataclass with category, message, data",
+        "CLI displays formatted turn report",
+        "Web displays report in dedicated section",
+        "Seasonal description shown",
+        "Existing tests updated and passing"
+      ],
+      "status": "pending",
+      "depends_on": ["p1-09"],
+      "estimated_files": ["src/engine.py", "src/models.py", "game.py", "web_server.py"]
+    },
+    {
+      "id": "p1-11",
+      "phase": 1,
+      "priority": 11,
+      "title": "Create Officer JSON Data Files",
+      "description": "Create src/data/officers/legendary.json with expanded officer roster (30+ officers). Include stats, traits, relationships, quotes, special abilities.",
+      "acceptance_criteria": [
+        "legendary.json with 30+ officers",
+        "All three kingdoms represented (Wei, Shu, Wu)",
+        "Include: Zhao Yun, Ma Chao, Huang Zhong, Wei Yan, Xu Chu, Xiahou Dun, Xiahou Yuan, Zhang He, Lu Su, Lu Meng, Gan Ning, Taishi Ci, etc.",
+        "Each officer has unique quote",
+        "Relationships defined (sworn brothers, rivals)",
+        "Special ability placeholders",
+        "i18n names in locales"
+      ],
+      "status": "pending",
+      "depends_on": ["p1-01"],
+      "estimated_files": ["src/data/officers/legendary.json", "locales/en.json", "locales/zh.json"]
+    },
+    {
+      "id": "p1-12",
+      "phase": 1,
+      "priority": 12,
+      "title": "Load Officers from JSON Data",
+      "description": "Update world.py to load officers from JSON. Support loading subset of officers based on scenario. Maintain backward compatibility.",
+      "acceptance_criteria": [
+        "Officers loaded from legendary.json",
+        "Scenario can specify which officers to include",
+        "Random officer generator uses templates",
+        "Existing OFFICER_DATA still works as fallback",
+        "All tests pass"
+      ],
+      "status": "pending",
+      "depends_on": ["p1-11", "p1-02"],
+      "estimated_files": ["src/world.py", "tests/test_world.py"]
+    },
+    {
+      "id": "p2-01",
+      "phase": 2,
+      "priority": 13,
+      "title": "Create Duel System Core Mechanics",
+      "description": "Create src/systems/duel.py with duel mini-game mechanics. Officers have HP, can choose actions (Attack, Defend, Special). WAR stat affects damage and hit rate.",
+      "acceptance_criteria": [
+        "Duel dataclass with attacker, defender, HP, round",
+        "DuelAction enum (Attack, Defend, Special)",
+        "process_duel_round(duel, attacker_action, defender_action)",
+        "Damage based on WAR stat differential",
+        "Attack: standard damage, may trade blows",
+        "Defend: reduce incoming damage 50%",
+        "Special: high damage, lower hit rate",
+        "Duel ends when HP <= 0",
+        "Tests for all action combinations"
+      ],
+      "status": "pending",
+      "estimated_files": ["src/systems/__init__.py", "src/systems/duel.py", "tests/test_duel.py"]
+    },
+    {
+      "id": "p2-02",
+      "phase": 2,
+      "priority": 14,
+      "title": "Create Duel Display Renderer",
+      "description": "Create src/display/duel_view.py that renders duel state with HP bars, round info, combat log, and action choices.",
+      "acceptance_criteria": [
+        "render_duel_state(duel) function",
+        "Shows both combatants with HP bars",
+        "Combat log showing recent actions",
+        "Action menu with descriptions",
+        "Special ability shows cost/effect",
+        "Victory/defeat screen",
+        "i18n support"
+      ],
+      "status": "pending",
+      "depends_on": ["p2-01", "p1-06"],
+      "estimated_files": ["src/display/duel_view.py", "tests/test_display.py", "locales/en.json", "locales/zh.json"]
+    },
+    {
+      "id": "p2-03",
+      "phase": 2,
+      "priority": 15,
+      "title": "Integrate Duel into Game Flow",
+      "description": "Add 'duel' command/option during battles. Winning duel damages enemy morale. Losing kills/captures your officer. Add to CLI and web.",
+      "acceptance_criteria": [
+        "'challenge' command to initiate duel",
+        "Duel can be offered during battle",
+        "Victory: enemy morale -20, possible capture",
+        "Defeat: officer captured/killed",
+        "CLI presents duel interactively",
+        "Web shows duel UI with buttons",
+        "Enemy AI decides whether to accept"
+      ],
+      "status": "pending",
+      "depends_on": ["p2-02"],
+      "estimated_files": ["src/engine.py", "game.py", "web_server.py", "templates/game.html"]
+    },
+    {
+      "id": "p2-04",
+      "phase": 2,
+      "priority": 16,
+      "title": "Add Terrain Types to Map Data",
+      "description": "Extend map JSON with terrain types. Each city has terrain that affects combat. Types: Plains, Mountain, Forest, Coastal, River Crossing.",
+      "acceptance_criteria": [
+        "TerrainType enum added",
+        "Each city has terrain field in JSON",
+        "Terrain effects in constants.py",
+        "Plains: normal combat",
+        "Mountain: +30% defense, -20% cavalry",
+        "Forest: +20% ambush, fire attack bonus",
+        "Coastal: naval required for attack",
+        "River: crossing penalty",
+        "Tests for terrain loading"
+      ],
+      "status": "pending",
+      "depends_on": ["p1-01"],
+      "estimated_files": ["src/models.py", "src/constants.py", "src/data/maps/china_208.json", "tests/test_models.py"]
+    },
+    {
+      "id": "p2-05",
+      "phase": 2,
+      "priority": 17,
+      "title": "Create Tactical Battle Map Renderer",
+      "description": "Create src/display/battle_view.py that renders tactical battle map showing terrain, unit positions, siege progress, weather.",
+      "acceptance_criteria": [
+        "render_battle_map(battle_state) function",
+        "Shows city being attacked",
+        "Terrain zones (Mountain/Plains/Forest)",
+        "Unit boxes with commander, troop count, type",
+        "Clash indicators for engaged units",
+        "Supply days shown",
+        "Weather indicator",
+        "i18n support"
+      ],
+      "status": "pending",
+      "depends_on": ["p2-04", "p1-06"],
+      "estimated_files": ["src/display/battle_view.py", "tests/test_display.py", "locales/en.json", "locales/zh.json"]
+    },
+    {
+      "id": "p2-06",
+      "phase": 2,
+      "priority": 18,
+      "title": "Create Tactical Battle System",
+      "description": "Create src/systems/battle.py with tactical battle mechanics. Battles have multiple turns, positioning, terrain effects. Replace simple attack() with tactical system.",
+      "acceptance_criteria": [
+        "BattleState dataclass tracking multi-turn battle",
+        "Units can be positioned in different terrain zones",
+        "Battle actions: Attack, Defend, Flank, Fire Attack, Retreat",
+        "Terrain modifies effectiveness",
+        "Weather affects certain tactics",
+        "Battle resolves over multiple turns",
+        "Siege mechanics for walled cities",
+        "Tests for all battle scenarios"
+      ],
+      "status": "pending",
+      "depends_on": ["p2-04"],
+      "estimated_files": ["src/systems/battle.py", "tests/test_battle.py"]
+    },
+    {
+      "id": "p2-07",
+      "phase": 2,
+      "priority": 19,
+      "title": "Create Battle Narrative Generator",
+      "description": "Create src/display/battle_narrator.py that generates dramatic prose describing battle events. Mentions commanders by name, describes terrain, weather.",
+      "acceptance_criteria": [
+        "narrate_battle_event(event) function",
+        "Multiple narrative templates per event type",
+        "Commander names used in narrative",
+        "Terrain mentioned ('on the mountain slopes')",
+        "Weather mentioned ('through the rain')",
+        "Special abilities get dramatic description",
+        "i18n for all narrative templates"
+      ],
+      "status": "pending",
+      "depends_on": ["p2-06"],
+      "estimated_files": ["src/display/battle_narrator.py", "tests/test_display.py", "locales/en.json", "locales/zh.json"]
+    },
+    {
+      "id": "p2-08",
+      "phase": 2,
+      "priority": 20,
+      "title": "Integrate Tactical Battles into Game",
+      "description": "Replace simple attack command with tactical battle system. CLI presents battle choices, web shows battle UI.",
+      "acceptance_criteria": [
+        "'attack' initiates tactical battle",
+        "Player chooses tactics each battle turn",
+        "Battle map displayed before decisions",
+        "Battle narrative shown after resolution",
+        "Battle can span multiple game interactions",
+        "Save/load preserves battle state",
+        "AI makes tactical decisions"
+      ],
+      "status": "pending",
+      "depends_on": ["p2-06", "p2-05", "p2-07"],
+      "estimated_files": ["src/engine.py", "game.py", "web_server.py", "templates/game.html"]
+    },
+    {
+      "id": "p2-09",
+      "phase": 2,
+      "priority": 21,
+      "title": "Add Weather System",
+      "description": "Add weather mechanics that affect battles and movement. Weather changes seasonally and randomly. Types: Clear, Rain, Snow, Fog, Drought.",
+      "acceptance_criteria": [
+        "WeatherType enum",
+        "Weather generated based on season",
+        "Weather persists for 1-3 turns",
+        "Clear: normal",
+        "Rain: -20% fire attack, -10% movement",
+        "Snow: -30% movement, attrition",
+        "Fog: +30% ambush, -20% archer",
+        "Drought: +50% fire attack",
+        "Weather shown in status"
+      ],
+      "status": "pending",
+      "depends_on": ["p1-08"],
+      "estimated_files": ["src/models.py", "src/constants.py", "src/engine.py", "tests/test_engine.py"]
+    },
+    {
+      "id": "p2-10",
+      "phase": 2,
+      "priority": 22,
+      "title": "Add Unit Types Model",
+      "description": "Extend City model to track different unit types: Infantry, Cavalry, Archers. Each has strengths/weaknesses. Rock-paper-scissors combat.",
+      "acceptance_criteria": [
+        "UnitType enum (Infantry, Cavalry, Archer)",
+        "City.troops becomes Dict[UnitType, int]",
+        "Unit stats in constants.py",
+        "Cavalry beats Archers (+20%)",
+        "Archers beat Infantry (+20%)",
+        "Infantry beats Cavalry (+20%)",
+        "Training specifies unit type",
+        "Backward compatible migration",
+        "Tests for unit type mechanics"
+      ],
+      "status": "pending",
+      "estimated_files": ["src/models.py", "src/constants.py", "src/engine.py", "tests/test_models.py", "tests/test_engine.py"]
+    },
+    {
+      "id": "p3-01",
+      "phase": 3,
+      "priority": 23,
+      "title": "Create Council System Foundation",
+      "description": "Create src/systems/council.py with morning council mechanics. Advisors present agenda items based on game state (threats, opportunities, personnel).",
+      "acceptance_criteria": [
+        "Council dataclass with agenda items",
+        "AgendaItem with category, presenter, recommendation",
+        "generate_council_agenda(game_state) function",
+        "Categories: Economic, Military, Diplomatic, Personnel",
+        "Advisors chosen by highest relevant stat",
+        "At least 4 agenda types",
+        "Tests for agenda generation"
+      ],
+      "status": "pending",
+      "estimated_files": ["src/systems/council.py", "tests/test_council.py"]
+    },
+    {
+      "id": "p3-02",
+      "phase": 3,
+      "priority": 24,
+      "title": "Create Council Display Renderer",
+      "description": "Create src/display/council_view.py that renders council meeting with agenda items, advisor portraits, and recommendation details.",
+      "acceptance_criteria": [
+        "render_council(council) function",
+        "Shows agenda items with presenters",
+        "Each item has discussion/recommendation",
+        "Action choices for each item",
+        "Adjourn option to end turn",
+        "i18n for all council text"
+      ],
+      "status": "pending",
+      "depends_on": ["p3-01", "p1-06"],
+      "estimated_files": ["src/display/council_view.py", "tests/test_display.py", "locales/en.json", "locales/zh.json"]
+    },
+    {
+      "id": "p3-03",
+      "phase": 3,
+      "priority": 25,
+      "title": "Integrate Council into Game Flow",
+      "description": "Add 'council' command that shows advisor meeting. Can be called at turn start. Decisions affect game state.",
+      "acceptance_criteria": [
+        "'council' command shows meeting",
+        "Can discuss each agenda item",
+        "Decisions have gameplay effects",
+        "Adjourning ends turn",
+        "Web has council UI",
+        "Council optional, not required"
+      ],
+      "status": "pending",
+      "depends_on": ["p3-02"],
+      "estimated_files": ["src/engine.py", "game.py", "web_server.py", "templates/game.html"]
+    },
+    {
+      "id": "p3-04",
+      "phase": 3,
+      "priority": 26,
+      "title": "Add Officer Relationship System",
+      "description": "Add relationships to Officer model. Types: SwornBrother, Rival, Lord, Spouse, Mentor. Relationships affect loyalty and combat.",
+      "acceptance_criteria": [
+        "RelationshipType enum",
+        "Officer.relationships dict added",
+        "Relationships defined in officer JSON",
+        "SwornBrother: +30 loyalty when together",
+        "Rival: +15% damage against each other",
+        "Lord: +20 loyalty to ruler",
+        "get_relationship_bonus() function",
+        "Tests for relationship effects"
+      ],
+      "status": "pending",
+      "depends_on": ["p1-11"],
+      "estimated_files": ["src/models.py", "src/data/officers/legendary.json", "tests/test_models.py"]
+    },
+    {
+      "id": "p3-05",
+      "phase": 3,
+      "priority": 27,
+      "title": "Display Relationships in Officer Profile",
+      "description": "Update officer_view.py to show relationships with affinity hearts. Integrate relationship bonuses into combat and loyalty.",
+      "acceptance_criteria": [
+        "Relationships shown in officer profile",
+        "Affinity shown with hearts (♥️♥️♥️)",
+        "Relationship type labeled",
+        "Bonus description shown",
+        "Combat applies relationship bonuses",
+        "Loyalty calculation uses relationships"
+      ],
+      "status": "pending",
+      "depends_on": ["p3-04", "p1-05"],
+      "estimated_files": ["src/display/officer_view.py", "src/engine.py", "tests/test_engine.py"]
+    },
+    {
+      "id": "p3-06",
+      "phase": 3,
+      "priority": 28,
+      "title": "Create Random Event System",
+      "description": "Create src/systems/events.py with random event mechanics. Events have triggers, effects, and player choices. Load events from JSON.",
+      "acceptance_criteria": [
+        "Event dataclass with trigger, effects, choices",
+        "src/data/events/random.json with 15+ events",
+        "check_event_triggers(game_state) function",
+        "Events have probability and conditions",
+        "Player choices affect outcome",
+        "Events can be positive, negative, or neutral",
+        "Tests for event triggering"
+      ],
+      "status": "pending",
+      "estimated_files": ["src/systems/events.py", "src/data/events/random.json", "tests/test_events.py"]
+    },
+    {
+      "id": "p3-07",
+      "phase": 3,
+      "priority": 29,
+      "title": "Create Event Display and Integration",
+      "description": "Create event UI and integrate into game loop. Events shown with narrative, choices, and outcomes.",
+      "acceptance_criteria": [
+        "render_event(event) function",
+        "Event shown with narrative box",
+        "Choices displayed with consequences",
+        "Outcome shown after choice",
+        "Events check during end_turn",
+        "CLI and web both support events"
+      ],
+      "status": "pending",
+      "depends_on": ["p3-06"],
+      "estimated_files": ["src/display/event_view.py", "src/engine.py", "game.py", "web_server.py"]
+    },
+    {
+      "id": "p3-08",
+      "phase": 3,
+      "priority": 30,
+      "title": "Add Technology Tree Structure",
+      "description": "Create technology tree in models/data. Technologies have prerequisites, costs, and effects. Categories: Military, Economy, Special.",
+      "acceptance_criteria": [
+        "Technology dataclass",
+        "src/data/technologies.json with 20+ techs",
+        "Tech tree with prerequisites",
+        "Military: improved units, tactics",
+        "Economy: production bonuses",
+        "Special: unique abilities unlocked",
+        "Faction.technologies list added",
+        "Tests for tech structure"
+      ],
+      "status": "pending",
+      "estimated_files": ["src/models.py", "src/data/technologies.json", "tests/test_models.py"]
+    },
+    {
+      "id": "p3-09",
+      "phase": 3,
+      "priority": 31,
+      "title": "Implement Technology Research",
+      "description": "Add research command and mechanics. Officers research techs over multiple turns. Tech unlocks apply bonuses.",
+      "acceptance_criteria": [
+        "'research [tech] at [city]' command",
+        "Research progress per turn based on INT",
+        "Prerequisites checked",
+        "Tech unlocks shown in status",
+        "Bonuses applied to gameplay",
+        "'tech' command shows tech tree"
+      ],
+      "status": "pending",
+      "depends_on": ["p3-08"],
+      "estimated_files": ["src/engine.py", "game.py", "web_server.py", "locales/en.json", "locales/zh.json"]
+    },
+    {
+      "id": "p3-10",
+      "phase": 3,
+      "priority": 32,
+      "title": "Add Building System",
+      "description": "Create building system. Cities can construct buildings that provide bonuses. Buildings: Barracks, Market, Granary, Academy, Forge, Walls.",
+      "acceptance_criteria": [
+        "Building dataclass with cost, time, effects",
+        "src/data/buildings.json with 8+ buildings",
+        "City.buildings list added",
+        "Barracks: +training speed",
+        "Market: +commerce income",
+        "Academy: +research speed",
+        "Construction takes multiple turns",
+        "'build [building] at [city]' command"
+      ],
+      "status": "pending",
+      "estimated_files": ["src/models.py", "src/data/buildings.json", "src/engine.py", "tests/test_engine.py"]
+    },
+    {
+      "id": "p4-01",
+      "phase": 4,
+      "priority": 33,
+      "title": "Create Historical Events System",
+      "description": "Create historical events that trigger based on year and game conditions. Events like Peach Garden Oath, Red Cliff, etc.",
+      "acceptance_criteria": [
+        "HistoricalEvent type with year/conditions",
+        "src/data/events/historical.json with 10+ events",
+        "Events trigger when conditions met",
+        "Special narrative treatment",
+        "Events can create relationships",
+        "Events can add officers",
+        "Tests for historical triggers"
+      ],
+      "status": "pending",
+      "depends_on": ["p3-06"],
+      "estimated_files": ["src/systems/events.py", "src/data/events/historical.json", "tests/test_events.py"]
+    },
+    {
+      "id": "p4-02",
+      "phase": 4,
+      "priority": 34,
+      "title": "Add Special Abilities to Officers",
+      "description": "Add unique special abilities to legendary officers. Abilities have triggers, costs, and dramatic effects.",
+      "acceptance_criteria": [
+        "Ability dataclass with effect, cost, cooldown",
+        "src/data/officers/abilities.json",
+        "Zhuge Liang: Empty Fort Strategy",
+        "Guan Yu: Green Dragon Slash",
+        "Zhao Yun: Lone Rider",
+        "Lu Bu: Unstoppable",
+        "At least 15 unique abilities",
+        "Abilities trigger in combat/duel"
+      ],
+      "status": "pending",
+      "depends_on": ["p1-11"],
+      "estimated_files": ["src/models.py", "src/data/officers/abilities.json", "src/systems/duel.py", "src/systems/battle.py"]
+    },
+    {
+      "id": "p4-03",
+      "phase": 4,
+      "priority": 35,
+      "title": "Create Achievement System",
+      "description": "Create achievement/goal system. Achievements track progress and unlock prestige. Goals provide intermediate objectives.",
+      "acceptance_criteria": [
+        "Achievement dataclass with condition, reward",
+        "src/data/achievements.json with 25+ achievements",
+        "check_achievements(game_state) function",
+        "Achievement notification when earned",
+        "'achievements' command shows progress",
+        "Categories: Military, Economic, Diplomatic, Collection"
+      ],
+      "status": "pending",
+      "estimated_files": ["src/systems/achievements.py", "src/data/achievements.json", "tests/test_achievements.py"]
+    },
+    {
+      "id": "p4-04",
+      "phase": 4,
+      "priority": 36,
+      "title": "Create Turn Preview System",
+      "description": "Create 'one more turn' hook by showing preview of upcoming events. Preview shows pending arrivals, threats, completions.",
+      "acceptance_criteria": [
+        "generate_turn_preview(game_state) function",
+        "Shows pending officer arrivals",
+        "Shows enemy movements detected",
+        "Shows training/construction completions",
+        "Shows loyalty warnings",
+        "Displayed after turn end",
+        "'Press ENTER to continue' prompt"
+      ],
+      "status": "pending",
+      "depends_on": ["p1-10"],
+      "estimated_files": ["src/display/reports.py", "src/engine.py", "game.py", "web_server.py"]
+    },
+    {
+      "id": "p4-05",
+      "phase": 4,
+      "priority": 37,
+      "title": "Add Officer Dialogue System",
+      "description": "Create src/systems/dialogue.py with personality-based dialogue. Officers speak differently based on traits. Used in council, events, battles.",
+      "acceptance_criteria": [
+        "generate_dialogue(officer, context) function",
+        "Dialogue varies by officer traits",
+        "Brave: direct and bold",
+        "Scholar: philosophical",
+        "Charismatic: persuasive",
+        "At least 5 contexts: greeting, advice, battle, victory, defeat",
+        "i18n for all dialogue templates"
+      ],
+      "status": "pending",
+      "estimated_files": ["src/systems/dialogue.py", "tests/test_dialogue.py", "locales/en.json", "locales/zh.json"]
+    },
+    {
+      "id": "p4-06",
+      "phase": 4,
+      "priority": 38,
+      "title": "Integrate Dialogue Throughout Game",
+      "description": "Use dialogue system in council, events, battles, and officer interactions. Officers should feel alive.",
+      "acceptance_criteria": [
+        "Council presenters speak in character",
+        "Battle commanders give advice",
+        "Event participants have dialogue",
+        "Victory/defeat speeches",
+        "Loyalty warnings in character"
+      ],
+      "status": "pending",
+      "depends_on": ["p4-05", "p3-03", "p2-08"],
+      "estimated_files": ["src/systems/council.py", "src/systems/battle.py", "src/systems/events.py"]
+    },
+    {
+      "id": "p4-07",
+      "phase": 4,
+      "priority": 39,
+      "title": "Add Espionage System",
+      "description": "Expand spy mechanics. Can sabotage, steal intelligence, incite defection, assassinate. Risk of being caught.",
+      "acceptance_criteria": [
+        "'spy [city] [mission]' command",
+        "Missions: scout, sabotage, incite, steal",
+        "Success based on INT vs target",
+        "Caught: diplomatic penalty, officer captured",
+        "Costs gold",
+        "Cooldown between missions"
+      ],
+      "status": "pending",
+      "estimated_files": ["src/engine.py", "game.py", "web_server.py", "locales/en.json", "locales/zh.json"]
+    },
+    {
+      "id": "p4-08",
+      "phase": 4,
+      "priority": 40,
+      "title": "Add Surrender and Capture Mechanics",
+      "description": "After battle victories, defeated officers can be captured. Captured officers can be recruited, executed, or released.",
+      "acceptance_criteria": [
+        "Officers captured when city falls",
+        "Captured officers stored in captor's faction",
+        "'recruit [officer]' for captured officers",
+        "'execute [officer]' with loyalty impact",
+        "'release [officer]' for reputation",
+        "Some officers refuse to surrender"
+      ],
+      "status": "pending",
+      "depends_on": ["p2-08"],
+      "estimated_files": ["src/engine.py", "src/models.py", "game.py", "web_server.py"]
+    },
+    {
+      "id": "p5-01",
+      "phase": 5,
+      "priority": 41,
+      "title": "Create Full 40+ City Map Data",
+      "description": "Create comprehensive china_208_full.json with 40+ cities matching ROTK11 geography. All provinces, terrain, adjacencies.",
+      "acceptance_criteria": [
+        "china_208_full.json with 40+ cities",
+        "All historical provinces (13 provinces)",
+        "Accurate adjacencies",
+        "Terrain types assigned",
+        "Coastal cities marked",
+        "Faction starting positions",
+        "Compatible with existing map renderer"
+      ],
+      "status": "pending",
+      "depends_on": ["p1-01"],
+      "estimated_files": ["src/data/maps/china_208_full.json"]
+    },
+    {
+      "id": "p5-02",
+      "phase": 5,
+      "priority": 42,
+      "title": "Create Multiple Scenarios",
+      "description": "Create 4 historical scenarios with different start dates, factions, and officer distributions.",
+      "acceptance_criteria": [
+        "190 CE: Anti-Dong Zhuo Coalition",
+        "200 CE: Battle of Guandu",
+        "208 CE: Red Cliff (current)",
+        "220 CE: Three Kingdoms",
+        "Each scenario has appropriate map state",
+        "Officer availability varies by year",
+        "Scenario selection at game start"
+      ],
+      "status": "pending",
+      "depends_on": ["p5-01", "p1-12"],
+      "estimated_files": ["src/data/maps/china_190.json", "src/data/maps/china_200.json", "src/data/maps/china_220.json", "src/world.py"]
+    },
+    {
+      "id": "p5-03",
+      "phase": 5,
+      "priority": 43,
+      "title": "Add Naval Combat System",
+      "description": "Add naval units and water combat. Coastal cities can build ships. Some routes require naval crossing.",
+      "acceptance_criteria": [
+        "Navy unit type added",
+        "Coastal cities can build ships",
+        "Naval transport capacity",
+        "Naval battles at river/sea crossings",
+        "Fire attack effective on water",
+        "Special naval abilities (Zhou Yu)"
+      ],
+      "status": "pending",
+      "depends_on": ["p2-10", "p2-04"],
+      "estimated_files": ["src/models.py", "src/systems/battle.py", "src/constants.py"]
+    },
+    {
+      "id": "p5-04",
+      "phase": 5,
+      "priority": 44,
+      "title": "Add Alliance System",
+      "description": "Create formal alliance mechanics. Alliance types: Non-aggression, Defensive, Offensive. Can be broken with penalty.",
+      "acceptance_criteria": [
+        "Alliance dataclass with terms, duration",
+        "'propose alliance [faction] [type]' command",
+        "Non-aggression: cannot attack each other",
+        "Defensive: join wars when ally attacked",
+        "Offensive: coordinate attacks",
+        "Breaking alliance: reputation penalty",
+        "AI considers alliances"
+      ],
+      "status": "pending",
+      "estimated_files": ["src/models.py", "src/systems/diplomacy.py", "src/engine.py"]
+    },
+    {
+      "id": "p5-05",
+      "phase": 5,
+      "priority": 45,
+      "title": "Add Supply Line System",
+      "description": "Armies on campaign consume supplies. Cut supply lines to starve enemies. Foraging in friendly territory.",
+      "acceptance_criteria": [
+        "Army.supplies field added",
+        "Daily supply consumption",
+        "Supply lines through owned territory",
+        "Cut supply = attrition",
+        "Foraging in friendly cities",
+        "Supply days shown in battle UI"
+      ],
+      "status": "pending",
+      "depends_on": ["p2-06"],
+      "estimated_files": ["src/models.py", "src/systems/battle.py", "src/engine.py"]
+    },
+    {
+      "id": "p5-06",
+      "phase": 5,
+      "priority": 46,
+      "title": "Add Population System",
+      "description": "Cities have population that affects recruitment, production, and morale. Population grows/shrinks based on conditions.",
+      "acceptance_criteria": [
+        "City.population field added",
+        "Population affects max recruitment",
+        "Population affects production",
+        "Growth based on prosperity",
+        "War/famine reduces population",
+        "Migration between cities"
+      ],
+      "status": "pending",
+      "estimated_files": ["src/models.py", "src/engine.py", "tests/test_engine.py"]
+    },
+    {
+      "id": "p5-07",
+      "phase": 5,
+      "priority": 47,
+      "title": "Add Marriage/Hostage System",
+      "description": "Diplomatic marriages and hostage exchanges. Marriages create alliances. Hostages ensure treaty compliance.",
+      "acceptance_criteria": [
+        "'propose marriage [officer] [faction]' command",
+        "Marriage creates relationship bond",
+        "Hostage exchange as treaty term",
+        "Hostage fate affects relations",
+        "AI proposes marriages"
+      ],
+      "status": "pending",
+      "depends_on": ["p5-04", "p3-04"],
+      "estimated_files": ["src/systems/diplomacy.py", "src/engine.py"]
+    },
+    {
+      "id": "p5-08",
+      "phase": 5,
+      "priority": 48,
+      "title": "Add Difficulty Settings with AI Enhancement",
+      "description": "Make difficulty setting actually affect gameplay. AI gets bonuses on higher difficulties. Add AI personality types.",
+      "acceptance_criteria": [
+        "Easy: player bonuses, AI penalties",
+        "Normal: balanced",
+        "Hard: AI bonuses",
+        "Very Hard: significant AI advantages",
+        "AI personality types (aggressive, defensive, economic)",
+        "Difficulty affects AI decision quality"
+      ],
+      "status": "pending",
+      "estimated_files": ["src/engine.py", "src/constants.py", "tests/test_engine.py"]
+    }
+  ],
   "completed": [
     {
       "id": "iter1-dependency-fix",
