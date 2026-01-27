@@ -3,7 +3,7 @@ Unit tests for data models
 """
 import pytest
 from dataclasses import asdict
-from src.models import Officer, City, Faction, GameState
+from src.models import Officer, City, Faction, GameState, Season, get_current_season
 
 
 class TestOfficer:
@@ -183,20 +183,72 @@ class TestGameState:
         assert "City2" in state.adj["City1"]
 
 
+class TestSeason:
+    """Tests for Season enum and related functions"""
+
+    def test_season_enum_exists(self):
+        """Test that Season enum has all four seasons"""
+        assert hasattr(Season, 'SPRING')
+        assert hasattr(Season, 'SUMMER')
+        assert hasattr(Season, 'AUTUMN')
+        assert hasattr(Season, 'WINTER')
+
+    def test_get_current_season_spring(self):
+        """Test spring season (months 3-5)"""
+        assert get_current_season(3) == Season.SPRING
+        assert get_current_season(4) == Season.SPRING
+        assert get_current_season(5) == Season.SPRING
+
+    def test_get_current_season_summer(self):
+        """Test summer season (months 6-8)"""
+        assert get_current_season(6) == Season.SUMMER
+        assert get_current_season(7) == Season.SUMMER
+        assert get_current_season(8) == Season.SUMMER
+
+    def test_get_current_season_autumn(self):
+        """Test autumn season (months 9-11)"""
+        assert get_current_season(9) == Season.AUTUMN
+        assert get_current_season(10) == Season.AUTUMN
+        assert get_current_season(11) == Season.AUTUMN
+
+    def test_get_current_season_winter(self):
+        """Test winter season (months 12, 1, 2)"""
+        assert get_current_season(12) == Season.WINTER
+        assert get_current_season(1) == Season.WINTER
+        assert get_current_season(2) == Season.WINTER
+
+    def test_get_current_season_boundary_values(self):
+        """Test boundary month values"""
+        # Test edge cases at season transitions
+        assert get_current_season(2) == Season.WINTER
+        assert get_current_season(3) == Season.SPRING
+        assert get_current_season(5) == Season.SPRING
+        assert get_current_season(6) == Season.SUMMER
+        assert get_current_season(8) == Season.SUMMER
+        assert get_current_season(9) == Season.AUTUMN
+        assert get_current_season(11) == Season.AUTUMN
+        assert get_current_season(12) == Season.WINTER
+
+    def test_season_enum_values(self):
+        """Test that season enum values are distinct"""
+        seasons = [Season.SPRING, Season.SUMMER, Season.AUTUMN, Season.WINTER]
+        assert len(seasons) == len(set(seasons))
+
+
 @pytest.mark.unit
 class TestModelIntegration:
     """Integration tests for models working together"""
-    
+
     def test_full_game_setup(self):
         """Test setting up a complete game scenario"""
         state = GameState()
-        
+
         # Create cities
         city1 = City("Chengdu", "Shu", gold=600, troops=400)
         city2 = City("Hanzhong", "Shu", gold=500, troops=300)
         state.cities["Chengdu"] = city1
         state.cities["Hanzhong"] = city2
-        
+
         # Create faction
         faction = Faction(
             "Shu",
@@ -205,13 +257,13 @@ class TestModelIntegration:
             ruler="劉備"
         )
         state.factions["Shu"] = faction
-        
+
         # Create officers
         officer1 = Officer("劉備", "Shu", 86, 80, 88, 96, city="Chengdu")
         officer2 = Officer("關羽", "Shu", 98, 79, 92, 84, city="Chengdu")
         state.officers["劉備"] = officer1
         state.officers["關羽"] = officer2
-        
+
         # Verify everything is connected
         assert len(state.cities) == 2
         assert len(state.factions) == 1

@@ -143,3 +143,28 @@ DEFECTION_CHANCE_MONTHLY = 0.10  # 10% if loyalty < threshold
 LOYALTY_GAIN_FROM_WORK = 1
 LOYALTY_LOSS_FROM_EXHAUSTION = -2
 EXHAUSTION_THRESHOLD = 10
+
+# =================== Seasonal Effects ===================
+# Season enum is defined in models.py
+
+# Seasonal effects on farming
+SPRING_FARMING_BONUS = 1.20  # +20% farming in spring
+AUTUMN_HARVEST_BONUS = 1.15  # +15% harvest bonus in autumn
+WINTER_FARMING_PENALTY = 0.90  # -10% farming in winter (less severe than movement)
+
+# Seasonal effects on movement
+WINTER_MOVEMENT_PENALTY = 0.70  # -30% movement in winter
+WINTER_ATTRITION_RATE = 0.05  # 5% troop loss per turn in winter campaigns
+
+# Weather probabilities by season
+SPRING_RAIN_CHANCE = 0.30  # 30% chance of rain in spring
+SUMMER_DROUGHT_CHANCE = 0.20  # 20% chance of drought in summer
+AUTUMN_CLEAR_CHANCE = 0.80  # 80% chance of clear weather in autumn
+WINTER_SNOW_CHANCE = 0.40  # 40% chance of snow in winter
+
+# Weather effects (to be used in future battle/movement systems)
+RAIN_FIRE_ATTACK_PENALTY = 0.80  # -20% fire attack effectiveness in rain
+RAIN_MOVEMENT_PENALTY = 0.90  # -10% movement in rain
+DROUGHT_FIRE_ATTACK_BONUS = 1.50  # +50% fire attack effectiveness in drought
+SNOW_MOVEMENT_PENALTY = 0.70  # -30% movement in snow
+SNOW_ATTRITION_RATE = 0.03  # 3% troop loss in snow

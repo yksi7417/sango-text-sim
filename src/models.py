@@ -6,9 +6,47 @@ This module contains all the dataclasses representing game entities:
 - City: Settlements with resources, troops, and development
 - Faction: Political entities controlling cities and officers
 - GameState: Global game state container
+- Season: Seasonal system affecting gameplay
 """
 from dataclasses import dataclass, field
+from enum import Enum
 from typing import Dict, List, Optional
+
+
+class Season(Enum):
+    """
+    Seasons that affect gameplay mechanics.
+
+    Seasons are based on month:
+    - Spring: months 3-5 (March-May)
+    - Summer: months 6-8 (June-August)
+    - Autumn: months 9-11 (September-November)
+    - Winter: months 12, 1-2 (December-February)
+    """
+    SPRING = "spring"
+    SUMMER = "summer"
+    AUTUMN = "autumn"
+    WINTER = "winter"
+
+
+def get_current_season(month: int) -> Season:
+    """
+    Get the current season based on the game month.
+
+    Args:
+        month: Game month (1-12)
+
+    Returns:
+        Season enum corresponding to the month
+    """
+    if 3 <= month <= 5:
+        return Season.SPRING
+    elif 6 <= month <= 8:
+        return Season.SUMMER
+    elif 9 <= month <= 11:
+        return Season.AUTUMN
+    else:  # 12, 1, 2
+        return Season.WINTER
 
 
 @dataclass
