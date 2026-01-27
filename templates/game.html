@@ -178,13 +178,17 @@
         <div class="quick-commands" id="buttonBar">
             <!-- Buttons will be dynamically generated based on game state -->
         </div>
-        
+
         <div class="terminal" id="terminal">
             <div class="output-line">Welcome to Sango Text Sim!</div>
             <div class="output-line">Type 'help' for commands or 'menu' for interactive menu.</div>
             <div class="output-line">Click the 📋 Menu button above to get started!</div>
             <div class="output-line">For full features, download and run: python game_cmd.py</div>
             <div class="output-line">---</div>
+        </div>
+
+        <div class="terminal" id="mapDisplay" style="display: none; max-height: 50vh;">
+            <!-- Map will be rendered here -->
         </div>
         
         <div class="input-area">
@@ -263,6 +267,7 @@
                 { menuKey: 'main', index: 7, command: '8' },
                 { labelKey: 'ui.status', command: 'status', style: 'background: #004400;' },
                 { labelKey: 'ui.officers', command: 'officers', style: 'background: #004400;' },
+                { labelKey: 'ui.map', command: 'map', isMapToggle: true, style: 'background: #004444;' },
                 { labelKey: 'ui.end_turn', command: 'turn', style: 'background: #440000; font-weight: bold;' }
             ],
             city: [
@@ -330,52 +335,81 @@
             ]
         };
         
+        // Toggle map display
+        let mapVisible = false;
+        async function toggleMap() {
+            const mapDisplay = document.getElementById('mapDisplay');
+
+            if (mapVisible) {
+                // Hide map
+                mapDisplay.style.display = 'none';
+                mapVisible = false;
+            } else {
+                // Fetch and show map
+                try {
+                    const response = await fetch('/api/map');
+                    const data = await response.json();
+
+                    if (data.map) {
+                        mapDisplay.textContent = data.map;
+                        mapDisplay.style.display = 'block';
+                        mapVisible = true;
+                        scrollTerminal();
+                    } else if (data.error) {
+                        addOutput(data.error, 'error');
+                    }
+                } catch (error) {
+                    addOutput('Error loading map: ' + error.message, 'error');
+                }
+            }
+        }
+
         // Update buttons based on game state
         function updateButtons(menuState, gameState) {
             const currentMenu = menuState?.current_menu || 'pregame';
             const faction = gameState?.faction || 'None';
             const gameStarted = gameState?.game_started || false;
             const lang = menuState?.language || currentLanguage;
-            
+
             // Update current language
             currentLanguage = lang;
-            
+
             // Determine which button set to show
             let buttons = menuConfig.pregame;
-            
+
             // Only show game menus if game is properly started AND faction is set
             if (gameStarted && faction && faction !== 'None' && faction !== null && faction !== '') {
                 // Game has started - show menu buttons
                 buttons = menuConfig[currentMenu] || menuConfig.main;
-                
+
                 // Special handling for city menu - generate dynamic buttons
                 if (currentMenu === 'city' && menuState?.cities && menuState.cities.length > 0) {
                     buttons = [];
                     menuState.cities.forEach((city, index) => {
-                        buttons.push({ 
+                        buttons.push({
                             cityLabel: `${index + 1}. ${city}`,
-                            command: (index + 1).toString() 
+                            command: (index + 1).toString()
                         });
                     });
-                    buttons.push({ 
+                    buttons.push({
                         labelKey: 'menu.common.back',
-                        command: '0', 
-                        style: 'background: #660000; font-weight: bold;' 
+                        command: '0',
+                        style: 'background: #660000; font-weight: bold;'
                     });
                 }
             } else {
                 // Force pregame buttons if game hasn't been properly started
                 buttons = menuConfig.pregame;
             }
-            
+
             // Clear existing buttons
             buttonBar.innerHTML = '';
-            
+
             // Create new buttons
             buttons.forEach(btn => {
                 const button = document.createElement('button');
                 button.className = 'quick-cmd';
-                
+
                 // Get button label
                 let label = '';
                 if (btn.cityLabel) {
@@ -391,9 +425,16 @@
                         label = `${btn.index + 1}. ${options[btn.index]}`;
                     }
                 }
-                
+
                 button.textContent = label;
-                button.onclick = () => sendCommand(btn.command);
+
+                // Special handling for map toggle button
+                if (btn.isMapToggle) {
+                    button.onclick = () => toggleMap();
+                } else {
+                    button.onclick = () => sendCommand(btn.command);
+                }
+
                 if (btn.style) {
                     button.setAttribute('style', btn.style);
                 }

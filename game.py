@@ -10,6 +10,7 @@ from src import utils
 from src import engine
 from src import world
 from src import persistence
+from src.display import map_view
 
 # =================== Data Models ===================
 # Models have been moved to src/models.py
@@ -123,6 +124,15 @@ def status_self():
 def status_city_cmd(city):
     target = city.title() if city else ""
     print_status(target)
+
+@when("map")
+def map_cmd():
+    """Display the strategic map"""
+    if not STATE.game_started:
+        say(i18n.t("errors.not_started"))
+        return
+    map_display = map_view.render_strategic_map(STATE)
+    say(map_display)
 
 @when("officers")
 def list_officers():
@@ -328,6 +338,9 @@ def end_turn_cmd():
     STATE.log(i18n.t("game.ending", year=STATE.year, month=STATE.month))
     end_turn()
     STATE.log(i18n.t("game.begin", year=STATE.year, month=STATE.month))
+    # Show strategic map at start of new turn
+    map_display = map_view.render_strategic_map(STATE)
+    say(map_display)
     if check_victory():
         say("help / load FILE")
 

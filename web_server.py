@@ -13,6 +13,7 @@ import uuid
 
 from src.models import GameState
 from src import utils, engine, world, persistence
+from src.display import map_view
 from i18n import i18n
 
 app = Flask(__name__)
@@ -514,16 +515,35 @@ def api_state():
     """Get current game state."""
     if 'session_id' not in session:
         return jsonify({'error': 'No active session'})
-    
+
     session_id = session['session_id']
     gs = get_or_create_game_state(session_id)
-    
+
     return jsonify({
         'year': gs.year,
         'month': gs.month,
         'faction': gs.player_faction,
         'messages': gs.messages[-10:] if gs.messages else []
     })
+
+
+@app.route('/api/map', methods=['GET'])
+def api_map():
+    """Get the strategic map."""
+    if 'session_id' not in session:
+        return jsonify({'error': 'No active session'})
+
+    session_id = session['session_id']
+    gs = get_or_create_game_state(session_id)
+
+    # Check if game has been initialized
+    if not gs.factions or gs.player_faction not in gs.factions:
+        return jsonify({'map': '', 'error': 'Game not initialized'})
+
+    # Generate the map
+    map_display = map_view.render_strategic_map(gs)
+
+    return jsonify({'map': map_display})
 
 
 @app.route('/health')
