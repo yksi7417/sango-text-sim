@@ -572,3 +572,136 @@ class TestOfficerProfileView:
         assert isinstance(result, str)
         # Should have meaningful content
         assert len(result) > 100
+
+
+class TestComponents:
+    """Tests for reusable UI components."""
+
+    def test_render_progress_bar(self):
+        """Progress bar should render correctly with value and max."""
+        from src.display.components import render_progress_bar
+
+        # Full bar
+        full_bar = render_progress_bar(100, 100, 10)
+        assert len(full_bar) == 10
+        assert full_bar.count("█") == 10
+
+        # Half bar
+        half_bar = render_progress_bar(50, 100, 10)
+        assert len(half_bar) == 10
+        assert half_bar.count("█") == 5
+        assert half_bar.count("░") == 5
+
+        # Empty bar
+        empty_bar = render_progress_bar(0, 100, 10)
+        assert len(empty_bar) == 10
+        assert empty_bar.count("░") == 10
+
+    def test_render_progress_bar_custom_width(self):
+        """Progress bar should support custom widths."""
+        from src.display.components import render_progress_bar
+
+        bar_20 = render_progress_bar(75, 100, 20)
+        assert len(bar_20) == 20
+        assert bar_20.count("█") == 15
+        assert bar_20.count("░") == 5
+
+    def test_render_box(self):
+        """Box should render with title and content."""
+        from src.display.components import render_box
+
+        content = "Test content\nMultiple lines\nIn a box"
+        result = render_box(content, "Test Title", 40)
+
+        assert isinstance(result, str)
+        assert "Test Title" in result
+        assert "Test content" in result
+        # Should have box drawing characters
+        assert "─" in result or "═" in result or "|" in result
+
+    def test_render_box_without_title(self):
+        """Box should render without title."""
+        from src.display.components import render_box
+
+        content = "Simple content"
+        result = render_box(content, "", 30)
+
+        assert isinstance(result, str)
+        assert "Simple content" in result
+        assert "─" in result or "═" in result or "|" in result
+
+    def test_render_table(self):
+        """Table should render with headers and rows."""
+        from src.display.components import render_table
+
+        headers = ["Name", "Value", "Status"]
+        rows = [
+            ["Item 1", "100", "Active"],
+            ["Item 2", "200", "Inactive"],
+            ["Item 3", "300", "Active"]
+        ]
+
+        result = render_table(headers, rows)
+
+        assert isinstance(result, str)
+        # Should contain all headers
+        assert "Name" in result
+        assert "Value" in result
+        assert "Status" in result
+        # Should contain all row data
+        assert "Item 1" in result
+        assert "100" in result
+        assert "Active" in result
+
+    def test_render_table_with_empty_rows(self):
+        """Table should handle empty rows."""
+        from src.display.components import render_table
+
+        headers = ["Col1", "Col2"]
+        rows = []
+
+        result = render_table(headers, rows)
+
+        assert isinstance(result, str)
+        # Should still show headers
+        assert "Col1" in result
+        assert "Col2" in result
+
+    def test_render_separator(self):
+        """Separator should render with specified width and style."""
+        from src.display.components import render_separator
+
+        sep_single = render_separator(20, "single")
+        assert len(sep_single) == 20
+        assert "─" in sep_single or "-" in sep_single
+
+        sep_double = render_separator(20, "double")
+        assert len(sep_double) == 20
+        assert "═" in sep_double or "=" in sep_double
+
+        sep_heavy = render_separator(20, "heavy")
+        assert len(sep_heavy) == 20
+
+    def test_faction_colors_exist(self):
+        """FACTION_COLORS should have all main factions."""
+        from src.display.components import FACTION_COLORS
+
+        assert "Wei" in FACTION_COLORS
+        assert "Shu" in FACTION_COLORS
+        assert "Wu" in FACTION_COLORS
+        assert "Neutral" in FACTION_COLORS
+
+    def test_get_faction_color(self):
+        """get_faction_color should return color template."""
+        from src.display.components import get_faction_color
+
+        wei_color = get_faction_color("Wei")
+        assert isinstance(wei_color, str)
+        # Should contain ANSI codes
+        assert "\033[" in wei_color
+        assert "\033[0m" in wei_color
+
+        # Unknown faction should default to Neutral
+        unknown_color = get_faction_color("Unknown")
+        assert isinstance(unknown_color, str)
+        assert "\033[" in unknown_color

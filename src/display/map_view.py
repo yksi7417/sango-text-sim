@@ -15,15 +15,8 @@ from pathlib import Path
 from typing import Dict, List, Tuple, Optional
 from ..models import GameState, City, Faction
 from i18n import i18n
+from .components import FACTION_COLORS, get_faction_color as get_faction_color_template
 
-
-# ANSI color codes for faction differentiation
-FACTION_COLORS = {
-    "Wei": "\033[34m",      # Blue
-    "Shu": "\033[32m",      # Green
-    "Wu": "\033[31m",       # Red
-    "Neutral": "\033[90m",  # Gray
-}
 COLOR_RESET = "\033[0m"
 
 # Terrain symbols
@@ -45,8 +38,8 @@ def get_faction_color(faction_name: str) -> str:
     Returns:
         ANSI color code string with reset code appended
     """
-    color = FACTION_COLORS.get(faction_name, FACTION_COLORS["Neutral"])
-    return color + "{}" + COLOR_RESET
+    # Use the centralized function from components
+    return get_faction_color_template(faction_name)
 
 
 def load_map_data(scenario: str = "china_208") -> Optional[Dict]:

@@ -13,23 +13,7 @@ from typing import List
 from ..models import City, Officer
 from ..world import ADJACENCY_MAP
 from i18n import i18n
-
-
-def render_progress_bar(value: int, max_value: int = 100, width: int = 10) -> str:
-    """
-    Render a progress bar using block characters.
-
-    Args:
-        value: Current value (0-max_value)
-        max_value: Maximum value for the bar
-        width: Width of the bar in characters
-
-    Returns:
-        Progress bar string like "████░░░░░░"
-    """
-    filled = int((value / max_value) * width)
-    empty = width - filled
-    return "█" * filled + "░" * empty
+from .components import render_progress_bar
 
 
 def get_city_icon(walls: int) -> str:
