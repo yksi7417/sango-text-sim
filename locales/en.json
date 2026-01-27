@@ -399,7 +399,30 @@
     "supply_days": "Supply: {days} days remaining",
     "weather_current": "Weather: {weather}",
     "siege_progress": "Siege Progress",
-    "combat_log": "Combat Log"
+    "combat_log": "Combat Log",
+    "actions": {
+      "attack": "Attack",
+      "defend": "Defend",
+      "flank": "Flank",
+      "fire_attack": "Fire Attack",
+      "retreat": "Retreat"
+    },
+    "action_desc": {
+      "attack": "Standard assault - balanced offense",
+      "defend": "Defensive stance - reduces incoming damage by 50%",
+      "flank": "Flanking maneuver - +30% damage but risky",
+      "fire_attack": "Fire-based attack - +40% damage, affected by weather",
+      "retreat": "Withdraw from battle"
+    },
+    "results": {
+      "victory": "{attacker} has conquered {defender}!",
+      "defeat": "{attacker} has been repelled by {defender}!",
+      "retreat": "{commander} orders a tactical retreat!",
+      "morale_broken": "The army's morale has broken!",
+      "walls_breached": "The city walls have been breached!",
+      "supplies_exhausted": "Supplies have run out!",
+      "troops_eliminated": "The army has been eliminated!"
+    }
   },
   "terrain": {
     "plains": "Plains",

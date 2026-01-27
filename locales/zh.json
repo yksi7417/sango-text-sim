@@ -400,7 +400,30 @@
     "supply_days": "糧草：剩餘{days}天",
     "weather_current": "天氣：{weather}",
     "siege_progress": "攻城進度",
-    "combat_log": "戰鬥記錄"
+    "combat_log": "戰鬥記錄",
+    "actions": {
+      "attack": "進攻",
+      "defend": "防守",
+      "flank": "側翼包抄",
+      "fire_attack": "火攻",
+      "retreat": "撤退"
+    },
+    "action_desc": {
+      "attack": "標準進攻 - 平衡攻勢",
+      "defend": "防守姿態 - 減少50%傷害",
+      "flank": "側翼包抄 - +30%傷害但風險較高",
+      "fire_attack": "火攻 - +40%傷害，受天氣影響",
+      "retreat": "撤出戰鬥"
+    },
+    "results": {
+      "victory": "{attacker}已攻下{defender}！",
+      "defeat": "{attacker}被{defender}擊退！",
+      "retreat": "{commander}下令戰術撤退！",
+      "morale_broken": "軍隊士氣已崩潰！",
+      "walls_breached": "城牆已被攻破！",
+      "supplies_exhausted": "糧草已耗盡！",
+      "troops_eliminated": "軍隊已被殲滅！"
+    }
   },
   "terrain": {
     "plains": "平原",
