@@ -13,7 +13,7 @@ This module tests core game mechanics including:
 """
 
 import pytest
-from src.models import Officer, City, Faction, GameState
+from src.models import Officer, City, Faction, GameState, TurnEvent, EventCategory
 from src import engine
 
 
@@ -467,34 +467,102 @@ class TestTryDefections:
 
 class TestEndTurn:
     """Tests for turn progression."""
-    
+
     def test_end_turn_advances_month(self, populated_game_state):
         """End turn should increment month."""
         initial_month = populated_game_state.month
-        
-        engine.end_turn(populated_game_state)
-        
+
+        events = engine.end_turn(populated_game_state)
+
         assert populated_game_state.month == initial_month + 1
-    
+        assert isinstance(events, list)
+
     def test_end_turn_advances_year(self, populated_game_state):
         """End turn in December should advance year."""
         populated_game_state.month = 12
         initial_year = populated_game_state.year
-        
-        engine.end_turn(populated_game_state)
-        
+
+        events = engine.end_turn(populated_game_state)
+
         assert populated_game_state.year == initial_year + 1
         assert populated_game_state.month == 1
-    
+        assert isinstance(events, list)
+
     def test_end_turn_recovers_idle_officers(self, populated_game_state):
         """Idle officers should recover energy at end of turn."""
         officer = populated_game_state.officers["TestOfficer"]
         officer.task = None
         officer.energy = 50
-        
-        engine.end_turn(populated_game_state)
-        
+
+        events = engine.end_turn(populated_game_state)
+
         assert officer.energy > 50
+        assert isinstance(events, list)
+
+    def test_end_turn_returns_events_list(self, populated_game_state):
+        """End turn should return a list of TurnEvent objects."""
+        events = engine.end_turn(populated_game_state)
+
+        assert isinstance(events, list)
+        # All items should be TurnEvent objects
+        for event in events:
+            assert isinstance(event, TurnEvent)
+            assert isinstance(event.category, EventCategory)
+            assert isinstance(event.message, str)
+            assert isinstance(event.data, dict)
+
+
+class TestCategorizeMessage:
+    """Tests for message categorization."""
+
+    def test_categorize_military_message(self):
+        """Military keywords should categorize as MILITARY."""
+        messages = [
+            "Battle won at TestCity",
+            "Victory! TestCity captured",
+            "Defeat at the gates",
+            "Attack successful",
+            "Troops deployed"
+        ]
+        for msg in messages:
+            category = engine.categorize_message(msg)
+            assert category == EventCategory.MILITARY
+
+    def test_categorize_officer_message(self):
+        """Officer keywords should categorize as OFFICER."""
+        messages = [
+            "Officer recruited at TestCity",
+            "Liu Bei defected to Wei",
+            "Loyalty increased",
+            "New officer joins"
+        ]
+        for msg in messages:
+            category = engine.categorize_message(msg)
+            assert category == EventCategory.OFFICER
+
+    def test_categorize_diplomatic_message(self):
+        """Diplomatic keywords should categorize as DIPLOMATIC."""
+        messages = [
+            "Alliance formed with Wei",
+            "Treaty signed",
+            "Relations improved",
+            "Diplomatic mission successful"
+        ]
+        for msg in messages:
+            category = engine.categorize_message(msg)
+            assert category == EventCategory.DIPLOMATIC
+
+    def test_categorize_economy_message(self):
+        """Economic messages should categorize as ECONOMY."""
+        messages = [
+            "Tax collected: 100 gold",
+            "Harvest yields 200 food",
+            "Starvation at TestCity",
+            "Income from commerce"
+        ]
+        for msg in messages:
+            category = engine.categorize_message(msg)
+            assert category == EventCategory.ECONOMY
 
 
 class TestCheckVictory:

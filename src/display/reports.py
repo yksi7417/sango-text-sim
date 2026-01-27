@@ -7,35 +7,10 @@ This module generates narrative turn summaries with:
 - Narrative formatting for immersion
 """
 
-from dataclasses import dataclass, field
-from enum import Enum
-from typing import List, Dict, Any
-from ..models import Season
+from typing import List, Dict
+from ..models import Season, EventCategory, TurnEvent
 from i18n import i18n
 from .components import render_box, render_separator
-
-
-class EventCategory(Enum):
-    """Categories for turn events."""
-    ECONOMY = "economy"
-    MILITARY = "military"
-    DIPLOMATIC = "diplomatic"
-    OFFICER = "officer"
-
-
-@dataclass
-class TurnEvent:
-    """
-    Represents a single event that occurred during a turn.
-
-    Attributes:
-        category: Event category (Economy, Military, etc.)
-        message: Human-readable description of the event
-        data: Additional structured data about the event
-    """
-    category: EventCategory
-    message: str
-    data: Dict[str, Any] = field(default_factory=dict)
 
 
 def get_seasonal_flavor(season: Season) -> str:

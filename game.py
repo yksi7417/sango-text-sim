@@ -4,13 +4,14 @@ import random, json, os
 from dataclasses import asdict
 from typing import Dict, List, Optional, Tuple
 from i18n import i18n
-from src.models import Officer, City, Faction, GameState
+from src.models import Officer, City, Faction, GameState, get_current_season, TurnEvent
 from src.constants import TASKS, TASK_SYNONYMS, ALIASES
 from src import utils
 from src import engine
 from src import world
 from src import persistence
 from src.display import map_view
+from src.display import reports
 
 # =================== Data Models ===================
 # Models have been moved to src/models.py
@@ -87,8 +88,8 @@ def ai_turn(faction_name: str) -> None:
 def try_defections() -> None:
     engine.try_defections(STATE)
 
-def end_turn() -> None:
-    engine.end_turn(STATE)
+def end_turn() -> List[TurnEvent]:
+    return engine.end_turn(STATE)
 
 def check_victory() -> bool:
     return engine.check_victory(STATE)
@@ -336,8 +337,14 @@ def reward_cmd(officer, number):
 @when("end")
 def end_turn_cmd():
     STATE.log(i18n.t("game.ending", year=STATE.year, month=STATE.month))
-    end_turn()
+    events = end_turn()
     STATE.log(i18n.t("game.begin", year=STATE.year, month=STATE.month))
+
+    # Generate and display turn report
+    current_season = get_current_season(STATE.month)
+    turn_report = reports.generate_turn_report(events, current_season)
+    say(turn_report)
+
     # Show strategic map at start of new turn
     map_display = map_view.render_strategic_map(STATE)
     say(map_display)

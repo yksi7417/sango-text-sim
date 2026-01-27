@@ -12,8 +12,8 @@ This module contains the central game logic:
 """
 
 import random
-from typing import Tuple
-from .models import Officer, City, GameState, Faction
+from typing import Tuple, List
+from .models import Officer, City, GameState, Faction, TurnEvent, EventCategory
 from .constants import TASKS
 from . import utils
 from i18n import i18n
@@ -388,10 +388,10 @@ def try_defections(game_state: GameState) -> None:
             game_state.log(i18n.t("game.defect", name=utils.get_officer_name(off.name), new_faction=off.faction))
 
 
-def end_turn(game_state: GameState) -> None:
+def end_turn(game_state: GameState) -> List[TurnEvent]:
     """
-    Process end-of-turn updates.
-    
+    Process end-of-turn updates and collect events.
+
     Turn sequence:
     1. Process all officer assignments
     2. Update monthly economy
@@ -399,26 +399,80 @@ def end_turn(game_state: GameState) -> None:
     4. Check for defections
     5. Advance time (month/year)
     6. Recover energy for idle officers
+
+    Returns:
+        List of TurnEvent objects describing what happened during the turn
     """
+    events: List[TurnEvent] = []
+
+    # Track initial message count to separate new messages
+    initial_msg_count = len(game_state.messages)
+
+    # Process assignments and collect events
     process_assignments(game_state)
+
+    # Process economy and collect events
     monthly_economy(game_state)
-    
+
+    # AI turns
     for f in list(game_state.factions.keys()):
         ai_turn(game_state, f)
-    
+
+    # Defections
     try_defections(game_state)
-    
+
+    # Collect events from game log messages generated during turn
+    new_messages = game_state.messages[initial_msg_count:]
+    for msg in new_messages:
+        # Categorize events based on message content
+        category = categorize_message(msg)
+        events.append(TurnEvent(category=category, message=msg, data={}))
+
     # Time passes
     game_state.month += 1
     if game_state.month > 12:
         game_state.month = 1
         game_state.year += 1
-        game_state.log(i18n.t("game.new_year", year=game_state.year))
-    
+        year_msg = i18n.t("game.new_year", year=game_state.year)
+        game_state.log(year_msg)
+        events.append(TurnEvent(
+            category=EventCategory.ECONOMY,
+            message=year_msg,
+            data={"year": game_state.year}
+        ))
+
     # Recovery for idle officers
     for off in game_state.officers.values():
         if not off.task:
             off.energy = utils.clamp(off.energy + 12, 0, 100)
+
+    return events
+
+
+def categorize_message(msg: str) -> EventCategory:
+    """
+    Categorize a log message into an event category.
+
+    Args:
+        msg: Log message to categorize
+
+    Returns:
+        EventCategory enum value
+    """
+    # Check for military keywords
+    if any(keyword in msg.lower() for keyword in ['battle', 'victory', 'defeat', 'attack', 'captured', 'troops']):
+        return EventCategory.MILITARY
+
+    # Check for officer keywords
+    if any(keyword in msg.lower() for keyword in ['defect', 'recruit', 'loyalty', 'officer']):
+        return EventCategory.OFFICER
+
+    # Check for diplomatic keywords
+    if any(keyword in msg.lower() for keyword in ['alliance', 'treaty', 'relation', 'diplomatic']):
+        return EventCategory.DIPLOMATIC
+
+    # Default to economy for things like income, tax, harvest, starvation, etc.
+    return EventCategory.ECONOMY
 
 
 def check_victory(game_state: GameState) -> bool:

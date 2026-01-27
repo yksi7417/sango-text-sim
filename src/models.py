@@ -7,10 +7,11 @@ This module contains all the dataclasses representing game entities:
 - Faction: Political entities controlling cities and officers
 - GameState: Global game state container
 - Season: Seasonal system affecting gameplay
+- TurnEvent: Events that occur during turn processing
 """
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Any
 
 
 class Season(Enum):
@@ -47,6 +48,29 @@ def get_current_season(month: int) -> Season:
         return Season.AUTUMN
     else:  # 12, 1, 2
         return Season.WINTER
+
+
+class EventCategory(Enum):
+    """Categories for turn events."""
+    ECONOMY = "economy"
+    MILITARY = "military"
+    DIPLOMATIC = "diplomatic"
+    OFFICER = "officer"
+
+
+@dataclass
+class TurnEvent:
+    """
+    Represents a single event that occurred during a turn.
+
+    Attributes:
+        category: Event category (Economy, Military, etc.)
+        message: Human-readable description of the event
+        data: Additional structured data about the event
+    """
+    category: EventCategory
+    message: str
+    data: Dict[str, Any] = field(default_factory=dict)
 
 
 @dataclass

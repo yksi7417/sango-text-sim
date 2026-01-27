@@ -11,9 +11,9 @@ from io import StringIO
 from contextlib import redirect_stdout
 import uuid
 
-from src.models import GameState
+from src.models import GameState, get_current_season
 from src import utils, engine, world, persistence
-from src.display import map_view
+from src.display import map_view, reports
 from i18n import i18n
 
 app = Flask(__name__)
@@ -386,10 +386,14 @@ def execute_command(gs, command_text, session_state=None):
             return "\n".join(lines)
         
         elif cmd in ['turn', 'end', '結束']:
-            engine.end_turn(gs)
+            events = engine.end_turn(gs)
             if engine.check_victory(gs):
                 return "=== GAME OVER ==="
-            return "Turn ended. AI factions have moved."
+
+            # Generate turn report
+            current_season = get_current_season(gs.month)
+            turn_report = reports.generate_turn_report(events, current_season)
+            return turn_report
         
         elif cmd in ['save', '保存']:
             filepath = parts[1] if len(parts) > 1 else f"save_{session.get('session_id')}.json"
