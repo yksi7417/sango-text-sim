@@ -56,7 +56,11 @@
         "Tests verify JSON loads correctly"
       ],
       "status": "passed",
-      "estimated_files": ["src/data/maps/china_208.json", "src/data/README.md", "tests/test_data_loading.py"]
+      "estimated_files": [
+        "src/data/maps/china_208.json",
+        "src/data/README.md",
+        "tests/test_data_loading.py"
+      ]
     },
     {
       "id": "p1-02",
@@ -73,8 +77,13 @@
         "Easy to add new scenarios/maps"
       ],
       "status": "passed",
-      "depends_on": ["p1-01"],
-      "estimated_files": ["src/world.py", "tests/test_world.py"]
+      "depends_on": [
+        "p1-01"
+      ],
+      "estimated_files": [
+        "src/world.py",
+        "tests/test_world.py"
+      ]
     },
     {
       "id": "p1-03",
@@ -93,8 +102,14 @@
         "Works with both 6-city and planned 40-city maps"
       ],
       "status": "passed",
-      "depends_on": ["p1-02"],
-      "estimated_files": ["src/display/__init__.py", "src/display/map_view.py", "tests/test_display.py"]
+      "depends_on": [
+        "p1-02"
+      ],
+      "estimated_files": [
+        "src/display/__init__.py",
+        "src/display/map_view.py",
+        "tests/test_display.py"
+      ]
     },
     {
       "id": "p1-04",
@@ -111,9 +126,16 @@
         "ASCII city icon based on walls level",
         "i18n support for all labels"
       ],
-      "status": "pending",
-      "depends_on": ["p1-03"],
-      "estimated_files": ["src/display/city_view.py", "tests/test_display.py", "locales/en.json", "locales/zh.json"]
+      "status": "passed",
+      "depends_on": [
+        "p1-03"
+      ],
+      "estimated_files": [
+        "src/display/city_view.py",
+        "tests/test_display.py",
+        "locales/en.json",
+        "locales/zh.json"
+      ]
     },
     {
       "id": "p1-05",
@@ -132,8 +154,15 @@
         "i18n support"
       ],
       "status": "pending",
-      "depends_on": ["p1-03"],
-      "estimated_files": ["src/display/officer_view.py", "tests/test_display.py", "locales/en.json", "locales/zh.json"]
+      "depends_on": [
+        "p1-03"
+      ],
+      "estimated_files": [
+        "src/display/officer_view.py",
+        "tests/test_display.py",
+        "locales/en.json",
+        "locales/zh.json"
+      ]
     },
     {
       "id": "p1-06",
@@ -151,7 +180,10 @@
         "Used by map_view, city_view, officer_view"
       ],
       "status": "pending",
-      "estimated_files": ["src/display/components.py", "tests/test_display.py"]
+      "estimated_files": [
+        "src/display/components.py",
+        "tests/test_display.py"
+      ]
     },
     {
       "id": "p1-07",
@@ -168,8 +200,17 @@
         "All existing tests pass"
       ],
       "status": "pending",
-      "depends_on": ["p1-03", "p1-06"],
-      "estimated_files": ["game.py", "web_server.py", "templates/game.html", "locales/en.json", "locales/zh.json"]
+      "depends_on": [
+        "p1-03",
+        "p1-06"
+      ],
+      "estimated_files": [
+        "game.py",
+        "web_server.py",
+        "templates/game.html",
+        "locales/en.json",
+        "locales/zh.json"
+      ]
     },
     {
       "id": "p1-08",
@@ -189,7 +230,13 @@
         "Tests for season calculations"
       ],
       "status": "pending",
-      "estimated_files": ["src/models.py", "src/constants.py", "tests/test_models.py", "locales/en.json", "locales/zh.json"]
+      "estimated_files": [
+        "src/models.py",
+        "src/constants.py",
+        "tests/test_models.py",
+        "locales/en.json",
+        "locales/zh.json"
+      ]
     },
     {
       "id": "p1-09",
@@ -208,8 +255,15 @@
         "Tests verify report generation"
       ],
       "status": "pending",
-      "depends_on": ["p1-08"],
-      "estimated_files": ["src/display/reports.py", "tests/test_display.py", "locales/en.json", "locales/zh.json"]
+      "depends_on": [
+        "p1-08"
+      ],
+      "estimated_files": [
+        "src/display/reports.py",
+        "tests/test_display.py",
+        "locales/en.json",
+        "locales/zh.json"
+      ]
     },
     {
       "id": "p1-10",
@@ -226,8 +280,15 @@
         "Existing tests updated and passing"
       ],
       "status": "pending",
-      "depends_on": ["p1-09"],
-      "estimated_files": ["src/engine.py", "src/models.py", "game.py", "web_server.py"]
+      "depends_on": [
+        "p1-09"
+      ],
+      "estimated_files": [
+        "src/engine.py",
+        "src/models.py",
+        "game.py",
+        "web_server.py"
+      ]
     },
     {
       "id": "p1-11",
@@ -245,8 +306,14 @@
         "i18n names in locales"
       ],
       "status": "pending",
-      "depends_on": ["p1-01"],
-      "estimated_files": ["src/data/officers/legendary.json", "locales/en.json", "locales/zh.json"]
+      "depends_on": [
+        "p1-01"
+      ],
+      "estimated_files": [
+        "src/data/officers/legendary.json",
+        "locales/en.json",
+        "locales/zh.json"
+      ]
     },
     {
       "id": "p1-12",
@@ -262,8 +329,14 @@
         "All tests pass"
       ],
       "status": "pending",
-      "depends_on": ["p1-11", "p1-02"],
-      "estimated_files": ["src/world.py", "tests/test_world.py"]
+      "depends_on": [
+        "p1-11",
+        "p1-02"
+      ],
+      "estimated_files": [
+        "src/world.py",
+        "tests/test_world.py"
+      ]
     },
     {
       "id": "p2-01",
@@ -283,7 +356,11 @@
         "Tests for all action combinations"
       ],
       "status": "pending",
-      "estimated_files": ["src/systems/__init__.py", "src/systems/duel.py", "tests/test_duel.py"]
+      "estimated_files": [
+        "src/systems/__init__.py",
+        "src/systems/duel.py",
+        "tests/test_duel.py"
+      ]
     },
     {
       "id": "p2-02",
@@ -301,8 +378,16 @@
         "i18n support"
       ],
       "status": "pending",
-      "depends_on": ["p2-01", "p1-06"],
-      "estimated_files": ["src/display/duel_view.py", "tests/test_display.py", "locales/en.json", "locales/zh.json"]
+      "depends_on": [
+        "p2-01",
+        "p1-06"
+      ],
+      "estimated_files": [
+        "src/display/duel_view.py",
+        "tests/test_display.py",
+        "locales/en.json",
+        "locales/zh.json"
+      ]
     },
     {
       "id": "p2-03",
@@ -320,8 +405,15 @@
         "Enemy AI decides whether to accept"
       ],
       "status": "pending",
-      "depends_on": ["p2-02"],
-      "estimated_files": ["src/engine.py", "game.py", "web_server.py", "templates/game.html"]
+      "depends_on": [
+        "p2-02"
+      ],
+      "estimated_files": [
+        "src/engine.py",
+        "game.py",
+        "web_server.py",
+        "templates/game.html"
+      ]
     },
     {
       "id": "p2-04",
@@ -341,8 +433,15 @@
         "Tests for terrain loading"
       ],
       "status": "pending",
-      "depends_on": ["p1-01"],
-      "estimated_files": ["src/models.py", "src/constants.py", "src/data/maps/china_208.json", "tests/test_models.py"]
+      "depends_on": [
+        "p1-01"
+      ],
+      "estimated_files": [
+        "src/models.py",
+        "src/constants.py",
+        "src/data/maps/china_208.json",
+        "tests/test_models.py"
+      ]
     },
     {
       "id": "p2-05",
@@ -361,8 +460,16 @@
         "i18n support"
       ],
       "status": "pending",
-      "depends_on": ["p2-04", "p1-06"],
-      "estimated_files": ["src/display/battle_view.py", "tests/test_display.py", "locales/en.json", "locales/zh.json"]
+      "depends_on": [
+        "p2-04",
+        "p1-06"
+      ],
+      "estimated_files": [
+        "src/display/battle_view.py",
+        "tests/test_display.py",
+        "locales/en.json",
+        "locales/zh.json"
+      ]
     },
     {
       "id": "p2-06",
@@ -381,8 +488,13 @@
         "Tests for all battle scenarios"
       ],
       "status": "pending",
-      "depends_on": ["p2-04"],
-      "estimated_files": ["src/systems/battle.py", "tests/test_battle.py"]
+      "depends_on": [
+        "p2-04"
+      ],
+      "estimated_files": [
+        "src/systems/battle.py",
+        "tests/test_battle.py"
+      ]
     },
     {
       "id": "p2-07",
@@ -400,8 +512,15 @@
         "i18n for all narrative templates"
       ],
       "status": "pending",
-      "depends_on": ["p2-06"],
-      "estimated_files": ["src/display/battle_narrator.py", "tests/test_display.py", "locales/en.json", "locales/zh.json"]
+      "depends_on": [
+        "p2-06"
+      ],
+      "estimated_files": [
+        "src/display/battle_narrator.py",
+        "tests/test_display.py",
+        "locales/en.json",
+        "locales/zh.json"
+      ]
     },
     {
       "id": "p2-08",
@@ -419,8 +538,17 @@
         "AI makes tactical decisions"
       ],
       "status": "pending",
-      "depends_on": ["p2-06", "p2-05", "p2-07"],
-      "estimated_files": ["src/engine.py", "game.py", "web_server.py", "templates/game.html"]
+      "depends_on": [
+        "p2-06",
+        "p2-05",
+        "p2-07"
+      ],
+      "estimated_files": [
+        "src/engine.py",
+        "game.py",
+        "web_server.py",
+        "templates/game.html"
+      ]
     },
     {
       "id": "p2-09",
@@ -440,8 +568,15 @@
         "Weather shown in status"
       ],
       "status": "pending",
-      "depends_on": ["p1-08"],
-      "estimated_files": ["src/models.py", "src/constants.py", "src/engine.py", "tests/test_engine.py"]
+      "depends_on": [
+        "p1-08"
+      ],
+      "estimated_files": [
+        "src/models.py",
+        "src/constants.py",
+        "src/engine.py",
+        "tests/test_engine.py"
+      ]
     },
     {
       "id": "p2-10",
@@ -461,7 +596,13 @@
         "Tests for unit type mechanics"
       ],
       "status": "pending",
-      "estimated_files": ["src/models.py", "src/constants.py", "src/engine.py", "tests/test_models.py", "tests/test_engine.py"]
+      "estimated_files": [
+        "src/models.py",
+        "src/constants.py",
+        "src/engine.py",
+        "tests/test_models.py",
+        "tests/test_engine.py"
+      ]
     },
     {
       "id": "p3-01",
@@ -479,7 +620,10 @@
         "Tests for agenda generation"
       ],
       "status": "pending",
-      "estimated_files": ["src/systems/council.py", "tests/test_council.py"]
+      "estimated_files": [
+        "src/systems/council.py",
+        "tests/test_council.py"
+      ]
     },
     {
       "id": "p3-02",
@@ -496,8 +640,16 @@
         "i18n for all council text"
       ],
       "status": "pending",
-      "depends_on": ["p3-01", "p1-06"],
-      "estimated_files": ["src/display/council_view.py", "tests/test_display.py", "locales/en.json", "locales/zh.json"]
+      "depends_on": [
+        "p3-01",
+        "p1-06"
+      ],
+      "estimated_files": [
+        "src/display/council_view.py",
+        "tests/test_display.py",
+        "locales/en.json",
+        "locales/zh.json"
+      ]
     },
     {
       "id": "p3-03",
@@ -514,8 +666,15 @@
         "Council optional, not required"
       ],
       "status": "pending",
-      "depends_on": ["p3-02"],
-      "estimated_files": ["src/engine.py", "game.py", "web_server.py", "templates/game.html"]
+      "depends_on": [
+        "p3-02"
+      ],
+      "estimated_files": [
+        "src/engine.py",
+        "game.py",
+        "web_server.py",
+        "templates/game.html"
+      ]
     },
     {
       "id": "p3-04",
@@ -534,8 +693,14 @@
         "Tests for relationship effects"
       ],
       "status": "pending",
-      "depends_on": ["p1-11"],
-      "estimated_files": ["src/models.py", "src/data/officers/legendary.json", "tests/test_models.py"]
+      "depends_on": [
+        "p1-11"
+      ],
+      "estimated_files": [
+        "src/models.py",
+        "src/data/officers/legendary.json",
+        "tests/test_models.py"
+      ]
     },
     {
       "id": "p3-05",
@@ -552,8 +717,15 @@
         "Loyalty calculation uses relationships"
       ],
       "status": "pending",
-      "depends_on": ["p3-04", "p1-05"],
-      "estimated_files": ["src/display/officer_view.py", "src/engine.py", "tests/test_engine.py"]
+      "depends_on": [
+        "p3-04",
+        "p1-05"
+      ],
+      "estimated_files": [
+        "src/display/officer_view.py",
+        "src/engine.py",
+        "tests/test_engine.py"
+      ]
     },
     {
       "id": "p3-06",
@@ -571,7 +743,11 @@
         "Tests for event triggering"
       ],
       "status": "pending",
-      "estimated_files": ["src/systems/events.py", "src/data/events/random.json", "tests/test_events.py"]
+      "estimated_files": [
+        "src/systems/events.py",
+        "src/data/events/random.json",
+        "tests/test_events.py"
+      ]
     },
     {
       "id": "p3-07",
@@ -588,8 +764,15 @@
         "CLI and web both support events"
       ],
       "status": "pending",
-      "depends_on": ["p3-06"],
-      "estimated_files": ["src/display/event_view.py", "src/engine.py", "game.py", "web_server.py"]
+      "depends_on": [
+        "p3-06"
+      ],
+      "estimated_files": [
+        "src/display/event_view.py",
+        "src/engine.py",
+        "game.py",
+        "web_server.py"
+      ]
     },
     {
       "id": "p3-08",
@@ -608,7 +791,11 @@
         "Tests for tech structure"
       ],
       "status": "pending",
-      "estimated_files": ["src/models.py", "src/data/technologies.json", "tests/test_models.py"]
+      "estimated_files": [
+        "src/models.py",
+        "src/data/technologies.json",
+        "tests/test_models.py"
+      ]
     },
     {
       "id": "p3-09",
@@ -625,8 +812,16 @@
         "'tech' command shows tech tree"
       ],
       "status": "pending",
-      "depends_on": ["p3-08"],
-      "estimated_files": ["src/engine.py", "game.py", "web_server.py", "locales/en.json", "locales/zh.json"]
+      "depends_on": [
+        "p3-08"
+      ],
+      "estimated_files": [
+        "src/engine.py",
+        "game.py",
+        "web_server.py",
+        "locales/en.json",
+        "locales/zh.json"
+      ]
     },
     {
       "id": "p3-10",
@@ -645,7 +840,12 @@
         "'build [building] at [city]' command"
       ],
       "status": "pending",
-      "estimated_files": ["src/models.py", "src/data/buildings.json", "src/engine.py", "tests/test_engine.py"]
+      "estimated_files": [
+        "src/models.py",
+        "src/data/buildings.json",
+        "src/engine.py",
+        "tests/test_engine.py"
+      ]
     },
     {
       "id": "p4-01",
@@ -663,8 +863,14 @@
         "Tests for historical triggers"
       ],
       "status": "pending",
-      "depends_on": ["p3-06"],
-      "estimated_files": ["src/systems/events.py", "src/data/events/historical.json", "tests/test_events.py"]
+      "depends_on": [
+        "p3-06"
+      ],
+      "estimated_files": [
+        "src/systems/events.py",
+        "src/data/events/historical.json",
+        "tests/test_events.py"
+      ]
     },
     {
       "id": "p4-02",
@@ -683,8 +889,15 @@
         "Abilities trigger in combat/duel"
       ],
       "status": "pending",
-      "depends_on": ["p1-11"],
-      "estimated_files": ["src/models.py", "src/data/officers/abilities.json", "src/systems/duel.py", "src/systems/battle.py"]
+      "depends_on": [
+        "p1-11"
+      ],
+      "estimated_files": [
+        "src/models.py",
+        "src/data/officers/abilities.json",
+        "src/systems/duel.py",
+        "src/systems/battle.py"
+      ]
     },
     {
       "id": "p4-03",
@@ -701,7 +914,11 @@
         "Categories: Military, Economic, Diplomatic, Collection"
       ],
       "status": "pending",
-      "estimated_files": ["src/systems/achievements.py", "src/data/achievements.json", "tests/test_achievements.py"]
+      "estimated_files": [
+        "src/systems/achievements.py",
+        "src/data/achievements.json",
+        "tests/test_achievements.py"
+      ]
     },
     {
       "id": "p4-04",
@@ -719,8 +936,15 @@
         "'Press ENTER to continue' prompt"
       ],
       "status": "pending",
-      "depends_on": ["p1-10"],
-      "estimated_files": ["src/display/reports.py", "src/engine.py", "game.py", "web_server.py"]
+      "depends_on": [
+        "p1-10"
+      ],
+      "estimated_files": [
+        "src/display/reports.py",
+        "src/engine.py",
+        "game.py",
+        "web_server.py"
+      ]
     },
     {
       "id": "p4-05",
@@ -738,7 +962,12 @@
         "i18n for all dialogue templates"
       ],
       "status": "pending",
-      "estimated_files": ["src/systems/dialogue.py", "tests/test_dialogue.py", "locales/en.json", "locales/zh.json"]
+      "estimated_files": [
+        "src/systems/dialogue.py",
+        "tests/test_dialogue.py",
+        "locales/en.json",
+        "locales/zh.json"
+      ]
     },
     {
       "id": "p4-06",
@@ -754,8 +983,16 @@
         "Loyalty warnings in character"
       ],
       "status": "pending",
-      "depends_on": ["p4-05", "p3-03", "p2-08"],
-      "estimated_files": ["src/systems/council.py", "src/systems/battle.py", "src/systems/events.py"]
+      "depends_on": [
+        "p4-05",
+        "p3-03",
+        "p2-08"
+      ],
+      "estimated_files": [
+        "src/systems/council.py",
+        "src/systems/battle.py",
+        "src/systems/events.py"
+      ]
     },
     {
       "id": "p4-07",
@@ -772,7 +1009,13 @@
         "Cooldown between missions"
       ],
       "status": "pending",
-      "estimated_files": ["src/engine.py", "game.py", "web_server.py", "locales/en.json", "locales/zh.json"]
+      "estimated_files": [
+        "src/engine.py",
+        "game.py",
+        "web_server.py",
+        "locales/en.json",
+        "locales/zh.json"
+      ]
     },
     {
       "id": "p4-08",
@@ -789,8 +1032,15 @@
         "Some officers refuse to surrender"
       ],
       "status": "pending",
-      "depends_on": ["p2-08"],
-      "estimated_files": ["src/engine.py", "src/models.py", "game.py", "web_server.py"]
+      "depends_on": [
+        "p2-08"
+      ],
+      "estimated_files": [
+        "src/engine.py",
+        "src/models.py",
+        "game.py",
+        "web_server.py"
+      ]
     },
     {
       "id": "p5-01",
@@ -808,8 +1058,12 @@
         "Compatible with existing map renderer"
       ],
       "status": "pending",
-      "depends_on": ["p1-01"],
-      "estimated_files": ["src/data/maps/china_208_full.json"]
+      "depends_on": [
+        "p1-01"
+      ],
+      "estimated_files": [
+        "src/data/maps/china_208_full.json"
+      ]
     },
     {
       "id": "p5-02",
@@ -827,8 +1081,16 @@
         "Scenario selection at game start"
       ],
       "status": "pending",
-      "depends_on": ["p5-01", "p1-12"],
-      "estimated_files": ["src/data/maps/china_190.json", "src/data/maps/china_200.json", "src/data/maps/china_220.json", "src/world.py"]
+      "depends_on": [
+        "p5-01",
+        "p1-12"
+      ],
+      "estimated_files": [
+        "src/data/maps/china_190.json",
+        "src/data/maps/china_200.json",
+        "src/data/maps/china_220.json",
+        "src/world.py"
+      ]
     },
     {
       "id": "p5-03",
@@ -845,8 +1107,15 @@
         "Special naval abilities (Zhou Yu)"
       ],
       "status": "pending",
-      "depends_on": ["p2-10", "p2-04"],
-      "estimated_files": ["src/models.py", "src/systems/battle.py", "src/constants.py"]
+      "depends_on": [
+        "p2-10",
+        "p2-04"
+      ],
+      "estimated_files": [
+        "src/models.py",
+        "src/systems/battle.py",
+        "src/constants.py"
+      ]
     },
     {
       "id": "p5-04",
@@ -864,7 +1133,11 @@
         "AI considers alliances"
       ],
       "status": "pending",
-      "estimated_files": ["src/models.py", "src/systems/diplomacy.py", "src/engine.py"]
+      "estimated_files": [
+        "src/models.py",
+        "src/systems/diplomacy.py",
+        "src/engine.py"
+      ]
     },
     {
       "id": "p5-05",
@@ -881,8 +1154,14 @@
         "Supply days shown in battle UI"
       ],
       "status": "pending",
-      "depends_on": ["p2-06"],
-      "estimated_files": ["src/models.py", "src/systems/battle.py", "src/engine.py"]
+      "depends_on": [
+        "p2-06"
+      ],
+      "estimated_files": [
+        "src/models.py",
+        "src/systems/battle.py",
+        "src/engine.py"
+      ]
     },
     {
       "id": "p5-06",
@@ -899,7 +1178,11 @@
         "Migration between cities"
       ],
       "status": "pending",
-      "estimated_files": ["src/models.py", "src/engine.py", "tests/test_engine.py"]
+      "estimated_files": [
+        "src/models.py",
+        "src/engine.py",
+        "tests/test_engine.py"
+      ]
     },
     {
       "id": "p5-07",
@@ -915,8 +1198,14 @@
         "AI proposes marriages"
       ],
       "status": "pending",
-      "depends_on": ["p5-04", "p3-04"],
-      "estimated_files": ["src/systems/diplomacy.py", "src/engine.py"]
+      "depends_on": [
+        "p5-04",
+        "p3-04"
+      ],
+      "estimated_files": [
+        "src/systems/diplomacy.py",
+        "src/engine.py"
+      ]
     },
     {
       "id": "p5-08",
@@ -933,7 +1222,11 @@
         "Difficulty affects AI decision quality"
       ],
       "status": "pending",
-      "estimated_files": ["src/engine.py", "src/constants.py", "tests/test_engine.py"]
+      "estimated_files": [
+        "src/engine.py",
+        "src/constants.py",
+        "tests/test_engine.py"
+      ]
     }
   ],
   "completed": [
