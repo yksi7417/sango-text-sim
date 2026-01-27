@@ -254,7 +254,7 @@
         "i18n for all narrative text",
         "Tests verify report generation"
       ],
-      "status": "pending",
+      "status": "passed",
       "depends_on": [
         "p1-08"
       ],
