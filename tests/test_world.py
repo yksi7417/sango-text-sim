@@ -406,3 +406,62 @@ class TestWorldIntegration:
         assert empty_game_state.player_faction == "Shu"
         assert empty_game_state.year == 208
         assert empty_game_state.cities["Xuchang"].gold == 700  # Back to initial value
+
+
+class TestTerrainLoading:
+    """Tests for terrain data loading from JSON."""
+
+    def test_cities_have_terrain_from_json(self, empty_game_state):
+        """Cities should be loaded with terrain from JSON."""
+        world.init_world(empty_game_state, player_choice="Wei", seed=42)
+
+        # Check that all cities have terrain
+        for city in empty_game_state.cities.values():
+            assert hasattr(city, 'terrain'), f"City {city.name} missing terrain attribute"
+            assert city.terrain is not None, f"City {city.name} has None terrain"
+
+    def test_terrain_types_loaded_correctly(self, empty_game_state):
+        """Specific cities should have expected terrain types from JSON."""
+        from src.models import TerrainType
+
+        world.init_world(empty_game_state, player_choice="Wei", seed=42)
+
+        # Based on china_208.json data
+        assert empty_game_state.cities["Xuchang"].terrain == TerrainType.PLAINS
+        assert empty_game_state.cities["Luoyang"].terrain == TerrainType.FOREST
+        assert empty_game_state.cities["Chengdu"].terrain == TerrainType.MOUNTAIN
+        assert empty_game_state.cities["Hanzhong"].terrain == TerrainType.MOUNTAIN
+        assert empty_game_state.cities["Jianye"].terrain == TerrainType.COASTAL
+        assert empty_game_state.cities["Wuchang"].terrain == TerrainType.RIVER
+
+    def test_terrain_variety(self, empty_game_state):
+        """Map should have variety of terrain types."""
+        from src.models import TerrainType
+
+        world.init_world(empty_game_state, player_choice="Wei", seed=42)
+
+        terrain_types = {city.terrain for city in empty_game_state.cities.values()}
+
+        # Should have multiple terrain types
+        assert len(terrain_types) > 1, "Map should have variety of terrain types"
+
+        # Should include at least plains and mountain
+        assert TerrainType.PLAINS in terrain_types
+        assert TerrainType.MOUNTAIN in terrain_types
+
+    def test_city_data_includes_terrain(self):
+        """CITY_DATA should include terrain field when loaded from JSON."""
+        city_data, _ = world._load_city_data_from_json("china_208")
+
+        if city_data is not None:  # JSON loading successful
+            for city_name, data in city_data.items():
+                assert "terrain" in data, f"City {city_name} missing terrain in loaded data"
+                assert isinstance(data["terrain"], str), f"Terrain should be string, got {type(data['terrain'])}"
+
+    def test_terrain_fallback_to_plains(self):
+        """Cities without terrain in JSON should default to PLAINS."""
+        from src.models import City, TerrainType
+
+        # Create city without specifying terrain
+        city = City(name="TestCity", owner="Wei")
+        assert city.terrain == TerrainType.PLAINS

@@ -11,7 +11,7 @@ import json
 import os
 from dataclasses import asdict
 from typing import Optional
-from .models import Officer, City, Faction, GameState
+from .models import Officer, City, Faction, GameState, TerrainType
 
 
 def save_game(game_state: GameState, filepath: str) -> bool:
@@ -35,9 +35,16 @@ def save_game(game_state: GameState, filepath: str) -> bool:
     try:
         # Prepare serializable data
         data = asdict(game_state)
-        
+
         # Convert complex objects to dictionaries
-        data["cities"] = {k: asdict(v) for k, v in game_state.cities.items()}
+        data["cities"] = {}
+        for k, v in game_state.cities.items():
+            city_data = asdict(v)
+            # Convert TerrainType enum to string
+            if isinstance(city_data.get('terrain'), TerrainType):
+                city_data['terrain'] = city_data['terrain'].value
+            data["cities"][k] = city_data
+
         data["factions"] = {
             k: {
                 "name": f.name,
@@ -49,11 +56,11 @@ def save_game(game_state: GameState, filepath: str) -> bool:
             for k, f in game_state.factions.items()
         }
         data["officers"] = {k: asdict(v) for k, v in game_state.officers.items()}
-        
+
         # Write to file with UTF-8 encoding to support Chinese characters
         with open(filepath, "w", encoding="utf-8") as f:
             json.dump(data, f, ensure_ascii=False, indent=2)
-        
+
         return True
     
     except (IOError, OSError, ValueError) as e:
@@ -92,7 +99,12 @@ def load_game(game_state: GameState, filepath: str) -> Optional[str]:
         game_state.messages = []  # Clear messages on load
         
         # Restore cities
-        game_state.cities = {k: City(**v) for k, v in data["cities"].items()}
+        game_state.cities = {}
+        for k, v in data["cities"].items():
+            # Convert terrain string back to TerrainType enum
+            if 'terrain' in v and isinstance(v['terrain'], str):
+                v['terrain'] = TerrainType(v['terrain'])
+            game_state.cities[k] = City(**v)
         
         # Restore factions
         game_state.factions = {}

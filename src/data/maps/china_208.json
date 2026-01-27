@@ -55,7 +55,7 @@
     {
       "id": "Luoyang",
       "province": "yu",
-      "terrain": "plains",
+      "terrain": "forest",
       "coordinates": {
         "x": 4,
         "y": 2
@@ -163,7 +163,7 @@
     {
       "id": "Wuchang",
       "province": "yang",
-      "terrain": "plains",
+      "terrain": "river",
       "coordinates": {
         "x": 6,
         "y": 5

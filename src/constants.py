@@ -168,3 +168,26 @@ RAIN_MOVEMENT_PENALTY = 0.90  # -10% movement in rain
 DROUGHT_FIRE_ATTACK_BONUS = 1.50  # +50% fire attack effectiveness in drought
 SNOW_MOVEMENT_PENALTY = 0.70  # -30% movement in snow
 SNOW_ATTRITION_RATE = 0.03  # 3% troop loss in snow
+
+# =================== Terrain Effects ===================
+# Terrain type affects combat effectiveness
+# TerrainType enum is defined in models.py
+
+# Plains terrain - baseline combat
+PLAINS_COMBAT_MODIFIER = 1.0  # Normal combat, no modifiers
+
+# Mountain terrain - defensive advantage
+MOUNTAIN_DEFENSE_BONUS = 1.30  # +30% defense in mountains
+MOUNTAIN_CAVALRY_PENALTY = 0.80  # -20% cavalry effectiveness in mountains
+
+# Forest terrain - ambush and fire advantages
+FOREST_AMBUSH_BONUS = 1.20  # +20% ambush success rate in forests
+FOREST_FIRE_ATTACK_BONUS = 1.25  # +25% fire attack effectiveness in forests
+
+# Coastal terrain - naval requirements
+COASTAL_NAVAL_REQUIRED = True  # Naval units required to attack coastal cities
+COASTAL_NAVAL_DEFENSE_BONUS = 1.15  # +15% defense against non-naval attacks
+
+# River terrain - crossing penalty
+RIVER_CROSSING_PENALTY = 0.85  # -15% attack effectiveness when crossing river
+RIVER_CROSSING_ATTRITION = 0.02  # 2% troop loss when crossing

@@ -3,7 +3,7 @@ Unit tests for data models
 """
 import pytest
 from dataclasses import asdict
-from src.models import Officer, City, Faction, GameState, Season, get_current_season
+from src.models import Officer, City, Faction, GameState, Season, get_current_season, TerrainType
 
 
 class TestOfficer:
@@ -233,6 +233,54 @@ class TestSeason:
         """Test that season enum values are distinct"""
         seasons = [Season.SPRING, Season.SUMMER, Season.AUTUMN, Season.WINTER]
         assert len(seasons) == len(set(seasons))
+
+
+class TestTerrainType:
+    """Tests for TerrainType enum"""
+
+    def test_terrain_enum_exists(self):
+        """Test that TerrainType enum has all five terrain types"""
+        assert hasattr(TerrainType, 'PLAINS')
+        assert hasattr(TerrainType, 'MOUNTAIN')
+        assert hasattr(TerrainType, 'FOREST')
+        assert hasattr(TerrainType, 'COASTAL')
+        assert hasattr(TerrainType, 'RIVER')
+
+    def test_terrain_enum_values(self):
+        """Test that terrain enum values match expected strings"""
+        assert TerrainType.PLAINS.value == "plains"
+        assert TerrainType.MOUNTAIN.value == "mountain"
+        assert TerrainType.FOREST.value == "forest"
+        assert TerrainType.COASTAL.value == "coastal"
+        assert TerrainType.RIVER.value == "river"
+
+    def test_terrain_enum_from_string(self):
+        """Test creating TerrainType from string value"""
+        assert TerrainType("plains") == TerrainType.PLAINS
+        assert TerrainType("mountain") == TerrainType.MOUNTAIN
+        assert TerrainType("forest") == TerrainType.FOREST
+        assert TerrainType("coastal") == TerrainType.COASTAL
+        assert TerrainType("river") == TerrainType.RIVER
+
+    def test_terrain_enum_unique_values(self):
+        """Test that all terrain types are distinct"""
+        terrains = [TerrainType.PLAINS, TerrainType.MOUNTAIN, TerrainType.FOREST,
+                   TerrainType.COASTAL, TerrainType.RIVER]
+        assert len(terrains) == len(set(terrains))
+
+    def test_city_with_terrain(self):
+        """Test that City can be created with terrain"""
+        city = City(
+            name="TestCity",
+            owner="Wei",
+            terrain=TerrainType.MOUNTAIN
+        )
+        assert city.terrain == TerrainType.MOUNTAIN
+
+    def test_city_default_terrain(self):
+        """Test that City defaults to PLAINS terrain"""
+        city = City(name="TestCity", owner="Wei")
+        assert city.terrain == TerrainType.PLAINS
 
 
 @pytest.mark.unit

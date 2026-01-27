@@ -50,6 +50,24 @@ def get_current_season(month: int) -> Season:
         return Season.WINTER
 
 
+class TerrainType(Enum):
+    """
+    Terrain types that affect combat and movement.
+
+    Each terrain type provides different tactical advantages:
+    - Plains: Normal combat, no modifiers
+    - Mountain: +30% defense, -20% cavalry effectiveness
+    - Forest: +20% ambush success, fire attack bonus
+    - Coastal: Naval units required for attack
+    - River: Crossing penalty during attack
+    """
+    PLAINS = "plains"
+    MOUNTAIN = "mountain"
+    FOREST = "forest"
+    COASTAL = "coastal"
+    RIVER = "river"
+
+
 class EventCategory(Enum):
     """Categories for turn events."""
     ECONOMY = "economy"
@@ -112,7 +130,7 @@ class Officer:
 class City:
     """
     Represents a city/settlement in the game.
-    
+
     Attributes:
         name: City name
         owner: Faction that controls this city
@@ -125,6 +143,7 @@ class City:
         commerce: Commercial development (affects gold income)
         tech: Technology level (affects combat bonuses)
         walls: Fortification level (affects defense)
+        terrain: Terrain type affecting combat and movement
     """
     name: str
     owner: str
@@ -137,6 +156,7 @@ class City:
     commerce: int = 50
     tech: int = 40
     walls: int = 50
+    terrain: TerrainType = TerrainType.PLAINS
 
 
 @dataclass

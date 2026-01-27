@@ -268,7 +268,8 @@ def _load_city_data_from_json(scenario_name: str = "china_208") -> tuple:
                 "agri": city["development"]["agriculture"],
                 "commerce": city["development"]["commerce"],
                 "tech": city["development"]["technology"],
-                "walls": city["development"]["walls"]
+                "walls": city["development"]["walls"],
+                "terrain": city.get("terrain", "plains")  # Default to plains if not specified
             }
 
             # Build adjacency map
@@ -375,6 +376,13 @@ def init_world(game_state: GameState, player_choice: Optional[str] = None, seed:
     # Create cities
     cities = {}
     for city_name, data in CITY_DATA.items():
+        # Import TerrainType here to avoid circular import
+        from .models import TerrainType
+
+        # Get terrain, default to PLAINS if not specified
+        terrain_str = data.get("terrain", "plains")
+        terrain = TerrainType(terrain_str)
+
         cities[city_name] = City(
             name=city_name,
             owner=data["owner"],
@@ -386,7 +394,8 @@ def init_world(game_state: GameState, player_choice: Optional[str] = None, seed:
             agri=data["agri"],
             commerce=data["commerce"],
             tech=data["tech"],
-            walls=data["walls"]
+            walls=data["walls"],
+            terrain=terrain
         )
     
     # Set adjacency map
