@@ -51,6 +51,22 @@ python -m pytest --no-cov -v
 python -m pytest --cov=src --cov-report=term-missing
 ```
 
+## Deployment & Acceptance Verification
+
+**Deployment Pipeline:**
+- Every commit pushes to GitHub
+- GitHub Actions automatically deploys to production
+- Live site: https://sango-text-sim.fly.dev/
+
+**Acceptance Criteria Process:**
+1. Ensure all tests pass locally
+2. Commit and push changes
+3. Wait for GitHub Actions deployment to complete
+4. Visit https://sango-text-sim.fly.dev/ and play the game briefly
+5. Verify the feature works correctly on the live site
+
+This end-to-end verification ensures code works in production and features behave as expected for real users.
+
 ## Stop Signal (Loop Mode)
 
 When ALL tasks complete, output:

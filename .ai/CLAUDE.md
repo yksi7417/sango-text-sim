@@ -16,9 +16,11 @@ You are running in **autonomous loop mode**. Each iteration:
 2. Check `depends_on` - skip if dependencies not yet passed
 3. Implement the task following all quality standards
 4. Run tests to verify: `python -m pytest --no-cov -v`
-5. If tests pass: commit changes, update task status to "passed"
-6. Log learnings to `progress.txt`
-7. If ALL tasks have `"status": "passed"`, output: `<promise>COMPLETE</promise>`
+5. If tests pass: commit and push changes
+6. Verify deployment at https://sango-text-sim.fly.dev/ - play game briefly
+7. If deployment works: update task status to "passed"
+8. Log learnings to `progress.txt`
+9. If ALL tasks have `"status": "passed"`, output: `<promise>COMPLETE</promise>`
 
 ## Critical Rules
 
@@ -96,10 +98,22 @@ Implements task <id>
 Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>"
 ```
 
-### 5. Update Status
+### 5. Deploy & Verify (MANDATORY)
+After commit is pushed:
+1. Wait for GitHub Actions to complete deployment
+2. Visit https://sango-text-sim.fly.dev/
+3. Play the game briefly to verify the feature works
+4. Only mark task as "passed" after live verification succeeds
+
+**Deployment Pipeline:**
+- Commits auto-push to GitHub
+- GitHub Actions triggers deployment to Fly.dev
+- Live site: https://sango-text-sim.fly.dev/
+
+### 6. Update Status
 In `tasks.json`, change task status to "passed"
 
-### 6. Log Progress
+### 7. Log Progress
 Append to `progress.txt`:
 ```
 [TIMESTAMP] [ITER-N] [PASS] Completed <task-id>: <brief summary>
