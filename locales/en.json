@@ -312,5 +312,13 @@
     "summer_desc": "The sun beats down. Armies march under clear skies.",
     "autumn_desc": "Golden harvests fill the granaries. A time of plenty. (+15%% harvest)",
     "winter_desc": "Snow blankets the land. Movement slows, troops shiver. (-30%% movement)"
+  },
+  "reports": {
+    "season_title": "Season",
+    "category_economy": "Economy",
+    "category_military": "Military",
+    "category_diplomatic": "Diplomatic",
+    "category_officer": "Officer Affairs",
+    "no_events": "A quiet turn passes..."
   }
 }

@@ -705,3 +705,118 @@ class TestComponents:
         unknown_color = get_faction_color("Unknown")
         assert isinstance(unknown_color, str)
         assert "\033[" in unknown_color
+
+
+class TestTurnReportGenerator:
+    """Tests for turn report generation."""
+
+    def test_generate_turn_report_empty_events(self):
+        """Test generating report with no events."""
+        from src.display.reports import generate_turn_report
+        from src.models import Season
+        
+        report = generate_turn_report([], Season.SPRING)
+        assert isinstance(report, str)
+        assert len(report) > 0
+
+    def test_generate_turn_report_with_season_flavor(self):
+        """Test report includes seasonal flavor text."""
+        from src.display.reports import generate_turn_report, TurnEvent, EventCategory
+        from src.models import Season
+        
+        events = []
+        report_spring = generate_turn_report(events, Season.SPRING)
+        report_winter = generate_turn_report(events, Season.WINTER)
+        
+        # Reports should differ by season
+        assert isinstance(report_spring, str)
+        assert isinstance(report_winter, str)
+
+    def test_generate_turn_report_with_economy_events(self):
+        """Test report formats economy events."""
+        from src.display.reports import generate_turn_report, TurnEvent, EventCategory
+        from src.models import Season
+        
+        events = [
+            TurnEvent(
+                category=EventCategory.ECONOMY,
+                message="Chengdu earned 100 gold from commerce",
+                data={"city": "Chengdu", "gold": 100}
+            )
+        ]
+        report = generate_turn_report(events, Season.SPRING)
+        
+        assert isinstance(report, str)
+        assert len(report) > 0
+
+    def test_generate_turn_report_with_military_events(self):
+        """Test report formats military events."""
+        from src.display.reports import generate_turn_report, TurnEvent, EventCategory
+        from src.models import Season
+        
+        events = [
+            TurnEvent(
+                category=EventCategory.MILITARY,
+                message="Shu trained 50 troops at Chengdu",
+                data={"city": "Chengdu", "troops": 50}
+            )
+        ]
+        report = generate_turn_report(events, Season.SUMMER)
+        
+        assert isinstance(report, str)
+        assert len(report) > 0
+
+    def test_generate_turn_report_with_officer_events(self):
+        """Test report formats officer events."""
+        from src.display.reports import generate_turn_report, TurnEvent, EventCategory
+        from src.models import Season
+        
+        events = [
+            TurnEvent(
+                category=EventCategory.OFFICER,
+                message="Guan Yu completed farming assignment",
+                data={"officer": "Guan Yu", "task": "farm"}
+            )
+        ]
+        report = generate_turn_report(events, Season.AUTUMN)
+        
+        assert isinstance(report, str)
+        assert len(report) > 0
+
+    def test_generate_turn_report_with_mixed_events(self):
+        """Test report handles multiple event categories."""
+        from src.display.reports import generate_turn_report, TurnEvent, EventCategory
+        from src.models import Season
+        
+        events = [
+            TurnEvent(EventCategory.ECONOMY, "Commerce income", {}),
+            TurnEvent(EventCategory.MILITARY, "Training complete", {}),
+            TurnEvent(EventCategory.OFFICER, "Loyalty change", {}),
+        ]
+        report = generate_turn_report(events, Season.WINTER)
+        
+        assert isinstance(report, str)
+        assert len(report) > 0
+
+    def test_turn_event_creation(self):
+        """Test TurnEvent dataclass creation."""
+        from src.display.reports import TurnEvent, EventCategory
+        
+        event = TurnEvent(
+            category=EventCategory.ECONOMY,
+            message="Test message",
+            data={"key": "value"}
+        )
+        
+        assert event.category == EventCategory.ECONOMY
+        assert event.message == "Test message"
+        assert event.data["key"] == "value"
+
+    def test_event_category_enum(self):
+        """Test EventCategory enum has all categories."""
+        from src.display.reports import EventCategory
+        
+        assert hasattr(EventCategory, 'ECONOMY')
+        assert hasattr(EventCategory, 'MILITARY')
+        assert hasattr(EventCategory, 'DIPLOMATIC')
+        assert hasattr(EventCategory, 'OFFICER')
