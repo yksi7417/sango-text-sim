@@ -472,6 +472,20 @@
         "defender_wins2": "守住了！{defender}成功驅退{attacker}！{reason}",
         "defender_wins3": "{attacker}進攻失敗！{defender}取得勝利！{reason}"
       }
+    },
+    "initiated": "{attacker}率軍進攻{city}，守將{defender}迎戰！",
+    "victory_detailed": "{commander}攻下{city}！{reason}",
+    "defeat_detailed": "{commander}進攻{city}失敗！{reason}",
+    "error": {
+      "attacker_city_not_found": "進攻城市不存在",
+      "defender_city_not_found": "防守城市不存在",
+      "same_faction": "不能進攻己方城市",
+      "insufficient_troops": "兵力不足",
+      "battle_in_progress": "已有戰鬥進行中",
+      "no_attacker_commander": "進攻城市無將領",
+      "no_defender_commander": "防守城市無將領",
+      "no_active_battle": "無進行中的戰鬥",
+      "invalid_action": "無效的戰鬥指令"
     }
   },
   "terrain": {

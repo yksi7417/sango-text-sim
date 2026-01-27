@@ -12,8 +12,8 @@ This module contains the central game logic:
 """
 
 import random
-from typing import Tuple, List
-from .models import Officer, City, GameState, Faction, TurnEvent, EventCategory
+from typing import Tuple, List, Dict, Any, Optional
+from .models import Officer, City, GameState, Faction, TurnEvent, EventCategory, BattleState
 from .constants import TASKS
 from . import utils
 from i18n import i18n
@@ -113,8 +113,346 @@ def battle(game_state: GameState, attacker: City, defender: City, atk_size: int)
         atk_comm.loyalty = utils.clamp(atk_comm.loyalty + (5 if victory else -5), 0, 100)
     if def_comm:
         def_comm.loyalty = utils.clamp(def_comm.loyalty + (-5 if victory else 5), 0, 100)
-    
+
     return victory, casualties
+
+
+def initiate_tactical_battle(
+    game_state: GameState,
+    attacker_city_name: str,
+    defender_city_name: str,
+    attacking_troops: int
+) -> Dict[str, Any]:
+    """
+    Initiate a multi-turn tactical battle between two cities.
+
+    This replaces the simple battle() function with a tactical system that:
+    - Spans multiple turns with player choices
+    - Uses terrain and weather effects
+    - Implements siege mechanics
+    - Tracks morale and supply
+
+    Args:
+        game_state: Current game state
+        attacker_city_name: Name of attacking city
+        defender_city_name: Name of defending city
+        attacking_troops: Number of troops sent to attack
+
+    Returns:
+        Dict with 'success' (bool), 'message' (str), and battle state info
+    """
+    from src.systems.battle import create_battle
+
+    # Validate cities exist
+    if attacker_city_name not in game_state.cities:
+        return {'success': False, 'message': i18n.t("battle.error.attacker_city_not_found")}
+    if defender_city_name not in game_state.cities:
+        return {'success': False, 'message': i18n.t("battle.error.defender_city_not_found")}
+
+    attacker_city = game_state.cities[attacker_city_name]
+    defender_city = game_state.cities[defender_city_name]
+
+    # Validate different owners
+    if attacker_city.owner == defender_city.owner:
+        return {'success': False, 'message': i18n.t("battle.error.same_faction")}
+
+    # Validate enough troops
+    if attacking_troops > attacker_city.troops:
+        return {'success': False, 'message': i18n.t("battle.error.insufficient_troops")}
+
+    # Check if there's already an active battle
+    if game_state.active_battle is not None:
+        return {'success': False, 'message': i18n.t("battle.error.battle_in_progress")}
+
+    # Find commanders
+    atk_officers = utils.officers_in_city(game_state, attacker_city.owner, attacker_city_name)
+    def_officers = utils.officers_in_city(game_state, defender_city.owner, defender_city_name)
+
+    atk_commander = max(atk_officers, key=lambda o: o.leadership, default=None)
+    def_commander = max(def_officers, key=lambda o: o.leadership, default=None)
+
+    if not atk_commander:
+        return {'success': False, 'message': i18n.t("battle.error.no_attacker_commander")}
+    if not def_commander:
+        return {'success': False, 'message': i18n.t("battle.error.no_defender_commander")}
+
+    # Deduct troops from attacking city
+    attacker_city.troops -= attacking_troops
+
+    # Determine weather (simplified - could use seasonal system)
+    weather_options = ["clear", "clear", "clear", "rain", "fog"]
+    weather = random.choice(weather_options)
+
+    # Create battle state
+    battle = create_battle(
+        attacker_city=attacker_city_name,
+        defender_city=defender_city_name,
+        attacker_faction=attacker_city.owner,
+        defender_faction=defender_city.owner,
+        attacker_commander=atk_commander.name,
+        defender_commander=def_commander.name,
+        attacker_troops=attacking_troops,
+        defender_troops=defender_city.troops,
+        terrain=defender_city.terrain,
+        weather=weather
+    )
+
+    # Store battle in game state
+    game_state.active_battle = battle
+
+    return {
+        'success': True,
+        'message': i18n.t(
+            "battle.initiated",
+            attacker=atk_commander.name,
+            defender=def_commander.name,
+            city=defender_city_name
+        ),
+        'battle': battle
+    }
+
+
+def process_battle_action(
+    game_state: GameState,
+    attacker_action: str,
+    defender_action: Optional[str] = None
+) -> Dict[str, Any]:
+    """
+    Process one turn of the active tactical battle.
+
+    Args:
+        game_state: Current game state
+        attacker_action: Action chosen by attacker ("attack", "defend", "flank", "fire_attack", "retreat")
+        defender_action: Action chosen by defender (None for AI to decide)
+
+    Returns:
+        Dict with turn results, battle status, and end condition if applicable
+    """
+    from src.systems.battle import BattleAction, process_battle_turn, check_battle_end
+
+    # Validate there's an active battle
+    if game_state.active_battle is None:
+        return {'success': False, 'message': i18n.t("battle.error.no_active_battle")}
+
+    battle = game_state.active_battle
+
+    # Convert string action to BattleAction enum
+    try:
+        atk_action = BattleAction(attacker_action.lower())
+    except ValueError:
+        return {'success': False, 'message': i18n.t("battle.error.invalid_action")}
+
+    # AI chooses defender action if not provided
+    if defender_action is None:
+        def_action = choose_ai_battle_action(game_state, battle, is_defender=True)
+    else:
+        try:
+            def_action = BattleAction(defender_action.lower())
+        except ValueError:
+            return {'success': False, 'message': i18n.t("battle.error.invalid_action")}
+
+    # Process the battle turn
+    turn_result = process_battle_turn(battle, atk_action, def_action)
+
+    # Check if battle has ended
+    end_check = check_battle_end(battle)
+
+    if end_check['ended']:
+        # Battle is over, resolve it
+        winner = end_check['winner']
+        reason = end_check['reason']
+
+        result = resolve_battle_end(game_state, battle, winner, reason)
+
+        # Clear active battle
+        game_state.active_battle = None
+
+        return {
+            'success': True,
+            'battle_ended': True,
+            'winner': winner,
+            'reason': reason,
+            'turn_result': turn_result,
+            'resolution': result
+        }
+    else:
+        # Battle continues
+        return {
+            'success': True,
+            'battle_ended': False,
+            'turn_result': turn_result,
+            'battle': battle
+        }
+
+
+def choose_ai_battle_action(
+    game_state: GameState,
+    battle: BattleState,
+    is_defender: bool
+) -> 'BattleAction':
+    """
+    AI decision-making for tactical battles.
+
+    Strategy:
+    - Defender: Prefer defend when losing morale, flank when healthy
+    - Attacker: Prefer fire_attack in forest/drought, flank when winning
+    - Both: Retreat if troops or morale very low
+
+    Args:
+        game_state: Current game state
+        battle: Current battle state
+        is_defender: Whether this AI is the defender
+
+    Returns:
+        BattleAction chosen by AI
+    """
+    from src.systems.battle import BattleAction
+    from src.models import TerrainType
+
+    if is_defender:
+        troops = battle.defender_troops
+        morale = battle.defender_morale
+    else:
+        troops = battle.attacker_troops
+        morale = battle.attacker_morale
+
+    # Retreat if desperate
+    if morale < 20 or troops < 500:
+        if not is_defender:  # Defenders can't retreat
+            return BattleAction.RETREAT
+
+    # Defender strategies
+    if is_defender:
+        if morale < 40:
+            return BattleAction.DEFEND  # Play defensive when morale low
+        elif random.random() < 0.3:
+            return BattleAction.DEFEND  # Occasionally defend
+        else:
+            return random.choice([BattleAction.ATTACK, BattleAction.FLANK])
+
+    # Attacker strategies
+    else:
+        # Fire attack in favorable conditions
+        if (battle.terrain == TerrainType.FOREST or battle.weather == "drought") and random.random() < 0.4:
+            return BattleAction.FIRE_ATTACK
+
+        # Siege is progressing well, keep pressure
+        if battle.siege_progress > 60:
+            return BattleAction.ATTACK
+
+        # Low on supplies, be aggressive
+        if battle.supply_days < 3:
+            return random.choice([BattleAction.ATTACK, BattleAction.FLANK])
+
+        # Default: varied tactics
+        return random.choice([
+            BattleAction.ATTACK,
+            BattleAction.ATTACK,  # Weight toward attack
+            BattleAction.FLANK,
+            BattleAction.DEFEND
+        ])
+
+
+def resolve_battle_end(
+    game_state: GameState,
+    battle: BattleState,
+    winner: str,
+    reason: str
+) -> Dict[str, Any]:
+    """
+    Resolve the end of a tactical battle.
+
+    Handles:
+    - City ownership transfer if attacker wins
+    - Returning surviving troops
+    - Morale and loyalty adjustments
+    - Logging results
+
+    Args:
+        game_state: Current game state
+        battle: Completed battle state
+        winner: "attacker" or "defender"
+        reason: Why the battle ended
+
+    Returns:
+        Dict with resolution details
+    """
+    attacker_city = game_state.cities[battle.attacker_city]
+    defender_city = game_state.cities[battle.defender_city]
+
+    # Find commanders
+    atk_commander = game_state.officers.get(battle.attacker_commander)
+    def_commander = game_state.officers.get(battle.defender_commander)
+
+    if winner == "attacker":
+        # Attacker wins - city changes hands
+        old_owner = defender_city.owner
+        new_owner = attacker_city.owner
+
+        # Transfer city
+        defender_city.owner = new_owner
+        game_state.factions[old_owner].cities.remove(defender_city.name)
+        game_state.factions[new_owner].cities.append(defender_city.name)
+
+        # Update city state
+        defender_city.troops = battle.defender_troops
+        defender_city.morale = max(30, battle.defender_morale)
+
+        # Return surviving attackers to defender city (now owned by attacker)
+        # Some return to original city, rest garrison the new city
+        returning = battle.attacker_troops // 2
+        garrisoning = battle.attacker_troops - returning
+
+        attacker_city.troops += returning
+        defender_city.troops += garrisoning
+
+        # Loyalty and morale adjustments
+        if atk_commander:
+            atk_commander.loyalty = utils.clamp(atk_commander.loyalty + 5, 0, 100)
+        if def_commander:
+            def_commander.loyalty = utils.clamp(def_commander.loyalty - 10, 0, 100)
+
+        attacker_city.morale = utils.clamp(attacker_city.morale + 10, 0, 100)
+
+        game_state.log(i18n.t("battle.victory_detailed",
+                             commander=battle.attacker_commander,
+                             city=defender_city.name,
+                             reason=reason))
+
+        return {
+            'city_captured': True,
+            'city': defender_city.name,
+            'old_owner': old_owner,
+            'new_owner': new_owner,
+            'surviving_troops': battle.attacker_troops
+        }
+
+    else:  # defender wins
+        # Attacker fails - return surviving troops if any
+        if battle.attacker_troops > 0:
+            attacker_city.troops += battle.attacker_troops
+
+        # Update defender city
+        defender_city.troops = battle.defender_troops
+        defender_city.morale = utils.clamp(defender_city.morale + 5, 0, 100)
+
+        # Loyalty adjustments
+        if atk_commander:
+            atk_commander.loyalty = utils.clamp(atk_commander.loyalty - 10, 0, 100)
+        if def_commander:
+            def_commander.loyalty = utils.clamp(def_commander.loyalty + 5, 0, 100)
+
+        attacker_city.morale = utils.clamp(attacker_city.morale - 10, 0, 100)
+
+        game_state.log(i18n.t("battle.defeat_detailed",
+                             commander=battle.attacker_commander,
+                             city=defender_city.name,
+                             reason=reason))
+
+        return {
+            'city_captured': False,
+            'surviving_troops': battle.attacker_troops
+        }
 
 
 def challenge_to_duel(game_state: GameState, challenger_name: str, target_name: str) -> dict:

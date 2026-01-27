@@ -471,6 +471,20 @@
         "defender_wins2": "The defense holds! {defender} successfully drives back {attacker}! {reason}",
         "defender_wins3": "{attacker}'s attack has failed! {defender} stands victorious! {reason}"
       }
+    },
+    "initiated": "{attacker} leads the attack on {city} defended by {defender}!",
+    "victory_detailed": "{commander} has conquered {city}! {reason}",
+    "defeat_detailed": "{commander}'s assault on {city} has failed! {reason}",
+    "error": {
+      "attacker_city_not_found": "Attacking city not found",
+      "defender_city_not_found": "Defending city not found",
+      "same_faction": "Cannot attack cities of the same faction",
+      "insufficient_troops": "Insufficient troops for attack",
+      "battle_in_progress": "Another battle is already in progress",
+      "no_attacker_commander": "No commander available in attacking city",
+      "no_defender_commander": "No commander available in defending city",
+      "no_active_battle": "No active battle to process",
+      "invalid_action": "Invalid battle action"
     }
   },
   "terrain": {

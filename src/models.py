@@ -250,6 +250,7 @@ class GameState:
     messages: List[str] = field(default_factory=list)
     active_duel: Optional[Any] = None  # Will be Duel from systems.duel
     pending_duel_challenge: Optional[Dict[str, Any]] = None  # For async challenge/response flow
+    active_battle: Optional['BattleState'] = None  # Current ongoing tactical battle
 
     def log(self, msg: str):
         """Add a message to the game log"""

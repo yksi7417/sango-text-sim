@@ -255,6 +255,7 @@ def march_cmd(number, source, destination):
 
 @when("attack TARGET from SOURCE with NUMBER", number=int)
 def attack_cmd(target, source, number):
+    """Initiate a tactical battle against a target city."""
     city_name = target.title()
     src = source.title()
     n = number
@@ -275,11 +276,29 @@ def attack_cmd(target, source, number):
     if n <= 0 or n > src_city.troops:
         say(i18n.t("errors.invalid_troops"))
         return
-    win, _ = battle(src_city, target_city, n)
-    if win and target_city.troops <= 0:
-        transfer_city(STATE.player_faction, target_city)
-    else:
-        say(i18n.t("cmd_feedback.assault_fail", city=target_city.name))
+
+    # Initiate tactical battle
+    result = engine.initiate_tactical_battle(STATE, src, city_name, n)
+    if not result['success']:
+        say(result['message'])
+        return
+
+    say(result['message'])
+    # Display initial battle state
+    from src.display.battle_view import render_battle_map
+    from src.display.battle_narrator import narrate_battle_event
+
+    battle = result['battle']
+    say(render_battle_map(battle))
+    say("")
+    say("Choose your battle tactic:")
+    say("  1. Attack - Standard assault")
+    say("  2. Defend - Reduce incoming damage")
+    say("  3. Flank - High risk, high reward")
+    say("  4. Fire Attack - Devastating but weather dependent")
+    say("  5. Retreat - Withdraw from battle")
+    say("")
+    say("Use 'battle_action <number>' to choose your tactic")
 
 @when("spy CITY")
 def spy_cmd(city):
@@ -452,6 +471,80 @@ def duel_action_cmd(action):
     else:
         # Continue to next round
         _handle_duel_round()
+
+@when("battle_action ACTION")
+def battle_action_cmd(action):
+    """Execute a tactical battle action"""
+    if STATE.active_battle is None:
+        say(i18n.t("battle.error.no_active_battle"))
+        return
+
+    from src.display.battle_view import render_battle_map
+    from src.display.battle_narrator import narrate_battle_event
+
+    # Map action string to valid actions
+    action_lower = action.lower()
+    action_map = {'1': 'attack', '2': 'defend', '3': 'flank', '4': 'fire_attack', '5': 'retreat'}
+
+    if action_lower in action_map:
+        action_lower = action_map[action_lower]
+
+    valid_actions = ['attack', 'defend', 'flank', 'fire_attack', 'retreat']
+    if action_lower not in valid_actions:
+        say("Invalid action. Choose: attack, defend, flank, fire_attack, or retreat")
+        return
+
+    # Process battle action
+    result = engine.process_battle_action(STATE, action_lower)
+
+    if not result['success']:
+        say(result['message'])
+        return
+
+    # Show turn result narrative
+    turn_result = result['turn_result']
+    if turn_result['action'] != 'retreat':
+        narrative = narrate_battle_event(turn_result, STATE.active_battle if not result.get('battle_ended') else result['turn_result'])
+        say("")
+        say(narrative)
+        say("")
+
+    if result.get('battle_ended', False):
+        # Battle ended!
+        say("")
+        say("=" * 60)
+        if result['winner'] == 'attacker':
+            say(i18n.t("battle.narrator.victory.attacker_wins1",
+                      attacker=result['turn_result']['message'].split()[1] if 'message' in result['turn_result'] else "Attacker",
+                      defender="Defender",
+                      reason=result['reason']))
+            if result['resolution'].get('city_captured'):
+                city = result['resolution']['city']
+                say(f"*** {city} has fallen! ***")
+        else:
+            say(i18n.t("battle.narrator.victory.defender_wins1",
+                      attacker="Attacker",
+                      defender="Defender",
+                      reason=result['reason']))
+            say("The defense holds!")
+        say("=" * 60)
+        say("")
+
+        # Show casualties
+        say(f"Surviving troops: {result['resolution']['surviving_troops']}")
+    else:
+        # Battle continues - show updated state
+        battle = result['battle']
+        say(render_battle_map(battle))
+        say("")
+        say("Choose your next tactic:")
+        say("  1. Attack - Standard assault")
+        say("  2. Defend - Reduce incoming damage")
+        say("  3. Flank - High risk, high reward")
+        say("  4. Fire Attack - Devastating but weather dependent")
+        say("  5. Retreat - Withdraw from battle")
+        say("")
+        say("Use 'battle_action <number>' to choose your tactic")
 
 @when("end")
 def end_turn_cmd():

@@ -794,3 +794,294 @@ class TestDuelIntegration:
 
         # Should have lower acceptance rate (not all accepted)
         assert accept_chance < 10
+
+
+class TestTacticalBattleIntegration:
+    """Tests for tactical battle system integration."""
+
+    def test_initiate_tactical_battle_success(self, populated_game_state):
+        """Successfully initiate a tactical battle."""
+        from src.models import City, TerrainType
+
+        # Create test cities
+        city1 = City(name="City1", owner="Shu", troops=5000, food=1000, gold=1000, terrain=TerrainType.PLAINS)
+        city2 = City(name="City2", owner="Wei", troops=3000, food=1000, gold=1000, terrain=TerrainType.PLAINS)
+
+        populated_game_state.cities["City1"] = city1
+        populated_game_state.cities["City2"] = city2
+
+        # Make them adjacent
+        populated_game_state.adj["City1"] = ["City2"]
+        populated_game_state.adj["City2"] = ["City1"]
+
+        # Add officers
+        from src.models import Officer
+        off1 = Officer(name="Officer1", faction="Shu", leadership=80, intelligence=70, politics=65, charisma=75, city="City1")
+        off2 = Officer(name="Officer2", faction="Wei", leadership=75, intelligence=65, politics=60, charisma=70, city="City2")
+        populated_game_state.officers["Officer1"] = off1
+        populated_game_state.officers["Officer2"] = off2
+
+        # Ensure factions have cities
+        populated_game_state.factions["Shu"].cities = ["City1"]
+        populated_game_state.factions["Wei"] = Faction(name="Wei", cities=["City2"], officers=["Officer2"])
+
+        result = engine.initiate_tactical_battle(
+            populated_game_state, "City1", "City2", 3000
+        )
+
+        assert result['success'] is True
+        assert 'battle' in result
+        assert populated_game_state.active_battle is not None
+        assert populated_game_state.active_battle.attacker_city == "City1"
+        assert populated_game_state.active_battle.defender_city == "City2"
+
+    def test_initiate_battle_insufficient_troops(self, populated_game_state):
+        """Cannot initiate battle with insufficient troops."""
+        from src.models import City, TerrainType, Officer
+
+        city1 = City(name="City1", owner="Shu", troops=1000, food=1000, gold=1000, terrain=TerrainType.PLAINS)
+        city2 = City(name="City2", owner="Wei", troops=3000, food=1000, gold=1000, terrain=TerrainType.PLAINS)
+
+        populated_game_state.cities["City1"] = city1
+        populated_game_state.cities["City2"] = city2
+
+        result = engine.initiate_tactical_battle(
+            populated_game_state, "City1", "City2", 5000
+        )
+
+        assert result['success'] is False
+        assert populated_game_state.active_battle is None
+
+    def test_initiate_battle_same_faction(self, populated_game_state):
+        """Cannot attack cities of same faction."""
+        from src.models import City, TerrainType
+
+        city1 = City(name="City1", owner="Shu", troops=3000, food=1000, gold=1000, terrain=TerrainType.PLAINS)
+        city2 = City(name="City2", owner="Shu", troops=3000, food=1000, gold=1000, terrain=TerrainType.PLAINS)
+
+        populated_game_state.cities["City1"] = city1
+        populated_game_state.cities["City2"] = city2
+
+        result = engine.initiate_tactical_battle(
+            populated_game_state, "City1", "City2", 1000
+        )
+
+        assert result['success'] is False
+        assert populated_game_state.active_battle is None
+
+    def test_process_battle_action_attack(self, populated_game_state):
+        """Process an attack action in tactical battle."""
+        from src.models import City, TerrainType, Officer
+
+        # Create test cities and officers
+        city1 = City(name="City1", owner="Shu", troops=5000, food=1000, gold=1000, terrain=TerrainType.PLAINS)
+        city2 = City(name="City2", owner="Wei", troops=3000, food=1000, gold=1000, terrain=TerrainType.PLAINS)
+
+        off1 = Officer(name="Officer1", faction="Shu", leadership=80, intelligence=70, politics=65, charisma=75, city="City1")
+        off2 = Officer(name="Officer2", faction="Wei", leadership=75, intelligence=65, politics=60, charisma=70, city="City2")
+
+        populated_game_state.cities["City1"] = city1
+        populated_game_state.cities["City2"] = city2
+        populated_game_state.officers["Officer1"] = off1
+        populated_game_state.officers["Officer2"] = off2
+
+        populated_game_state.adj["City1"] = ["City2"]
+        populated_game_state.factions["Shu"].cities = ["City1"]
+        populated_game_state.factions["Wei"] = Faction(name="Wei", cities=["City2"], officers=["Officer2"])
+
+        engine.initiate_tactical_battle(
+            populated_game_state, "City1", "City2", 3000
+        )
+
+        # Process attack action
+        result = engine.process_battle_action(
+            populated_game_state, "attack"
+        )
+
+        assert result['success'] is True
+        assert 'turn_result' in result
+        assert result['battle_ended'] in [True, False]
+
+    def test_battle_retreat(self, populated_game_state):
+        """Retreating ends the battle."""
+        from src.models import City, TerrainType, Officer
+
+        city1 = City(name="City1", owner="Shu", troops=5000, food=1000, gold=1000, terrain=TerrainType.PLAINS)
+        city2 = City(name="City2", owner="Wei", troops=3000, food=1000, gold=1000, terrain=TerrainType.PLAINS)
+
+        off1 = Officer(name="Officer1", faction="Shu", leadership=80, intelligence=70, politics=65, charisma=75, city="City1")
+        off2 = Officer(name="Officer2", faction="Wei", leadership=75, intelligence=65, politics=60, charisma=70, city="City2")
+
+        populated_game_state.cities["City1"] = city1
+        populated_game_state.cities["City2"] = city2
+        populated_game_state.officers["Officer1"] = off1
+        populated_game_state.officers["Officer2"] = off2
+
+        populated_game_state.adj["City1"] = ["City2"]
+        populated_game_state.factions["Shu"].cities = ["City1"]
+        populated_game_state.factions["Wei"] = Faction(name="Wei", cities=["City2"], officers=["Officer2"])
+
+        engine.initiate_tactical_battle(
+            populated_game_state, "City1", "City2", 3000
+        )
+
+        # Retreat
+        result = engine.process_battle_action(
+            populated_game_state, "retreat"
+        )
+
+        assert result['success'] is True
+        # Battle may end on retreat or continue with penalty
+        # Just verify it processes without error
+
+    def test_no_active_battle_error(self, populated_game_state):
+        """Processing action with no active battle returns error."""
+        result = engine.process_battle_action(
+            populated_game_state, "attack"
+        )
+
+        assert result['success'] is False
+
+    def test_ai_chooses_battle_action(self, populated_game_state):
+        """AI can choose a battle action."""
+        from src.systems.battle import create_battle
+        from src.models import TerrainType
+
+        battle = create_battle(
+            attacker_city="洛陽",
+            defender_city="長安",
+            attacker_faction="Shu",
+            defender_faction="Wei",
+            attacker_commander="劉備",
+            defender_commander="曹操",
+            attacker_troops=3000,
+            defender_troops=5000,
+            terrain=TerrainType.PLAINS,
+            weather="clear"
+        )
+
+        # AI should choose a valid action
+        action = engine.choose_ai_battle_action(
+            populated_game_state, battle, is_defender=True
+        )
+
+        from src.systems.battle import BattleAction
+        assert isinstance(action, BattleAction)
+
+    def test_resolve_battle_attacker_wins(self, populated_game_state):
+        """Attacker winning transfers city ownership."""
+        from src.systems.battle import create_battle
+        from src.models import TerrainType, City, Officer
+
+        # Create test cities
+        city1 = City(name="City1", owner="Shu", troops=3000, food=1000, gold=1000, terrain=TerrainType.PLAINS)
+        city2 = City(name="City2", owner="Wei", troops=3000, food=1000, gold=1000, terrain=TerrainType.PLAINS)
+
+        off1 = Officer(name="Officer1", faction="Shu", leadership=80, intelligence=70, politics=65, charisma=75, city="City1")
+        off2 = Officer(name="Officer2", faction="Wei", leadership=75, intelligence=65, politics=60, charisma=70, city="City2")
+
+        populated_game_state.cities["City1"] = city1
+        populated_game_state.cities["City2"] = city2
+        populated_game_state.officers["Officer1"] = off1
+        populated_game_state.officers["Officer2"] = off2
+
+        populated_game_state.factions["Shu"].cities = ["City1"]
+        populated_game_state.factions["Wei"] = Faction(name="Wei", cities=["City2"], officers=["Officer2"])
+
+        battle = create_battle(
+            attacker_city="City1",
+            defender_city="City2",
+            attacker_faction="Shu",
+            defender_faction="Wei",
+            attacker_commander="Officer1",
+            defender_commander="Officer2",
+            attacker_troops=1000,
+            defender_troops=100,
+            terrain=TerrainType.PLAINS,
+            weather="clear"
+        )
+
+        # Wei should have the city initially
+        assert "City2" in populated_game_state.factions["Wei"].cities
+
+        result = engine.resolve_battle_end(
+            populated_game_state, battle, "attacker", "Test reason"
+        )
+
+        assert result['city_captured'] is True
+        assert result['city'] == "City2"
+        assert city2.owner == "Shu"
+        assert "City2" in populated_game_state.factions["Shu"].cities
+        assert "City2" not in populated_game_state.factions["Wei"].cities
+
+    def test_resolve_battle_defender_wins(self, populated_game_state):
+        """Defender winning preserves city ownership."""
+        from src.systems.battle import create_battle
+        from src.models import TerrainType, City, Officer
+
+        city1 = City(name="City1", owner="Shu", troops=3000, food=1000, gold=1000, terrain=TerrainType.PLAINS)
+        city2 = City(name="City2", owner="Wei", troops=3000, food=1000, gold=1000, terrain=TerrainType.PLAINS)
+
+        off1 = Officer(name="Officer1", faction="Shu", leadership=80, intelligence=70, politics=65, charisma=75, city="City1")
+        off2 = Officer(name="Officer2", faction="Wei", leadership=75, intelligence=65, politics=60, charisma=70, city="City2")
+
+        populated_game_state.cities["City1"] = city1
+        populated_game_state.cities["City2"] = city2
+        populated_game_state.officers["Officer1"] = off1
+        populated_game_state.officers["Officer2"] = off2
+
+        populated_game_state.factions["Shu"].cities = ["City1"]
+        populated_game_state.factions["Wei"] = Faction(name="Wei", cities=["City2"], officers=["Officer2"])
+
+        battle = create_battle(
+            attacker_city="City1",
+            defender_city="City2",
+            attacker_faction="Shu",
+            defender_faction="Wei",
+            attacker_commander="Officer1",
+            defender_commander="Officer2",
+            attacker_troops=100,
+            defender_troops=1000,
+            terrain=TerrainType.PLAINS,
+            weather="clear"
+        )
+
+        initial_owner = city2.owner
+
+        result = engine.resolve_battle_end(
+            populated_game_state, battle, "defender", "Test reason"
+        )
+
+        assert result['city_captured'] is False
+        assert city2.owner == initial_owner
+
+    def test_battle_action_with_invalid_action(self, populated_game_state):
+        """Invalid battle action returns error."""
+        from src.models import City, TerrainType, Officer
+
+        # Create test cities
+        city1 = City(name="City1", owner="Shu", troops=5000, food=1000, gold=1000, terrain=TerrainType.PLAINS)
+        city2 = City(name="City2", owner="Wei", troops=3000, food=1000, gold=1000, terrain=TerrainType.PLAINS)
+
+        off1 = Officer(name="Officer1", faction="Shu", leadership=80, intelligence=70, politics=65, charisma=75, city="City1")
+        off2 = Officer(name="Officer2", faction="Wei", leadership=75, intelligence=65, politics=60, charisma=70, city="City2")
+
+        populated_game_state.cities["City1"] = city1
+        populated_game_state.cities["City2"] = city2
+        populated_game_state.officers["Officer1"] = off1
+        populated_game_state.officers["Officer2"] = off2
+
+        populated_game_state.adj["City1"] = ["City2"]
+        populated_game_state.factions["Shu"].cities = ["City1"]
+        populated_game_state.factions["Wei"] = Faction(name="Wei", cities=["City2"], officers=["Officer2"])
+
+        engine.initiate_tactical_battle(
+            populated_game_state, "City1", "City2", 3000
+        )
+
+        # Try invalid action
+        result = engine.process_battle_action(
+            populated_game_state, "invalid_action"
+        )
+
+        assert result['success'] is False

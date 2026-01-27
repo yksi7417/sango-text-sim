@@ -648,6 +648,99 @@ def api_duel():
     })
 
 
+@app.route('/api/battle', methods=['GET'])
+def api_battle():
+    """Get current tactical battle state."""
+    if 'session_id' not in session:
+        return jsonify({'error': 'No active session'})
+
+    session_id = session['session_id']
+    gs = get_or_create_game_state(session_id)
+
+    if gs.active_battle is None:
+        return jsonify({'active': False})
+
+    # Return battle state
+    from src.display import battle_view
+    battle = gs.active_battle
+
+    # Generate battle map display
+    map_display = battle_view.render_battle_map(battle)
+
+    return jsonify({
+        'active': True,
+        'attacker_city': battle.attacker_city,
+        'defender_city': battle.defender_city,
+        'attacker_faction': battle.attacker_faction,
+        'defender_faction': battle.defender_faction,
+        'attacker_commander': battle.attacker_commander,
+        'defender_commander': battle.defender_commander,
+        'attacker_troops': battle.attacker_troops,
+        'defender_troops': battle.defender_troops,
+        'attacker_morale': battle.attacker_morale,
+        'defender_morale': battle.defender_morale,
+        'terrain': battle.terrain.value if battle.terrain else 'plains',
+        'weather': battle.weather or 'clear',
+        'round': battle.round,
+        'supply_days': battle.supply_days,
+        'siege_progress': battle.siege_progress,
+        'combat_log': battle.combat_log[-5:] if battle.combat_log else [],
+        'map_display': map_display
+    })
+
+
+@app.route('/api/battle/action', methods=['POST'])
+def api_battle_action():
+    """Process a tactical battle action."""
+    if 'session_id' not in session:
+        return jsonify({'error': 'No active session'})
+
+    session_id = session['session_id']
+    gs = get_or_create_game_state(session_id)
+
+    if gs.active_battle is None:
+        return jsonify({'error': 'No active battle'})
+
+    data = request.get_json()
+    action = data.get('action', '')
+
+    # Process the battle action
+    from src import engine
+    result = engine.process_battle_action(gs, action)
+
+    if not result['success']:
+        return jsonify({'error': result['message']})
+
+    # Return battle result
+    response = {
+        'success': True,
+        'battle_ended': result.get('battle_ended', False),
+        'turn_result': result.get('turn_result', {})
+    }
+
+    if result.get('battle_ended'):
+        response['winner'] = result['winner']
+        response['reason'] = result['reason']
+        response['resolution'] = result['resolution']
+    else:
+        # Battle continues - return updated state
+        battle = result['battle']
+        from src.display import battle_view
+        response['battle_state'] = {
+            'attacker_troops': battle.attacker_troops,
+            'defender_troops': battle.defender_troops,
+            'attacker_morale': battle.attacker_morale,
+            'defender_morale': battle.defender_morale,
+            'round': battle.round,
+            'supply_days': battle.supply_days,
+            'siege_progress': battle.siege_progress,
+            'combat_log': battle.combat_log[-5:] if battle.combat_log else [],
+            'map_display': battle_view.render_battle_map(battle)
+        }
+
+    return jsonify(response)
+
+
 @app.route('/health')
 def health():
     """Health check endpoint."""

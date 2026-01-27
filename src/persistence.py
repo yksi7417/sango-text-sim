@@ -11,7 +11,7 @@ import json
 import os
 from dataclasses import asdict
 from typing import Optional
-from .models import Officer, City, Faction, GameState, TerrainType
+from .models import Officer, City, Faction, GameState, TerrainType, BattleState
 
 
 def save_game(game_state: GameState, filepath: str) -> bool:
@@ -56,6 +56,16 @@ def save_game(game_state: GameState, filepath: str) -> bool:
             for k, f in game_state.factions.items()
         }
         data["officers"] = {k: asdict(v) for k, v in game_state.officers.items()}
+
+        # Save active battle state
+        if game_state.active_battle:
+            battle_data = asdict(game_state.active_battle)
+            # Convert TerrainType enum to string
+            if isinstance(battle_data.get('terrain'), TerrainType):
+                battle_data['terrain'] = battle_data['terrain'].value
+            data["active_battle"] = battle_data
+        else:
+            data["active_battle"] = None
 
         # Write to file with UTF-8 encoding to support Chinese characters
         with open(filepath, "w", encoding="utf-8") as f:
@@ -122,7 +132,17 @@ def load_game(game_state: GameState, filepath: str) -> Optional[str]:
         
         # Restore map adjacency
         game_state.adj = {k: v for k, v in data["adj"].items()}
-        
+
+        # Restore active battle state
+        if data.get("active_battle"):
+            battle_data = data["active_battle"]
+            # Convert terrain string back to TerrainType enum
+            if 'terrain' in battle_data and isinstance(battle_data['terrain'], str):
+                battle_data['terrain'] = TerrainType(battle_data['terrain'])
+            game_state.active_battle = BattleState(**battle_data)
+        else:
+            game_state.active_battle = None
+
         return None  # Success
     
     except (IOError, OSError, json.JSONDecodeError, KeyError, TypeError, ValueError) as e:
