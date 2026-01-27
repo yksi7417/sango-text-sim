@@ -350,6 +350,7 @@
     "round": "Round {round}",
     "vs": "vs",
     "hp": "HP",
+    "leadership": "Leadership",
     "actions": {
       "title": "Choose Your Action:",
       "attack": "Attack",
@@ -365,6 +366,25 @@
     "attacker": "Attacker",
     "defender": "Defender",
     "current_hp": "{current}/{max} HP",
-    "recent_actions": "Recent Actions"
+    "recent_actions": "Recent Actions",
+    "choose_champion": "Choose your champion to send into the duel:",
+    "select_prompt": "Enter the number of your champion:",
+    "challenge_accepted": "{challenger} challenges {target} to a duel! The challenge is accepted!",
+    "challenge_declined": "{target} declines the duel challenge.",
+    "action_prompt": "Choose your action (1-3 or attack/defend/special):",
+    "error": {
+      "challenger_not_found": "Challenger officer not found.",
+      "target_not_found": "Target officer not found.",
+      "not_your_officer": "The challenger must be one of your officers.",
+      "same_faction": "Cannot challenge officers from your own faction.",
+      "duel_in_progress": "There is already a duel in progress.",
+      "no_active_duel": "There is no active duel.",
+      "invalid_action": "Invalid action. Choose: attack, defend, or special.",
+      "no_officers_available": "No officers available to duel."
+    },
+    "outcome": {
+      "captured": "{loser} has been captured by {winner}!",
+      "injured": "{loser} survives but is injured and demoralized."
+    }
   }
 }

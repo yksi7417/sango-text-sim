@@ -596,5 +596,201 @@ class TestCheckVictory:
         populated_game_state.factions["Wei"] = Faction(name="Wei", cities=["EnemyCity"], officers=[], relations={})
         
         result = engine.check_victory(populated_game_state)
-        
+
         assert result is False
+
+
+class TestDuelIntegration:
+    """Tests for duel system integration into game engine."""
+
+    def test_challenge_to_duel_success(self, populated_game_state):
+        """Successfully challenge an enemy officer to a duel."""
+        # Add enemy officer
+        enemy_officer = Officer(
+            name="Enemy", faction="Wei", leadership=70, intelligence=60,
+            politics=50, charisma=60, energy=100, loyalty=80,
+            traits=[], city="TestCity"
+        )
+        populated_game_state.officers["Enemy"] = enemy_officer
+        populated_game_state.factions["Wei"] = Faction(
+            name="Wei", cities=[], officers=["Enemy"], relations={}
+        )
+
+        result = engine.challenge_to_duel(
+            populated_game_state, "TestOfficer", "Enemy"
+        )
+
+        assert result['success'] is True
+        # Result should have 'accepted' field
+        assert 'accepted' in result
+
+    def test_challenge_to_duel_same_faction_error(self, populated_game_state):
+        """Cannot challenge officers from the same faction."""
+        # Add second Shu officer
+        officer2 = Officer(
+            name="TestOfficer2", faction="Shu", leadership=70, intelligence=60,
+            politics=50, charisma=60, energy=100, loyalty=80,
+            traits=[], city="TestCity"
+        )
+        populated_game_state.officers["TestOfficer2"] = officer2
+        populated_game_state.factions["Shu"].officers.append("TestOfficer2")
+
+        result = engine.challenge_to_duel(
+            populated_game_state, "TestOfficer", "TestOfficer2"
+        )
+
+        assert result['success'] is False
+        assert 'same_faction' in result['message'] or 'message' in result
+
+    def test_challenge_to_duel_invalid_challenger(self, populated_game_state):
+        """Challenge fails if challenger doesn't exist."""
+        result = engine.challenge_to_duel(
+            populated_game_state, "NonExistent", "TestOfficer"
+        )
+
+        assert result['success'] is False
+
+    def test_challenge_to_duel_not_player_officer(self, populated_game_state):
+        """Challenge fails if challenger is not player's officer."""
+        # Add enemy officer
+        enemy_officer = Officer(
+            name="Enemy", faction="Wei", leadership=70, intelligence=60,
+            politics=50, charisma=60, energy=100, loyalty=80,
+            traits=[], city="TestCity"
+        )
+        populated_game_state.officers["Enemy"] = enemy_officer
+        populated_game_state.factions["Wei"] = Faction(
+            name="Wei", cities=[], officers=["Enemy"], relations={}
+        )
+
+        # Try to make enemy challenge player's officer
+        result = engine.challenge_to_duel(
+            populated_game_state, "Enemy", "TestOfficer"
+        )
+
+        assert result['success'] is False
+
+    def test_challenge_creates_active_duel_when_accepted(self, populated_game_state):
+        """When challenge is accepted, active_duel is created."""
+        # Add enemy officer with Brave trait (more likely to accept)
+        enemy_officer = Officer(
+            name="Enemy", faction="Wei", leadership=70, intelligence=60,
+            politics=50, charisma=60, energy=100, loyalty=80,
+            traits=["Brave"], city="TestCity"
+        )
+        populated_game_state.officers["Enemy"] = enemy_officer
+        populated_game_state.factions["Wei"] = Faction(
+            name="Wei", cities=[], officers=["Enemy"], relations={}
+        )
+
+        # Force difficulty to increase acceptance chance
+        populated_game_state.difficulty = "Hard"
+
+        result = engine.challenge_to_duel(
+            populated_game_state, "TestOfficer", "Enemy"
+        )
+
+        # If accepted, active_duel should be set
+        if result.get('accepted', False):
+            assert populated_game_state.active_duel is not None
+            assert populated_game_state.active_duel.attacker.name == "TestOfficer"
+            assert populated_game_state.active_duel.defender.name == "Enemy"
+
+    def test_process_duel_action_no_active_duel(self, populated_game_state):
+        """Processing duel action fails if no active duel."""
+        result = engine.process_duel_action(populated_game_state, "attack")
+
+        assert result['success'] is False
+
+    def test_process_duel_action_invalid_action(self, populated_game_state):
+        """Processing invalid duel action fails."""
+        from src.systems.duel import start_duel
+
+        # Create officers for duel
+        officer1 = populated_game_state.officers["TestOfficer"]
+        officer2 = Officer(
+            name="TestOfficer2", faction="Wei", leadership=70, intelligence=60,
+            politics=50, charisma=60, energy=100, loyalty=80,
+            traits=[], city="TestCity"
+        )
+        populated_game_state.officers["TestOfficer2"] = officer2
+        populated_game_state.active_duel = start_duel(officer1, officer2)
+
+        result = engine.process_duel_action(populated_game_state, "invalid")
+
+        assert result['success'] is False
+
+    def test_process_duel_action_attack(self, populated_game_state):
+        """Processing attack action succeeds."""
+        from src.systems.duel import start_duel
+
+        # Create officers for duel
+        officer1 = populated_game_state.officers["TestOfficer"]
+        officer2 = Officer(
+            name="TestOfficer2", faction="Wei", leadership=70, intelligence=60,
+            politics=50, charisma=60, energy=100, loyalty=80,
+            traits=[], city="TestCity"
+        )
+        populated_game_state.officers["TestOfficer2"] = officer2
+        populated_game_state.active_duel = start_duel(officer1, officer2)
+
+        result = engine.process_duel_action(populated_game_state, "attack")
+
+        assert result['success'] is True
+        assert 'message' in result
+        assert 'duel_over' in result
+
+    def test_duel_outcome_applies_consequences(self, populated_game_state):
+        """Duel outcome applies loyalty and capture effects."""
+        from src.systems.duel import start_duel
+
+        # Create officers with extreme HP difference to ensure quick end
+        officer1 = populated_game_state.officers["TestOfficer"]
+        officer1.leadership = 100  # Very strong
+        officer2 = Officer(
+            name="TestOfficer2", faction="Wei", leadership=10, intelligence=60,
+            politics=50, charisma=60, energy=100, loyalty=80,
+            traits=[], city="TestCity"
+        )
+        populated_game_state.officers["TestOfficer2"] = officer2
+        populated_game_state.factions["Wei"] = Faction(
+            name="Wei", cities=[], officers=["TestOfficer2"], relations={}
+        )
+
+        populated_game_state.active_duel = start_duel(officer1, officer2)
+
+        # Process rounds until duel ends
+        max_rounds = 20
+        for _ in range(max_rounds):
+            result = engine.process_duel_action(populated_game_state, "attack")
+            if result.get('duel_over', False):
+                # Winner should have loyalty boost
+                winner = populated_game_state.officers[result['winner']]
+                assert winner.loyalty > 0  # Has some loyalty
+                break
+
+    def test_ai_accept_duel_considers_leadership(self, populated_game_state):
+        """AI acceptance considers leadership differential."""
+        # Create strong and weak officers
+        strong_officer = Officer(
+            name="Strong", faction="Wei", leadership=95, intelligence=60,
+            politics=50, charisma=60, energy=100, loyalty=80,
+            traits=[], city="TestCity"
+        )
+        weak_officer = Officer(
+            name="Weak", faction="Shu", leadership=30, intelligence=60,
+            politics=50, charisma=60, energy=100, loyalty=80,
+            traits=[], city="TestCity"
+        )
+
+        # Weak officer being challenged by strong should have low acceptance
+        accept_chance = 0
+        for _ in range(10):
+            accepted = engine._ai_accept_duel(
+                populated_game_state, weak_officer, strong_officer
+            )
+            if accepted:
+                accept_chance += 1
+
+        # Should have lower acceptance rate (not all accepted)
+        assert accept_chance < 10

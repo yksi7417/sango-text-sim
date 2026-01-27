@@ -13,7 +13,8 @@ import uuid
 
 from src.models import GameState, get_current_season
 from src import utils, engine, world, persistence
-from src.display import map_view, reports
+from src.display import map_view, reports, duel_view
+from src.systems.duel import DuelAction
 from i18n import i18n
 
 app = Flask(__name__)
@@ -384,7 +385,77 @@ def execute_command(gs, command_text, session_state=None):
                     f"Energy:{off.energy} Loyalty:{off.loyalty}"
                 )
             return "\n".join(lines)
-        
+
+        elif cmd in ['duel', '決鬥']:
+            # Handle duel commands
+            if len(parts) < 2:
+                return "Usage: duel <challenger> challenges <target> OR duel <action> (attack/defend/special)"
+
+            # Check if this is a duel action (during active duel)
+            if gs.active_duel is not None:
+                action = parts[1].lower()
+
+                # Map numeric choices to actions
+                action_map = {'1': 'attack', '2': 'defend', '3': 'special'}
+                if action in action_map:
+                    action = action_map[action]
+
+                if action not in ['attack', 'defend', 'special']:
+                    return i18n.t("duel.error.invalid_action")
+
+                result = engine.process_duel_action(gs, action)
+
+                if not result['success']:
+                    return result['message']
+
+                # Build output
+                output_lines = [result['message']]
+
+                if result.get('duel_over', False):
+                    winner = gs.officers[result['winner']]
+                    loser = gs.officers[result['loser']]
+
+                    if winner.faction == gs.player_faction:
+                        output_lines.append(duel_view.render_duel_victory(winner, loser))
+                    else:
+                        output_lines.append(duel_view.render_duel_defeat(winner, loser))
+                else:
+                    # Show current duel state for next round
+                    output_lines.append("")
+                    output_lines.append(duel_view.render_duel_state(gs.active_duel))
+                    output_lines.append(duel_view.render_action_menu())
+
+                return "\n".join(output_lines)
+
+            # Otherwise, this is a challenge command
+            # Expected format: duel <challenger> challenges <target>
+            if 'challenges' in parts:
+                challenges_idx = parts.index('challenges')
+                if challenges_idx < 2 or challenges_idx >= len(parts) - 1:
+                    return "Usage: duel <challenger> challenges <target>"
+
+                challenger_name = ' '.join(parts[1:challenges_idx])
+                target_name = ' '.join(parts[challenges_idx+1:])
+
+                result = engine.challenge_to_duel(gs, challenger_name, target_name)
+
+                if not result['success']:
+                    return result['message']
+
+                if not result.get('accepted', False):
+                    return result['message']
+
+                # Duel accepted! Show initial state
+                output_lines = [result['message'], ""]
+                output_lines.append(duel_view.render_duel_state(gs.active_duel))
+                output_lines.append(duel_view.render_action_menu())
+                output_lines.append("")
+                output_lines.append(i18n.t("duel.action_prompt"))
+
+                return "\n".join(output_lines)
+            else:
+                return "Usage: duel <challenger> challenges <target>"
+
         elif cmd in ['turn', 'end', '結束']:
             events = engine.end_turn(gs)
             if engine.check_victory(gs):
@@ -548,6 +619,33 @@ def api_map():
     map_display = map_view.render_strategic_map(gs)
 
     return jsonify({'map': map_display})
+
+
+@app.route('/api/duel', methods=['GET'])
+def api_duel():
+    """Get current duel state."""
+    if 'session_id' not in session:
+        return jsonify({'error': 'No active session'})
+
+    session_id = session['session_id']
+    gs = get_or_create_game_state(session_id)
+
+    if gs.active_duel is None:
+        return jsonify({'active': False})
+
+    # Return duel state
+    duel = gs.active_duel
+    return jsonify({
+        'active': True,
+        'attacker': duel.attacker.name,
+        'defender': duel.defender.name,
+        'attacker_hp': duel.attacker_hp,
+        'defender_hp': duel.defender_hp,
+        'attacker_max_hp': duel.attacker.leadership * 2,
+        'defender_max_hp': duel.defender.leadership * 2,
+        'round': duel.round,
+        'log': duel.log[-5:] if duel.log else []
+    })
 
 
 @app.route('/health')

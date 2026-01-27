@@ -12,6 +12,8 @@ from src import world
 from src import persistence
 from src.display import map_view
 from src.display import reports
+from src.display import duel_view
+from src.systems.duel import DuelAction
 
 # =================== Data Models ===================
 # Models have been moved to src/models.py
@@ -93,6 +95,12 @@ def end_turn() -> List[TurnEvent]:
 
 def check_victory() -> bool:
     return engine.check_victory(STATE)
+
+def challenge_to_duel(challenger_name: str, target_name: str) -> dict:
+    return engine.challenge_to_duel(STATE, challenger_name, target_name)
+
+def process_duel_action(player_action: str) -> dict:
+    return engine.process_duel_action(STATE, player_action)
 
 # =================== Commands (EN + ZH) ===================
 def show_help():
@@ -333,6 +341,117 @@ def reward_cmd(officer, number):
     off.loyalty = clamp(off.loyalty + delta, 0, 100)
     off.energy = clamp(off.energy + 5, 0, 100)
     say(i18n.t("cmd_feedback.reward", name=utils.get_officer_name(off.name), gold=amount, delta=delta, loyalty=off.loyalty))
+
+@when("challenge OFFICER")
+def challenge_cmd(officer):
+    """Challenge an enemy officer to a duel"""
+    target_name = officer
+    target = officer_by_name(target_name)
+
+    if not target:
+        say(i18n.t("errors.no_officer"))
+        return
+
+    # Player must choose their champion
+    say(i18n.t("duel.choose_champion"))
+    pf = STATE.factions[STATE.player_faction]
+    available = [STATE.officers[name] for name in pf.officers]
+
+    if not available:
+        say(i18n.t("errors.no_officers_available"))
+        return
+
+    # Show available officers
+    for idx, off in enumerate(available, 1):
+        say(f"  [{idx}] {utils.get_officer_name(off.name)} - {i18n.t('duel.leadership')}: {off.leadership}")
+
+    say(i18n.t("duel.select_prompt"))
+
+@when("duel CHALLENGER challenges TARGET")
+def duel_cmd(challenger, target):
+    """Initiate a duel between two officers"""
+    challenger_name = challenger
+    target_name = target
+
+    result = challenge_to_duel(challenger_name, target_name)
+
+    if not result['success']:
+        say(result['message'])
+        return
+
+    if not result.get('accepted', False):
+        say(result['message'])
+        return
+
+    # Duel accepted! Show initial state
+    say(result['message'])
+    say("")
+
+    # Enter duel loop
+    _handle_duel_round()
+
+def _handle_duel_round():
+    """Handle a single round of active duel"""
+    if STATE.active_duel is None:
+        return
+
+    # Display duel state
+    duel_state_display = duel_view.render_duel_state(STATE.active_duel)
+    say(duel_state_display)
+
+    # Show action menu
+    action_menu = duel_view.render_action_menu()
+    say(action_menu)
+
+    # Prompt for action
+    say(i18n.t("duel.action_prompt"))
+
+@when("duel ACTION", action=str)
+def duel_action_cmd(action):
+    """Execute a duel action (attack/defend/special)"""
+    if STATE.active_duel is None:
+        say(i18n.t("duel.error.no_active_duel"))
+        return
+
+    # Map action string to valid actions
+    action_lower = action.lower()
+    valid_actions = ['attack', 'defend', 'special', '1', '2', '3']
+
+    # Convert numeric choices to action names
+    action_map = {'1': 'attack', '2': 'defend', '3': 'special'}
+    if action_lower in action_map:
+        action_lower = action_map[action_lower]
+
+    if action_lower not in ['attack', 'defend', 'special']:
+        say(i18n.t("duel.error.invalid_action"))
+        return
+
+    # Process action
+    result = process_duel_action(action_lower)
+
+    if not result['success']:
+        say(result['message'])
+        return
+
+    # Show round result
+    say("")
+    say(result['message'])
+    say("")
+
+    if result.get('duel_over', False):
+        # Duel ended!
+        winner = STATE.officers[result['winner']]
+        loser = STATE.officers[result['loser']]
+
+        if winner.faction == STATE.player_faction:
+            victory_display = duel_view.render_duel_victory(winner, loser)
+            say(victory_display)
+        else:
+            defeat_display = duel_view.render_duel_defeat(winner, loser)
+            say(defeat_display)
+    else:
+        # Continue to next round
+        _handle_duel_round()
 
 @when("end")
 def end_turn_cmd():

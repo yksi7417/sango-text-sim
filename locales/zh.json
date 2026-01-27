@@ -351,6 +351,7 @@
     "round": "第{round}回合",
     "vs": "对",
     "hp": "生命值",
+    "leadership": "武力",
     "actions": {
       "title": "选择你的行动：",
       "attack": "攻击",
@@ -366,6 +367,25 @@
     "attacker": "挑战者",
     "defender": "应战者",
     "current_hp": "{current}/{max} 生命值",
-    "recent_actions": "最近行动"
+    "recent_actions": "最近行动",
+    "choose_champion": "选择你的武将出战：",
+    "select_prompt": "输入武将编号：",
+    "challenge_accepted": "{challenger}向{target}发起挑战！对方应战！",
+    "challenge_declined": "{target}拒绝了单挑挑战。",
+    "action_prompt": "选择你的行动（1-3或attack/defend/special）：",
+    "error": {
+      "challenger_not_found": "找不到挑战者武将。",
+      "target_not_found": "找不到目标武将。",
+      "not_your_officer": "挑战者必须是你的武将。",
+      "same_faction": "不能挑战己方武将。",
+      "duel_in_progress": "已经有一场单挑正在进行中。",
+      "no_active_duel": "当前没有进行中的单挑。",
+      "invalid_action": "无效的行动。请选择：attack, defend, 或 special。",
+      "no_officers_available": "没有可用的武将参与单挑。"
+    },
+    "outcome": {
+      "captured": "{loser}被{winner}俘虏！",
+      "injured": "{loser}幸存但受伤且士气低落。"
+    }
   }
 }

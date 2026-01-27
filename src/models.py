@@ -162,7 +162,7 @@ class Faction:
 class GameState:
     """
     Global game state container.
-    
+
     Attributes:
         year: Current year (starts at 208 CE)
         month: Current month (1-12)
@@ -174,6 +174,8 @@ class GameState:
         player_ruler: Name of the player's ruler
         difficulty: Game difficulty level
         messages: Log of recent game events
+        active_duel: Current ongoing duel (if any)
+        pending_duel_challenge: Details of a duel challenge awaiting response
     """
     year: int = 208
     month: int = 1
@@ -185,6 +187,8 @@ class GameState:
     player_ruler: str = "劉備"
     difficulty: str = "Normal"
     messages: List[str] = field(default_factory=list)
+    active_duel: Optional[Any] = None  # Will be Duel from systems.duel
+    pending_duel_challenge: Optional[Dict[str, Any]] = None  # For async challenge/response flow
 
     def log(self, msg: str):
         """Add a message to the game log"""

@@ -117,6 +117,245 @@ def battle(game_state: GameState, attacker: City, defender: City, atk_size: int)
     return victory, casualties
 
 
+def challenge_to_duel(game_state: GameState, challenger_name: str, target_name: str) -> dict:
+    """
+    Initiate a duel challenge from one officer to another.
+
+    The challenger must be from the player's faction.
+    The target must be from a different faction and stationed at a city.
+
+    Args:
+        game_state: Current game state
+        challenger_name: Name of the officer issuing the challenge
+        target_name: Name of the officer being challenged
+
+    Returns:
+        dict with 'success' (bool), 'message' (str), and optionally 'accepted' (bool)
+    """
+    from src.systems.duel import start_duel
+
+    # Validate challenger exists and is player's officer
+    if challenger_name not in game_state.officers:
+        return {'success': False, 'message': i18n.t("duel.error.challenger_not_found")}
+
+    challenger = game_state.officers[challenger_name]
+    if challenger.faction != game_state.player_faction:
+        return {'success': False, 'message': i18n.t("duel.error.not_your_officer")}
+
+    # Validate target exists
+    if target_name not in game_state.officers:
+        return {'success': False, 'message': i18n.t("duel.error.target_not_found")}
+
+    target = game_state.officers[target_name]
+
+    # Cannot duel same faction
+    if target.faction == challenger.faction:
+        return {'success': False, 'message': i18n.t("duel.error.same_faction")}
+
+    # Check if there's already an active duel
+    if game_state.active_duel is not None:
+        return {'success': False, 'message': i18n.t("duel.error.duel_in_progress")}
+
+    # AI decides whether to accept the duel
+    accepted = _ai_accept_duel(game_state, target, challenger)
+
+    if accepted:
+        # Start the duel
+        duel = start_duel(challenger, target)
+        game_state.active_duel = duel
+        return {
+            'success': True,
+            'accepted': True,
+            'message': i18n.t("duel.challenge_accepted", challenger=challenger_name, target=target_name)
+        }
+    else:
+        return {
+            'success': True,
+            'accepted': False,
+            'message': i18n.t("duel.challenge_declined", target=target_name)
+        }
+
+
+def _ai_accept_duel(game_state: GameState, defender: Officer, challenger: Officer) -> bool:
+    """
+    AI logic for deciding whether to accept a duel challenge.
+
+    Factors considered:
+    - Leadership differential (won't accept if much weaker)
+    - Traits (Brave more likely to accept)
+    - Difficulty level (harder AI more aggressive)
+
+    Args:
+        game_state: Current game state
+        defender: Officer being challenged
+        challenger: Officer issuing the challenge
+
+    Returns:
+        True if AI accepts, False otherwise
+    """
+    # Base acceptance chance
+    base_chance = 0.5
+
+    # Leadership differential
+    leadership_diff = defender.leadership - challenger.leadership
+    # +10 leadership = +10% chance, -10 leadership = -10% chance
+    leadership_factor = leadership_diff * 0.01
+
+    # Brave trait increases acceptance
+    trait_factor = 0.0
+    if "Brave" in defender.traits:
+        trait_factor += 0.2
+
+    # Difficulty affects AI aggression
+    difficulty_factor = 0.0
+    if game_state.difficulty == "Easy":
+        difficulty_factor = -0.1  # AI less likely to accept
+    elif game_state.difficulty == "Hard":
+        difficulty_factor = 0.1   # AI more likely to accept
+
+    # Calculate final chance
+    accept_chance = base_chance + leadership_factor + trait_factor + difficulty_factor
+    accept_chance = max(0.1, min(0.9, accept_chance))  # Clamp between 10% and 90%
+
+    return random.random() < accept_chance
+
+
+def process_duel_action(game_state: GameState, player_action: str) -> dict:
+    """
+    Process a player's action during an active duel.
+
+    Args:
+        game_state: Current game state
+        player_action: Action chosen by player ("attack", "defend", or "special")
+
+    Returns:
+        dict with 'success', 'message', 'duel_over', and optionally 'winner'/'loser'
+    """
+    from src.systems.duel import process_duel_round, is_duel_over, get_duel_winner, DuelAction
+
+    if game_state.active_duel is None:
+        return {'success': False, 'message': i18n.t("duel.error.no_active_duel")}
+
+    # Parse player action
+    action_map = {
+        'attack': DuelAction.ATTACK,
+        'defend': DuelAction.DEFEND,
+        'special': DuelAction.SPECIAL
+    }
+
+    if player_action not in action_map:
+        return {'success': False, 'message': i18n.t("duel.error.invalid_action")}
+
+    player_duel_action = action_map[player_action]
+
+    # AI chooses action for opponent
+    opponent_action = _ai_choose_duel_action(game_state.active_duel)
+
+    # Process the round
+    result = process_duel_round(game_state.active_duel, player_duel_action, opponent_action)
+
+    # Check if duel is over
+    if is_duel_over(game_state.active_duel):
+        winner = get_duel_winner(game_state.active_duel)
+        loser = game_state.active_duel.defender if winner == game_state.active_duel.attacker else game_state.active_duel.attacker
+
+        # Apply duel consequences
+        _apply_duel_outcome(game_state, winner, loser)
+
+        # Clear active duel
+        game_state.active_duel = None
+
+        return {
+            'success': True,
+            'duel_over': True,
+            'winner': winner.name,
+            'loser': loser.name,
+            'message': result.message
+        }
+    else:
+        return {
+            'success': True,
+            'duel_over': False,
+            'message': result.message
+        }
+
+
+def _ai_choose_duel_action(duel) -> 'DuelAction':
+    """
+    AI logic for choosing a duel action.
+
+    Simple strategy:
+    - If HP is low (< 30%), prefer Defend
+    - If HP is high (> 70%), mix of Attack and Special
+    - Otherwise, mostly Attack with occasional Defend
+
+    Args:
+        duel: Current duel state
+
+    Returns:
+        DuelAction chosen by AI
+    """
+    from src.systems.duel import DuelAction
+
+    # Defender is the AI in this context
+    defender_hp_percent = duel.defender_hp / (duel.defender.leadership * 2)
+
+    if defender_hp_percent < 0.3:
+        # Low HP: favor defense (70% defend, 30% attack)
+        return DuelAction.DEFEND if random.random() < 0.7 else DuelAction.ATTACK
+    elif defender_hp_percent > 0.7:
+        # High HP: favor aggression (50% attack, 30% special, 20% defend)
+        roll = random.random()
+        if roll < 0.5:
+            return DuelAction.ATTACK
+        elif roll < 0.8:
+            return DuelAction.SPECIAL
+        else:
+            return DuelAction.DEFEND
+    else:
+        # Medium HP: balanced (60% attack, 10% special, 30% defend)
+        roll = random.random()
+        if roll < 0.6:
+            return DuelAction.ATTACK
+        elif roll < 0.7:
+            return DuelAction.SPECIAL
+        else:
+            return DuelAction.DEFEND
+
+
+def _apply_duel_outcome(game_state: GameState, winner: Officer, loser: Officer) -> None:
+    """
+    Apply consequences of a duel outcome.
+
+    Winner gains loyalty boost.
+    Loser has chance of being captured or killed.
+    If during battle, affects morale.
+
+    Args:
+        game_state: Current game state
+        winner: Victorious officer
+        loser: Defeated officer
+    """
+    # Winner loyalty boost
+    winner.loyalty = min(100, winner.loyalty + 5)
+
+    # Loser consequences
+    # 50% chance of capture, 50% chance of surviving with injury
+    if random.random() < 0.5:
+        # Captured: transfer to winner's faction but with low loyalty
+        loser.faction = winner.faction
+        loser.loyalty = 30  # Captured officers start with low loyalty
+        game_state.factions[winner.faction].officers.append(loser.name)
+        if loser.name in game_state.factions[loser.faction].officers:
+            game_state.factions[loser.faction].officers.remove(loser.name)
+        game_state.log(i18n.t("duel.outcome.captured", loser=loser.name, winner=winner.name))
+    else:
+        # Survived but injured: loyalty penalty
+        loser.loyalty = max(0, loser.loyalty - 10)
+        loser.energy = max(0, loser.energy - 30)
+        game_state.log(i18n.t("duel.outcome.injured", loser=loser.name))
+
+
 def transfer_city(game_state: GameState, new_owner: str, city: City) -> None:
     """
     Transfer ownership of a city to a new faction.
