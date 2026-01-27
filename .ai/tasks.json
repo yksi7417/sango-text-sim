@@ -404,7 +404,7 @@
         "Web shows duel UI with buttons",
         "Enemy AI decides whether to accept"
       ],
-      "status": "pending",
+      "status": "passed",
       "depends_on": [
         "p2-02"
       ],

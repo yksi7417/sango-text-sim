@@ -98,3 +98,6 @@
 [2026-01-27T03:35:22Z] [ITER-10] [PASS] Completed p2-01: Create Duel System Core Mechanics - Created src/systems/duel.py with Duel dataclass, DuelAction enum (Attack/Defend/Special), process_duel_round() function, damage based on leadership differential, Attack (85% hit, standard damage), Defend (50% damage reduction), Special (70% hit, 2x damage), 17 comprehensive tests - All 319 tests passing
 [2026-01-27T03:41:27Z] [ITER-10] [PASS] Completed p2-02: Create Duel Display Renderer - Created src/display/duel_view.py with render_duel_state(), render_action_menu(), render_duel_victory(), render_duel_defeat(), HP bars and combat log display, full i18n support for English/Chinese, 11 new tests - All 330 tests passing
 [2026-01-27T03:41:34Z] [ITER-10] [SUCCESS] Completed in 31542781s
+[2026-01-26T22:41:54Z] [ITER-10] [SUCCESS] Completed in 800.6s
+[2026-01-26T22:42:00Z] [ITER-11] [START] Beginning iteration
+[2026-01-27T03:52:12Z] [ITER-11] [PASS] Completed p2-03: Integrate Duel into Game Flow - Added active_duel state to GameState, challenge_to_duel() and process_duel_action() to engine.py, AI acceptance logic, duel commands to CLI and web, /api/duel endpoint, complete i18n support (en.json, zh.json), 10 comprehensive tests - All 340 tests passing
