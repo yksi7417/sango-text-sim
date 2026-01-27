@@ -328,7 +328,7 @@
         "Existing OFFICER_DATA still works as fallback",
         "All tests pass"
       ],
-      "status": "pending",
+      "status": "passed",
       "depends_on": [
         "p1-11",
         "p1-02"
