@@ -423,6 +423,55 @@
       "walls_breached": "城牆已被攻破！",
       "supplies_exhausted": "糧草已耗盡！",
       "troops_eliminated": "軍隊已被殲滅！"
+    },
+    "narrator": {
+      "generic": "{attacker}與{defender}交戰！",
+      "terrain": {
+        "plains": "於開闊平原",
+        "mountain": "於山坡險地",
+        "forest": "穿越密林",
+        "river": "於渡口",
+        "coastal": "沿海岸線"
+      },
+      "weather": {
+        "rain": "於傾盆大雨中",
+        "snow": "於暴風雪中",
+        "fog": "於濃霧之中",
+        "drought": "於烈日之下"
+      },
+      "attack": {
+        "template1": "{attacker}{terrain}{weather}發起猛烈攻勢！{defender}迎面而上，刀劍相交，殺聲震天！",
+        "template2": "伴隨震天戰吼，{attacker}{terrain}{weather}率軍衝鋒！{defender}軍嚴陣以待！",
+        "template3": "{attacker}{terrain}{weather}下令進攻！戰場頓時陷入混戰，{defender}奮力指揮防守！"
+      },
+      "flank": {
+        "template1": "{attacker}{terrain}{weather}大膽施展側翼包抄！{defender}措手不及，陣型大亂！",
+        "template2": "疾如風，{attacker}{terrain}{weather}迂迴包抄，殺{defender}個措手不及！",
+        "template3": "{attacker}{terrain}{weather}發現破綻並乘機而入！{defender}陣型在突襲下開始崩潰！"
+      },
+      "fire": {
+        "template1": "{attacker}{terrain}{weather}以烈火攻敵！{defender}麾下將士四散逃命，火勢蔓延！",
+        "template2": "火箭漫天，{attacker}{terrain}{weather}施展火攻！{defender}眼見烈焰吞噬戰場，驚恐萬分！",
+        "template3": "{attacker}{terrain}{weather}放火燒敵，威力驚人！{defender}拼命撲滅四處蔓延的火勢！"
+      },
+      "defend": {
+        "template1": "{defender}{terrain}{weather}嚴守防線！{attacker}的攻勢在堅固防禦前瓦解！",
+        "template2": "盾牌高舉，{defender}{terrain}{weather}結成銅牆鐵壁！{attacker}猛攻不止卻無法突破！",
+        "template3": "{defender}{terrain}{weather}穩守陣地，以嚴明軍紀抵擋{attacker}的攻勢！"
+      },
+      "retreat": {
+        "template1": "見戰局不利，{attacker}{terrain}{weather}鳴金收兵！{defender}目送敵軍撤退！",
+        "template2": "{attacker}{terrain}{weather}做出艱難決定，下令撤軍保存實力，{defender}守住陣地！",
+        "template3": "無法突破防線，{attacker}{terrain}{weather}下令戰術撤退！{defender}成功守衛！"
+      },
+      "victory": {
+        "attacker_wins1": "大勝！{attacker}擊敗{defender}！{reason}",
+        "attacker_wins2": "戰事已定！{attacker}大獲全勝，{defender}軍四散奔逃！{reason}",
+        "attacker_wins3": "{attacker}於激戰中擊敗{defender}，凱旋而歸！{reason}",
+        "defender_wins1": "{defender}擊退來犯之敵！{attacker}敗退！{reason}",
+        "defender_wins2": "守住了！{defender}成功驅退{attacker}！{reason}",
+        "defender_wins3": "{attacker}進攻失敗！{defender}取得勝利！{reason}"
+      }
     }
   },
   "terrain": {

@@ -422,6 +422,55 @@
       "walls_breached": "The city walls have been breached!",
       "supplies_exhausted": "Supplies have run out!",
       "troops_eliminated": "The army has been eliminated!"
+    },
+    "narrator": {
+      "generic": "{attacker} engages {defender} in battle!",
+      "terrain": {
+        "plains": "on the open plains",
+        "mountain": "on the mountain slopes",
+        "forest": "through the dense forest",
+        "river": "at the river crossing",
+        "coastal": "along the coast"
+      },
+      "weather": {
+        "rain": "through the pouring rain",
+        "snow": "in the bitter snowstorm",
+        "fog": "through the thick fog",
+        "drought": "under the scorching sun"
+      },
+      "attack": {
+        "template1": "{attacker} launches a fierce assault {terrain} {weather}! {defender} meets the charge head-on as steel clashes against steel!",
+        "template2": "With a thunderous war cry, {attacker} leads the charge {terrain} {weather}! {defender}'s forces brace for impact!",
+        "template3": "{attacker} orders the attack {terrain} {weather}! The battlefield erupts in chaos as {defender} rallies the defenders!"
+      },
+      "flank": {
+        "template1": "{attacker} executes a daring flanking maneuver {terrain} {weather}! {defender} struggles to reposition as the attack strikes from the side!",
+        "template2": "Swift as the wind, {attacker} wheels around {terrain} {weather}, catching {defender}'s forces off-guard!",
+        "template3": "{attacker} spots an opening and exploits it {terrain} {weather}! {defender}'s formation begins to crumble under the unexpected assault!"
+      },
+      "fire": {
+        "template1": "{attacker} unleashes flames upon the enemy {terrain} {weather}! {defender}'s troops scatter as fire spreads through their ranks!",
+        "template2": "Fire arrows light up the sky as {attacker} commands the fire attack {terrain} {weather}! {defender} watches in horror as the inferno engulfs the battlefield!",
+        "template3": "With devastating effect, {attacker} sets the battlefield ablaze {terrain} {weather}! {defender} desperately tries to contain the spreading flames!"
+      },
+      "defend": {
+        "template1": "{defender} takes a strong defensive position {terrain} {weather}! {attacker}'s assault breaks against their stalwart defense!",
+        "template2": "Shields raised, {defender} forms an impenetrable wall {terrain} {weather}! {attacker} hammers against the defense but cannot break through!",
+        "template3": "{defender} holds firm {terrain} {weather}, weathering {attacker}'s assault with disciplined resolve!"
+      },
+      "retreat": {
+        "template1": "Seeing the tide of battle turn, {attacker} sounds the retreat {terrain} {weather}! {defender} watches as the enemy withdraws!",
+        "template2": "{attacker} makes the difficult decision to withdraw {terrain} {weather}, preserving what forces remain as {defender} secures victory!",
+        "template3": "Unable to break through, {attacker} orders a tactical retreat {terrain} {weather}! {defender} has successfully defended!"
+      },
+      "victory": {
+        "attacker_wins1": "Victory! {attacker} has triumphed over {defender}! {reason}",
+        "attacker_wins2": "The battle is won! {attacker} stands victorious as {defender}'s forces scatter! {reason}",
+        "attacker_wins3": "{attacker} emerges triumphant from the fierce battle against {defender}! {reason}",
+        "defender_wins1": "{defender} has repelled the assault! {attacker} retreats in defeat! {reason}",
+        "defender_wins2": "The defense holds! {defender} successfully drives back {attacker}! {reason}",
+        "defender_wins3": "{attacker}'s attack has failed! {defender} stands victorious! {reason}"
+      }
     }
   },
   "terrain": {
