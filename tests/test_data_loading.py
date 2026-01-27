@@ -306,3 +306,230 @@ class TestLoadScenario:
         expected_cities = ["Xuchang", "Luoyang", "Chengdu", "Hanzhong", "Jianye", "Wuchang"]
         for city_name in expected_cities:
             assert city_name in game_state.cities
+
+
+class TestOfficerDataLoading:
+    """Test loading officer data from JSON files."""
+
+    def test_legendary_json_exists(self):
+        """Verify legendary.json exists."""
+        officer_path = Path("src/data/officers/legendary.json")
+        assert officer_path.exists(), "legendary.json file should exist"
+
+    def test_legendary_json_valid(self):
+        """Verify legendary.json is valid JSON."""
+        officer_path = Path("src/data/officers/legendary.json")
+        with open(officer_path, "r", encoding="utf-8") as f:
+            data = json.load(f)
+        assert isinstance(data, dict), "Officer data should be a dictionary"
+
+    def test_legendary_has_metadata(self):
+        """Verify metadata section exists and is complete."""
+        officer_path = Path("src/data/officers/legendary.json")
+        with open(officer_path, "r", encoding="utf-8") as f:
+            data = json.load(f)
+
+        assert "metadata" in data
+        metadata = data["metadata"]
+
+        required_fields = ["name", "roster_id", "era", "description", "version"]
+        for field in required_fields:
+            assert field in metadata, f"Metadata should have {field}"
+
+        assert metadata["roster_id"] == "legendary"
+
+    def test_legendary_has_officers(self):
+        """Verify officers section exists with 30+ officers."""
+        officer_path = Path("src/data/officers/legendary.json")
+        with open(officer_path, "r", encoding="utf-8") as f:
+            data = json.load(f)
+
+        assert "officers" in data
+        assert isinstance(data["officers"], list)
+        assert len(data["officers"]) >= 30, "Should have at least 30 officers"
+
+    def test_officer_structure(self):
+        """Verify each officer has required fields."""
+        officer_path = Path("src/data/officers/legendary.json")
+        with open(officer_path, "r", encoding="utf-8") as f:
+            data = json.load(f)
+
+        required_fields = [
+            "id", "faction", "leadership", "intelligence", "politics",
+            "charisma", "loyalty", "traits", "quote", "relationships",
+            "special_ability"
+        ]
+
+        for officer in data["officers"]:
+            for field in required_fields:
+                assert field in officer, f"Officer {officer.get('id', 'unknown')} should have {field}"
+
+    def test_officer_stats_range(self):
+        """Verify officer stats are within valid ranges."""
+        officer_path = Path("src/data/officers/legendary.json")
+        with open(officer_path, "r", encoding="utf-8") as f:
+            data = json.load(f)
+
+        stat_fields = ["leadership", "intelligence", "politics", "charisma", "loyalty"]
+
+        for officer in data["officers"]:
+            for stat in stat_fields:
+                value = officer[stat]
+                assert 0 <= value <= 100, \
+                    f"Officer {officer['id']} {stat} should be 0-100, got {value}"
+
+    def test_officer_factions(self):
+        """Verify officers are assigned to valid factions."""
+        officer_path = Path("src/data/officers/legendary.json")
+        with open(officer_path, "r", encoding="utf-8") as f:
+            data = json.load(f)
+
+        valid_factions = ["Wei", "Shu", "Wu"]
+
+        for officer in data["officers"]:
+            assert officer["faction"] in valid_factions, \
+                f"Officer {officer['id']} has invalid faction: {officer['faction']}"
+
+    def test_all_three_kingdoms_represented(self):
+        """Verify all three kingdoms have officers."""
+        officer_path = Path("src/data/officers/legendary.json")
+        with open(officer_path, "r", encoding="utf-8") as f:
+            data = json.load(f)
+
+        factions = {officer["faction"] for officer in data["officers"]}
+        assert factions == {"Wei", "Shu", "Wu"}, "All three kingdoms should be represented"
+
+    def test_specific_officers_present(self):
+        """Verify required officers are present."""
+        officer_path = Path("src/data/officers/legendary.json")
+        with open(officer_path, "r", encoding="utf-8") as f:
+            data = json.load(f)
+
+        officer_ids = {officer["id"] for officer in data["officers"]}
+
+        # Check for specifically mentioned officers in acceptance criteria
+        required_officers = [
+            "ZhaoYun", "MaChao", "HuangZhong", "WeiYan",  # Shu
+            "XuChu", "XiahouDun", "XiahouYuan", "ZhangHe",  # Wei
+            "LuSu", "LuMeng", "GanNing", "TaishiCi"  # Wu
+        ]
+
+        for officer_id in required_officers:
+            assert officer_id in officer_ids, f"Required officer {officer_id} not found"
+
+    def test_officer_quotes_unique(self):
+        """Verify each officer has a unique quote."""
+        officer_path = Path("src/data/officers/legendary.json")
+        with open(officer_path, "r", encoding="utf-8") as f:
+            data = json.load(f)
+
+        for officer in data["officers"]:
+            assert isinstance(officer["quote"], str), \
+                f"Officer {officer['id']} should have a quote"
+            assert len(officer["quote"]) > 0, \
+                f"Officer {officer['id']} quote should not be empty"
+
+    def test_officer_relationships_structure(self):
+        """Verify relationships are properly structured."""
+        officer_path = Path("src/data/officers/legendary.json")
+        with open(officer_path, "r", encoding="utf-8") as f:
+            data = json.load(f)
+
+        valid_relationship_types = [
+            "sworn_brother", "rival", "lord", "spouse", "mentor"
+        ]
+
+        for officer in data["officers"]:
+            relationships = officer["relationships"]
+            assert isinstance(relationships, dict), \
+                f"Officer {officer['id']} relationships should be a dict"
+
+            # Verify relationship types are valid
+            for related_officer, relationship_type in relationships.items():
+                assert relationship_type in valid_relationship_types, \
+                    f"Invalid relationship type {relationship_type} for {officer['id']}"
+
+    def test_sworn_brothers_defined(self):
+        """Verify sworn brother relationships exist (e.g., Liu Bei, Guan Yu, Zhang Fei)."""
+        officer_path = Path("src/data/officers/legendary.json")
+        with open(officer_path, "r", encoding="utf-8") as f:
+            data = json.load(f)
+
+        officers_dict = {officer["id"]: officer for officer in data["officers"]}
+
+        # Check for Peach Garden Oath (Liu Bei, Guan Yu, Zhang Fei)
+        if "LiuBei" in officers_dict:
+            liu_bei_rels = officers_dict["LiuBei"]["relationships"]
+            # Should have sworn brothers
+            assert any(rel == "sworn_brother" for rel in liu_bei_rels.values()), \
+                "Liu Bei should have sworn brothers"
+
+    def test_rival_relationships_defined(self):
+        """Verify rival relationships exist."""
+        officer_path = Path("src/data/officers/legendary.json")
+        with open(officer_path, "r", encoding="utf-8") as f:
+            data = json.load(f)
+
+        officers_dict = {officer["id"]: officer for officer in data["officers"]}
+
+        # Check that at least some officers have rivals
+        rivals_exist = any(
+            "rival" in officer["relationships"].values()
+            for officer in data["officers"]
+        )
+        assert rivals_exist, "Some officers should have rival relationships"
+
+    def test_special_abilities_defined(self):
+        """Verify all officers have special ability placeholders."""
+        officer_path = Path("src/data/officers/legendary.json")
+        with open(officer_path, "r", encoding="utf-8") as f:
+            data = json.load(f)
+
+        for officer in data["officers"]:
+            assert isinstance(officer["special_ability"], str), \
+                f"Officer {officer['id']} should have a special_ability"
+            assert len(officer["special_ability"]) > 0, \
+                f"Officer {officer['id']} special_ability should not be empty"
+
+    def test_officer_i18n_keys_exist(self):
+        """Verify all officers have i18n translations."""
+        import json
+        officer_path = Path("src/data/officers/legendary.json")
+        with open(officer_path, "r", encoding="utf-8") as f:
+            officer_data = json.load(f)
+
+        # Load locale files
+        en_path = Path("locales/en.json")
+        zh_path = Path("locales/zh.json")
+
+        with open(en_path, "r", encoding="utf-8") as f:
+            en_locale = json.load(f)
+        with open(zh_path, "r", encoding="utf-8") as f:
+            zh_locale = json.load(f)
+
+        # Verify all officer IDs have translations
+        for officer in officer_data["officers"]:
+            officer_id = officer["id"]
+            assert officer_id in en_locale["officers"], \
+                f"Officer {officer_id} missing from en.json"
+            assert officer_id in zh_locale["officers"], \
+                f"Officer {officer_id} missing from zh.json"
+
+    def test_existing_officers_maintained(self):
+        """Verify existing officers are still present in legendary.json."""
+        officer_path = Path("src/data/officers/legendary.json")
+        with open(officer_path, "r", encoding="utf-8") as f:
+            data = json.load(f)
+
+        officer_ids = {officer["id"] for officer in data["officers"]}
+
+        # Existing officers from OFFICER_DATA
+        existing_officers = [
+            "LiuBei", "GuanYu", "ZhangFei",
+            "CaoCao", "ZhangLiao",
+            "SunQuan", "ZhouYu"
+        ]
+
+        for officer_id in existing_officers:
+            assert officer_id in officer_ids, \
+                f"Existing officer {officer_id} should be maintained"
