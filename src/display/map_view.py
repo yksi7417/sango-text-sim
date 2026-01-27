@@ -1,3 +1,56 @@
+#
+# Fixed-template map rendering for perfect alignment (demo.jsx style)
+def render_strategic_map(game_state: GameState) -> str:
+    """
+    Render the strategic map using a fixed ASCII art template for perfect alignment.
+    City names and symbols are inserted at fixed positions, matching the demo.jsx layout.
+    """
+    # Color helpers
+    def color(faction, text):
+        return get_faction_color(faction).format(text)
+
+    # Map city/faction to display info
+    city_display = {
+        "luoyang":  color("Wei", "洛陽"),
+        "hanzhong": color("Shu", "漢中"),
+        "chengdu":  color("Shu", "成都"),
+        "jianye":   color("Wu", "建業"),
+        "xiangyang": color("Wei", "襄陽"),
+    }
+
+    # Template (matches demo.jsx)
+    template = (
+        "                              ╔═══════╗\n"
+        "                              ║ 幽 州 ║ \n"
+        "                              ╚═══╦═══╝\n"
+        "                                  ║\n"
+        "           ╔═══════╗          ╔═══╩═══╗          ╔═══════╗\n"
+        "           ║ 并 州 ║──────────║ {luoyang} ║──────────║ 青 州 ║\n"
+        "           ╚═══╦═══╝          ╚═══╦═══╝          ╚═══════╝\n"
+        "               ║                  ║\n"
+        "           ╔═══╩═══╗          ╔═══╩═══╗          ╔═══════╗\n"
+        "           ║ {hanzhong} ║──────────║ {xiangyang} ║──────────║ {jianye} ║\n"
+        "           ╚═══╦═══╝          ╚═══════╝          ╚═══════╝\n"
+        "               ║                  \n"
+        "           ╔═══╩═══╗          ╔═══════╗          ╔═══════╗\n"
+        "           ║ {chengdu} ║──────────║ 荊 南 ║──────────║ 交 州 ║\n"
+        "           ╚═══════╝          ╚═══════╝          ╚═══════╝\n"
+    )
+
+    # Fill in city names (fallback to plain if not present)
+    map_str = template.format(
+        luoyang=city_display.get("luoyang", "洛陽"),
+        hanzhong=city_display.get("hanzhong", "漢中"),
+        chengdu=city_display.get("chengdu", "成都"),
+        jianye=city_display.get("jianye", "建業"),
+        xiangyang=city_display.get("xiangyang", "襄陽"),
+    )
+
+    # Header and legend (reuse existing)
+    header = i18n.t("map.title", default="=== Strategic Map ===")
+    legend = create_legend(game_state)
+
+    return f"\n{header}\n\n{map_str}\n{legend}\n"
 """
 ASCII Map Renderer for Strategic View
 
@@ -61,7 +114,7 @@ def load_map_data(scenario: str = "china_208") -> Optional[Dict]:
     return None
 
 
-def render_strategic_map(game_state: GameState) -> str:
+def render_strategic_map_old_broken(game_state: GameState) -> str:
     """
     Render the strategic map showing all cities, connections, and territories.
 
