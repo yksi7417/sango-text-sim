@@ -377,7 +377,7 @@
         "Victory/defeat screen",
         "i18n support"
       ],
-      "status": "pending",
+      "status": "passed",
       "depends_on": [
         "p2-01",
         "p1-06"
