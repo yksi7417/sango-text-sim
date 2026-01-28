@@ -312,7 +312,14 @@
     "traits_title": "Traits:",
     "no_traits": "  (No special traits)",
     "relationships_title": "Relationships:",
-    "relationships_placeholder": "  (Relationship system coming in Phase 3)",
+    "no_relationships": "  (No known relationships)",
+    "rel": {
+      "sworn_brother": "Sworn Brother",
+      "rival": "Rival",
+      "lord": "Lord",
+      "spouse": "Spouse",
+      "mentor": "Mentor"
+    },
     "location": "Location",
     "status_busy": "Currently working: {task}",
     "status_idle": "Currently idle",

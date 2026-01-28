@@ -11,7 +11,7 @@ This module renders detailed officer profiles with:
 """
 
 from typing import Optional
-from ..models import Officer
+from ..models import Officer, RelationshipType
 from i18n import i18n
 from .components import render_progress_bar
 
@@ -172,13 +172,30 @@ def render_officer_profile(officer: Officer) -> str:
 
     lines.append("")
 
-    # Relationships section (placeholder for Phase 3)
+    # Relationships section
     relationships_title = i18n.t("officer_view.relationships_title", default="Relationships:")
     lines.append(relationships_title)
 
-    relationships_placeholder = i18n.t("officer_view.relationships_placeholder",
-                                       default="  (Relationship system coming in Phase 3)")
-    lines.append(relationships_placeholder)
+    if officer.relationships:
+        for other_name, rel_str in officer.relationships.items():
+            rel = officer.get_relationship(other_name)
+            if rel:
+                rel_label = i18n.t(f"officer_view.rel.{rel.value}", default=rel.value)
+                # Affinity hearts based on relationship type
+                if rel in (RelationshipType.SWORN_BROTHER, RelationshipType.SPOUSE):
+                    hearts = "♥♥♥"
+                elif rel in (RelationshipType.LORD, RelationshipType.MENTOR):
+                    hearts = "♥♥"
+                elif rel == RelationshipType.RIVAL:
+                    hearts = "⚔"
+                else:
+                    hearts = "♥"
+                bonus = officer.get_relationship_bonus(other_name, "loyalty")
+                bonus_str = f"+{int(bonus)}" if bonus > 0 else str(int(bonus))
+                lines.append(f"  {hearts} {other_name} - {rel_label} ({bonus_str} loyalty)")
+    else:
+        no_rel = i18n.t("officer_view.no_relationships", default="  (No known relationships)")
+        lines.append(no_rel)
     lines.append("")
 
     # Current location and status

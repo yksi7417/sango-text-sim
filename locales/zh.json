@@ -313,7 +313,14 @@
     "traits_title": "特性：",
     "no_traits": "  （無特殊特性）",
     "relationships_title": "人際關係：",
-    "relationships_placeholder": "  （人際關係系統將於第三階段推出）",
+    "no_relationships": "  （無已知人際關係）",
+    "rel": {
+      "sworn_brother": "義兄弟",
+      "rival": "宿敵",
+      "lord": "主公",
+      "spouse": "配偶",
+      "mentor": "師父"
+    },
     "location": "駐地",
     "status_busy": "當前任務：{task}",
     "status_idle": "當前待命",
