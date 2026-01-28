@@ -306,8 +306,8 @@ def _load_officer_data_from_json(roster_name: str = "legendary") -> Optional[lis
                 "politics": officer["politics"],
                 "charisma": officer["charisma"],
                 "loyalty": officer["loyalty"],
-                "traits": officer["traits"]
-                # Note: city assignment will be done by init_world based on faction
+                "traits": officer["traits"],
+                "relationships": officer.get("relationships", {})
             })
 
         return officer_list
@@ -449,7 +449,8 @@ def init_world(game_state: GameState, player_choice: Optional[str] = None, seed:
             charisma=officer_data["charisma"],
             loyalty=officer_data["loyalty"],
             traits=officer_data["traits"],
-            city=assigned_city
+            city=assigned_city,
+            relationships=officer_data.get("relationships", {})
         )
         add_officer(game_state, officer)
     

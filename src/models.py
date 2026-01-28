@@ -84,6 +84,15 @@ class TerrainType(Enum):
     RIVER = "river"
 
 
+class RelationshipType(Enum):
+    """Types of relationships between officers."""
+    SWORN_BROTHER = "sworn_brother"
+    RIVAL = "rival"
+    LORD = "lord"
+    SPOUSE = "spouse"
+    MENTOR = "mentor"
+
+
 class EventCategory(Enum):
     """Categories for turn events."""
     ECONOMY = "economy"
@@ -181,6 +190,50 @@ class Officer:
     task: Optional[str] = None
     task_city: Optional[str] = None
     busy: bool = False
+    relationships: Dict[str, str] = field(default_factory=dict)
+
+    def get_relationship(self, other_name: str) -> Optional['RelationshipType']:
+        """Get relationship type with another officer."""
+        rel = self.relationships.get(other_name)
+        if rel:
+            try:
+                return RelationshipType(rel)
+            except ValueError:
+                return None
+        return None
+
+    def get_relationship_bonus(self, other_name: str, context: str = "loyalty") -> float:
+        """
+        Get relationship bonus for a given context.
+
+        Args:
+            other_name: Name of the other officer
+            context: 'loyalty' or 'combat'
+
+        Returns:
+            Bonus modifier (additive for loyalty, multiplicative for combat)
+        """
+        rel = self.get_relationship(other_name)
+        if not rel:
+            return 0.0
+
+        if context == "loyalty":
+            if rel == RelationshipType.SWORN_BROTHER:
+                return 30.0
+            elif rel == RelationshipType.LORD:
+                return 20.0
+            elif rel == RelationshipType.SPOUSE:
+                return 25.0
+            elif rel == RelationshipType.MENTOR:
+                return 15.0
+            elif rel == RelationshipType.RIVAL:
+                return -10.0
+        elif context == "combat":
+            if rel == RelationshipType.RIVAL:
+                return 0.15  # +15% damage
+            elif rel == RelationshipType.SWORN_BROTHER:
+                return 0.10  # +10% when fighting together
+        return 0.0
 
 
 @dataclass
