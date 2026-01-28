@@ -519,5 +519,33 @@
     "archer": "Archers",
     "advantage": "{attacker} has advantage over {defender}! (+20%%)",
     "disadvantage": "{attacker} is at disadvantage against {defender}. (-20%%)"
+  },
+  "council": {
+    "title": "Morning Council",
+    "no_agenda": "No pressing matters to discuss, my lord.",
+    "economic": {
+      "low_food_title": "Food shortage in {city}",
+      "low_food_rec": "We should assign officers to farm in {city} immediately.",
+      "low_gold_title": "Treasury low in {city}",
+      "low_gold_rec": "Commerce development in {city} is urgently needed.",
+      "low_agri_title": "Agriculture underdeveloped in {city}",
+      "low_agri_rec": "Assign officers to develop agriculture in {city}."
+    },
+    "military": {
+      "threat_title": "Enemy threat near {city} from {enemy}",
+      "threat_rec": "Reinforce {city} garrison or prepare defenses.",
+      "weak_garrison_title": "Weak garrison at {city}",
+      "weak_garrison_rec": "Train more troops at {city} to strengthen our position."
+    },
+    "diplomatic": {
+      "hostile_title": "Hostile relations with {faction}",
+      "hostile_rec": "Consider diplomatic outreach to {faction} or prepare for conflict."
+    },
+    "personnel": {
+      "low_loyalty_title": "{officer} showing signs of disloyalty",
+      "low_loyalty_rec": "Reward {officer} or assign them meaningful tasks to improve morale.",
+      "no_officer_title": "No officers stationed at {city}",
+      "no_officer_rec": "Transfer an officer to {city} to manage affairs."
+    }
   }
 }

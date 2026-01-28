@@ -520,5 +520,33 @@
     "archer": "弓兵",
     "advantage": "{attacker}剋制{defender}！(+20%%)",
     "disadvantage": "{attacker}被{defender}剋制。(-20%%)"
+  },
+  "council": {
+    "title": "朝會",
+    "no_agenda": "主公，目前無緊急事務需要商議。",
+    "economic": {
+      "low_food_title": "{city}糧草不足",
+      "low_food_rec": "應立即派遣官員至{city}屯田。",
+      "low_gold_title": "{city}國庫空虛",
+      "low_gold_rec": "{city}急需發展商業。",
+      "low_agri_title": "{city}農業落後",
+      "low_agri_rec": "請派遣官員至{city}發展農業。"
+    },
+    "military": {
+      "threat_title": "{enemy}對{city}構成威脅",
+      "threat_rec": "應加強{city}防禦或增派援軍。",
+      "weak_garrison_title": "{city}守軍薄弱",
+      "weak_garrison_rec": "應在{city}加緊練兵，鞏固防線。"
+    },
+    "diplomatic": {
+      "hostile_title": "與{faction}關係緊張",
+      "hostile_rec": "考慮對{faction}展開外交或備戰。"
+    },
+    "personnel": {
+      "low_loyalty_title": "{officer}忠誠度低下",
+      "low_loyalty_rec": "應嘉獎{officer}或委以重任以提升士氣。",
+      "no_officer_title": "{city}無官員駐守",
+      "no_officer_rec": "請調派官員至{city}管理事務。"
+    }
   }
 }
