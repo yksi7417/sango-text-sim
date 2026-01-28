@@ -665,7 +665,7 @@
         "Web has council UI",
         "Council optional, not required"
       ],
-      "status": "pending",
+      "status": "passed",
       "depends_on": [
         "p3-02"
       ],
