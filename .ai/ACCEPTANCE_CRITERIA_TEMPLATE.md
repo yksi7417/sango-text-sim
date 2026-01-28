@@ -92,7 +92,7 @@ python -m pytest --no-cov -v
 - `locales/zh.json` - Add error message (Chinese)
 
 ### Model Hint
-Recommended: sonnet (straightforward logic change with tests)
+Recommended: opus (straightforward logic change with tests)
 ```
 
 ---

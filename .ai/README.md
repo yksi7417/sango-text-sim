@@ -51,7 +51,7 @@ Edit `tasks.json` to add new tasks:
     "Both locale files updated"
   ],
   "status": "pending",
-  "model_hint": "sonnet"
+  "model_hint": "opus"
 }
 ```
 
@@ -62,7 +62,7 @@ See `ACCEPTANCE_CRITERIA_TEMPLATE.md` for detailed guidance.
 | Task Complexity | Model | Use Case |
 |-----------------|-------|----------|
 | Simple | haiku | Formatting, simple tests |
-| Standard | sonnet | Features, bug fixes |
+| Standard | opus | Features, bug fixes |
 | Complex | opus | Architecture, debugging |
 
 ## Observing Progress

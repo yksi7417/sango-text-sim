@@ -15,7 +15,7 @@ Failures are tuning opportunities. Refine prompts and instructions based on obse
 | Task Type | Recommended Model | Examples |
 |-----------|-------------------|----------|
 | Simple formatting | Haiku | Fix indentation, add comments |
-| Standard dev | Sonnet | Implement features, write tests |
+| Standard dev | Opus | Implement features, write tests |
 | Complex reasoning | Opus | Architecture decisions, debugging complex issues |
 
 ### 2. Context Window Management

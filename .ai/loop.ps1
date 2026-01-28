@@ -11,7 +11,7 @@
     Maximum number of loop iterations (default: 100)
 
 .PARAMETER Model
-    Claude model to use: haiku, sonnet, opus (default: sonnet)
+    Claude model to use: haiku, sonnet, opus (default: opus)
 
 .PARAMETER DelaySeconds
     Delay between iterations in seconds (default: 5)
@@ -31,7 +31,7 @@
 
 param(
     [int]$MaxIterations = 100,
-    [string]$Model = "sonnet",
+    [string]$Model = "opus",
     [int]$DelaySeconds = 5,
     [string]$LogFile = ".ai\loop.log"
 )

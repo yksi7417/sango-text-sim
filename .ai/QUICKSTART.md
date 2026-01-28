@@ -13,7 +13,7 @@ This project uses an autonomous development loop where Claude Code works through
 .\.ai\loop.ps1
 
 # With options
-.\.ai\loop.ps1 -MaxIterations 50 -Model sonnet -DelaySeconds 10
+.\.ai\loop.ps1 -MaxIterations 50 -Model opus -DelaySeconds 10
 ```
 
 This runs continuous iterations until all tasks complete or max iterations reached.
@@ -22,7 +22,7 @@ This runs continuous iterations until all tasks complete or max iterations reach
 
 ```powershell
 # Run one iteration manually
-claude --model sonnet --dangerously-skip-permissions
+claude --model opus --dangerously-skip-permissions
 
 # Then say:
 # "Continue autonomous development. Read .ai/tasks.json and work on the highest priority pending task."
