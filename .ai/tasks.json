@@ -595,7 +595,7 @@
         "Backward compatible migration",
         "Tests for unit type mechanics"
       ],
-      "status": "pending",
+      "status": "passed",
       "estimated_files": [
         "src/models.py",
         "src/constants.py",
