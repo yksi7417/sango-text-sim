@@ -523,6 +523,7 @@
   "council": {
     "title": "Morning Council",
     "no_agenda": "No pressing matters to discuss, my lord.",
+    "presenter_label": "Presenter",
     "economic": {
       "low_food_title": "Food shortage in {city}",
       "low_food_rec": "We should assign officers to farm in {city} immediately.",

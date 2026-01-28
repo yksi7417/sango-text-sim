@@ -524,6 +524,7 @@
   "council": {
     "title": "朝會",
     "no_agenda": "主公，目前無緊急事務需要商議。",
+    "presenter_label": "進言者",
     "economic": {
       "low_food_title": "{city}糧草不足",
       "low_food_rec": "應立即派遣官員至{city}屯田。",
