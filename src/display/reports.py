@@ -7,8 +7,8 @@ This module generates narrative turn summaries with:
 - Narrative formatting for immersion
 """
 
-from typing import List, Dict
-from ..models import Season, EventCategory, TurnEvent
+from typing import List, Dict, Any
+from ..models import Season, EventCategory, TurnEvent, GameState
 from i18n import i18n
 from .components import render_box, render_separator
 
@@ -110,5 +110,93 @@ def generate_turn_report(events: List[TurnEvent], season: Season) -> str:
         lines.append(i18n.t("reports.no_events"))
 
     lines.append("")
+
+    return "\n".join(lines)
+
+
+def generate_turn_preview(game_state: GameState) -> str:
+    """
+    Generate a preview of upcoming events for the next turn.
+
+    Shows:
+    - Construction completions
+    - Research completions
+    - Loyalty warnings
+    - Enemy threats (adjacent enemy cities with high troops)
+    - Low resource warnings
+
+    Args:
+        game_state: Current game state
+
+    Returns:
+        Formatted preview string
+    """
+    lines = []
+    faction = game_state.factions.get(game_state.player_faction)
+    if not faction:
+        return ""
+
+    previews: List[str] = []
+
+    # Construction completions next turn
+    for city_name, cq in game_state.construction_queue.items():
+        remaining = cq["turns_needed"] - cq["progress"]
+        if remaining <= 1:
+            bid = cq["building_id"]
+            name = i18n.t(f"buildings.{bid}", default=bid)
+            previews.append(i18n.t("preview.construction_done", building=name, city=city_name,
+                                    default=f"{name} in {city_name} will be completed"))
+
+    # Research completions next turn
+    rp = game_state.research_progress.get(game_state.player_faction)
+    if rp:
+        remaining = rp["turns_needed"] - rp["progress"]
+        if remaining <= 1:
+            tid = rp["tech_id"]
+            name = i18n.t(f"tech.{tid}", default=tid)
+            previews.append(i18n.t("preview.research_done", tech=name,
+                                    default=f"Research on {name} will be completed"))
+
+    # Loyalty warnings
+    for off_name in faction.officers:
+        off = game_state.officers.get(off_name)
+        if off and off.loyalty < 40:
+            display_name = off.name
+            previews.append(i18n.t("preview.loyalty_warning", officer=display_name,
+                                    loyalty=off.loyalty,
+                                    default=f"{display_name} loyalty dangerously low ({off.loyalty})"))
+
+    # Enemy threats
+    for city_name in faction.cities:
+        adjacents = game_state.adj.get(city_name, [])
+        for adj_name in adjacents:
+            adj_city = game_state.cities.get(adj_name)
+            if adj_city and adj_city.owner != game_state.player_faction:
+                if adj_city.troops >= 200:
+                    previews.append(i18n.t("preview.enemy_threat", city=city_name,
+                                            enemy=adj_city.owner, troops=adj_city.troops,
+                                            default=f"Enemy threat near {city_name} from {adj_city.owner} ({adj_city.troops} troops)"))
+
+    # Low resource warnings
+    for city_name in faction.cities:
+        city = game_state.cities.get(city_name)
+        if city:
+            if city.food < 100:
+                previews.append(i18n.t("preview.low_food", city=city_name,
+                                        default=f"{city_name} food critically low ({city.food})"))
+            if city.gold < 50:
+                previews.append(i18n.t("preview.low_gold", city=city_name,
+                                        default=f"{city_name} treasury nearly empty ({city.gold})"))
+
+    if not previews:
+        return ""
+
+    title = i18n.t("preview.title", default="Next Turn Preview")
+    lines.append(render_separator(50, "heavy"))
+    lines.append(f"  {title}")
+    lines.append(render_separator(50, "light"))
+    for p in previews:
+        lines.append(f"  > {p}")
+    lines.append(render_separator(50, "heavy"))
 
     return "\n".join(lines)

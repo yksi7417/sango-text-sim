@@ -654,6 +654,11 @@ def end_turn_cmd():
         say(render_event(event, pe["city"]))
         say("Use 'event_choice <number>' to respond.")
 
+    # Show turn preview
+    preview = reports.generate_turn_preview(STATE)
+    if preview:
+        say(preview)
+
     # Show strategic map at start of new turn
     map_display = map_view.render_strategic_map(STATE)
     say(map_display)

@@ -679,5 +679,14 @@
     "decade": "十年磨一劍",
     "high_morale": "士氣高昂（全體80+）",
     "scholar_nation": "文教興國（90科技）"
+  },
+  "preview": {
+    "title": "下回合預覽",
+    "construction_done": "{city}的{building}即將完工",
+    "research_done": "{tech}研發即將完成",
+    "loyalty_warning": "{officer}忠誠度危險（{loyalty}）",
+    "enemy_threat": "{enemy}對{city}構成威脅（{troops}兵）",
+    "low_food": "{city}糧草告急",
+    "low_gold": "{city}國庫將空"
   }
 }

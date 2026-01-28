@@ -678,5 +678,14 @@
     "decade": "Decade (10 years)",
     "high_morale": "High Morale (all 80+)",
     "scholar_nation": "Scholar Nation (90 tech)"
+  },
+  "preview": {
+    "title": "Next Turn Preview",
+    "construction_done": "{building} in {city} will be completed",
+    "research_done": "Research on {tech} will be completed",
+    "loyalty_warning": "{officer} loyalty dangerously low ({loyalty})",
+    "enemy_threat": "Enemy threat near {city} from {enemy} ({troops} troops)",
+    "low_food": "{city} food critically low",
+    "low_gold": "{city} treasury nearly empty"
   }
 }
