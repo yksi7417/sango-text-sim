@@ -1098,6 +1098,64 @@ def process_tech_research(game_state: GameState, events: List[TurnEvent]) -> Non
             del game_state.research_progress[faction_name]
 
 
+def start_construction(game_state: GameState, city_name: str, building_id: str) -> Dict[str, Any]:
+    """Start constructing a building in a city."""
+    from .buildings import get_building, get_available_buildings
+
+    city = game_state.cities.get(city_name)
+    if not city:
+        return {"success": False, "message": "City not found"}
+    if city.owner != game_state.player_faction:
+        return {"success": False, "message": "Not your city"}
+
+    if city_name in game_state.construction_queue:
+        return {"success": False, "message": "Already building in this city"}
+
+    building = get_building(building_id)
+    if not building:
+        return {"success": False, "message": "Unknown building"}
+
+    if building_id in city.buildings:
+        return {"success": False, "message": "Already built"}
+
+    if city.gold < building.cost:
+        return {"success": False, "message": "Insufficient gold"}
+
+    city.gold -= building.cost
+    game_state.construction_queue[city_name] = {
+        "building_id": building_id,
+        "progress": 0,
+        "turns_needed": building.turns
+    }
+    return {"success": True, "message": f"Construction started: {building_id}"}
+
+
+def process_construction(game_state: GameState, events: List[TurnEvent]) -> None:
+    """Process ongoing construction for all cities."""
+    completed = []
+    for city_name in list(game_state.construction_queue.keys()):
+        cq = game_state.construction_queue[city_name]
+        cq["progress"] += 1
+
+        if cq["progress"] >= cq["turns_needed"]:
+            city = game_state.cities.get(city_name)
+            if city:
+                city.buildings.append(cq["building_id"])
+                msg = i18n.t("buildings.complete",
+                            building=cq["building_id"],
+                            city=city_name,
+                            default=f"Construction complete: {cq['building_id']} in {city_name}")
+                game_state.log(msg)
+                events.append(TurnEvent(
+                    category=EventCategory.ECONOMY,
+                    message=msg,
+                    data={"building": cq["building_id"], "city": city_name}
+                ))
+            completed.append(city_name)
+    for cn in completed:
+        del game_state.construction_queue[cn]
+
+
 def end_turn(game_state: GameState) -> List[TurnEvent]:
     """
     Process end-of-turn updates and collect events.
@@ -1123,6 +1181,9 @@ def end_turn(game_state: GameState) -> List[TurnEvent]:
 
     # Process tech research
     process_tech_research(game_state, events)
+
+    # Process construction
+    process_construction(game_state, events)
 
     # Process economy and collect events
     monthly_economy(game_state)

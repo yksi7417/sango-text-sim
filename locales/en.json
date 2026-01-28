@@ -597,5 +597,22 @@
     "war_drums": "War Drums",
     "fortification": "Fortification",
     "research_complete": "Technology researched: {tech}!"
+  },
+  "buildings": {
+    "title": "Buildings",
+    "none": "No buildings",
+    "available": "Available for Construction",
+    "in_progress": "Under construction",
+    "complete": "{building} completed in {city}!",
+    "barracks": "Barracks",
+    "market": "Market",
+    "granary": "Granary",
+    "academy": "Academy",
+    "forge": "Forge",
+    "walls_upgrade": "Walls Upgrade",
+    "stable": "Stable",
+    "watchtower": "Watchtower",
+    "temple": "Temple",
+    "hospital": "Hospital"
   }
 }

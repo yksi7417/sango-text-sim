@@ -51,7 +51,8 @@ def save_game(game_state: GameState, filepath: str) -> bool:
                 "relations": f.relations,
                 "cities": f.cities,
                 "officers": f.officers,
-                "ruler": f.ruler
+                "ruler": f.ruler,
+                "technologies": f.technologies
             }
             for k, f in game_state.factions.items()
         }
@@ -128,7 +129,8 @@ def load_game(game_state: GameState, filepath: str) -> Optional[str]:
                 relations=fv["relations"],
                 cities=fv["cities"],
                 officers=fv.get("officers", []),
-                ruler=fv.get("ruler", "")
+                ruler=fv.get("ruler", ""),
+                technologies=fv.get("technologies", [])
             )
         
         # Restore officers
@@ -142,6 +144,10 @@ def load_game(game_state: GameState, filepath: str) -> Optional[str]:
         if isinstance(weather_str, str):
             game_state.weather = WeatherType(weather_str)
         game_state.weather_turns_remaining = data.get("weather_turns_remaining", 0)
+
+        # Restore research and construction
+        game_state.research_progress = data.get("research_progress", {})
+        game_state.construction_queue = data.get("construction_queue", {})
 
         # Restore active battle state
         if data.get("active_battle"):

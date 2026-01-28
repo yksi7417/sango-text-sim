@@ -105,6 +105,16 @@ class Technology:
     effects: Dict[str, Any] = field(default_factory=dict)
 
 
+@dataclass
+class Building:
+    """A building that can be constructed in a city."""
+    id: str
+    name_key: str
+    cost: int
+    turns: int
+    effects: Dict[str, Any] = field(default_factory=dict)
+
+
 class EventCategory(Enum):
     """Categories for turn events."""
     ECONOMY = "economy"
@@ -282,6 +292,7 @@ class City:
     unit_composition: Dict[str, int] = field(default_factory=lambda: {
         "infantry": 0, "cavalry": 0, "archer": 0
     })
+    buildings: List[str] = field(default_factory=list)  # IDs of constructed buildings
 
     def __post_init__(self):
         """Initialize unit composition from troops if not set."""
@@ -359,6 +370,7 @@ class GameState:
     weather_turns_remaining: int = 0
     pending_event: Optional[Dict[str, Any]] = None  # Pending random event awaiting player choice
     research_progress: Dict[str, Dict[str, Any]] = field(default_factory=dict)  # faction -> {tech_id, progress, officer, city}
+    construction_queue: Dict[str, Dict[str, Any]] = field(default_factory=dict)  # city_name -> {building_id, progress, turns_needed}
 
     def log(self, msg: str):
         """Add a message to the game log"""

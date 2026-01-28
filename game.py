@@ -19,7 +19,8 @@ from src.display.council_view import render_council
 from src.systems.events import load_random_events, apply_event_choice, GameEvent, EventChoice
 from src.display.event_view import render_event, render_event_outcome
 from src.tech import load_technologies, get_available_techs
-from src.engine import start_research
+from src.engine import start_research, start_construction
+from src.buildings import load_buildings, get_available_buildings
 
 # =================== Data Models ===================
 # Models have been moved to src/models.py
@@ -577,6 +578,35 @@ def tech_cmd():
 @when("research TECH at CITY with OFFICER")
 def research_cmd(tech, city, officer):
     result = start_research(STATE, tech, officer, city)
+    say(result["message"])
+
+@when("buildings CITY")
+def buildings_cmd(city):
+    city_name = city.title()
+    if city_name not in STATE.cities:
+        say(i18n.t("errors.no_city"))
+        return
+    c = STATE.cities[city_name]
+    say(f"=== {i18n.t('buildings.title', default='Buildings')} - {city_name} ===")
+    if c.buildings:
+        for bid in c.buildings:
+            say(f"  [+] {i18n.t(f'buildings.{bid}', default=bid)}")
+    else:
+        say(f"  ({i18n.t('buildings.none', default='No buildings')})")
+    say("")
+    say(f"=== {i18n.t('buildings.available', default='Available')} ===")
+    available = get_available_buildings(c.buildings)
+    for b in available:
+        name = i18n.t(f"buildings.{b.id}", default=b.id)
+        say(f"  {b.id}: {name} (Cost: {b.cost}g, {b.turns} turns)")
+    cq = STATE.construction_queue.get(city_name)
+    if cq:
+        say(f"\n{i18n.t('buildings.in_progress', default='Under construction')}: {cq['building_id']} ({cq['progress']}/{cq['turns_needed']} turns)")
+
+@when("build BUILDING in CITY")
+def build_cmd(building, city):
+    city_name = city.title()
+    result = start_construction(STATE, city_name, building)
     say(result["message"])
 
 @when("council")

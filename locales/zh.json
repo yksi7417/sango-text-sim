@@ -598,5 +598,22 @@
     "war_drums": "戰鼓",
     "fortification": "築城術",
     "research_complete": "技術研發完成：{tech}！"
+  },
+  "buildings": {
+    "title": "建築",
+    "none": "無建築",
+    "available": "可建造",
+    "in_progress": "建設中",
+    "complete": "{city}的{building}建造完成！",
+    "barracks": "兵營",
+    "market": "市場",
+    "granary": "糧倉",
+    "academy": "學府",
+    "forge": "鍛冶場",
+    "walls_upgrade": "城牆加固",
+    "stable": "馬廄",
+    "watchtower": "瞭望塔",
+    "temple": "寺廟",
+    "hospital": "醫館"
   }
 }

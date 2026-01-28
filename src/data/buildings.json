@@ -1,0 +1,14 @@
+{
+  "buildings": [
+    {"id": "barracks", "name_key": "buildings.barracks", "cost": 200, "turns": 3, "effects": {"train_speed": 5}},
+    {"id": "market", "name_key": "buildings.market", "cost": 250, "turns": 3, "effects": {"commerce_income": 10}},
+    {"id": "granary", "name_key": "buildings.granary", "cost": 180, "turns": 2, "effects": {"food_storage": 200}},
+    {"id": "academy", "name_key": "buildings.academy", "cost": 300, "turns": 4, "effects": {"research_speed": 5}},
+    {"id": "forge", "name_key": "buildings.forge", "cost": 280, "turns": 3, "effects": {"weapon_bonus": 5}},
+    {"id": "walls_upgrade", "name_key": "buildings.walls_upgrade", "cost": 350, "turns": 4, "effects": {"walls_bonus": 10}},
+    {"id": "stable", "name_key": "buildings.stable", "cost": 220, "turns": 3, "effects": {"cavalry_train": 5}},
+    {"id": "watchtower", "name_key": "buildings.watchtower", "cost": 150, "turns": 2, "effects": {"defense_bonus": 5}},
+    {"id": "temple", "name_key": "buildings.temple", "cost": 200, "turns": 3, "effects": {"morale_bonus": 5}},
+    {"id": "hospital", "name_key": "buildings.hospital", "cost": 250, "turns": 3, "effects": {"recovery_bonus": 10}}
+  ]
+}
