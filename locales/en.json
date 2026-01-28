@@ -168,6 +168,19 @@
     "migration": "{count} people migrated from {from_city} to {to_city}.",
     "war_losses": "{city} lost {losses} people due to war."
   },
+  "marriage": {
+    "invalid_target": "Invalid target faction.",
+    "already_married": "{officer} is already married.",
+    "rejected": "{faction} rejects the marriage proposal.",
+    "no_candidate": "No available candidates in {faction}.",
+    "success": "{officer} married {spouse} of {faction}! Relations improved."
+  },
+  "hostage": {
+    "sent": "{officer} sent as hostage to {faction}.",
+    "not_hostage": "This officer is not a hostage.",
+    "returned": "{officer} has been returned. Relations improved.",
+    "no_hostages": "No hostages held."
+  },
   "cmd_feedback": {
     "assigned": "{name} assigned to {task} in {city}. ({desc})",
     "relocated": "{name} relocated to {city}.",

@@ -168,6 +168,19 @@
     "migration": "{count}人從{from_city}遷移至{to_city}。",
     "war_losses": "{city}因戰爭損失了{losses}人口。"
   },
+  "marriage": {
+    "invalid_target": "無效的目標勢力。",
+    "already_married": "{officer}已婚。",
+    "rejected": "{faction}拒絕了聯姻提議。",
+    "no_candidate": "{faction}無可聯姻人選。",
+    "success": "{officer}與{faction}的{spouse}聯姻！關係改善。"
+  },
+  "hostage": {
+    "sent": "{officer}作為質子送往{faction}。",
+    "not_hostage": "此人並非質子。",
+    "returned": "{officer}已被送回。關係改善。",
+    "no_hostages": "無質子在押。"
+  },
   "cmd_feedback": {
     "assigned": "{name} 受命於 {city} 執行 {task}。（{desc}）",
     "relocated": "{name} 駐守 {city}。",
