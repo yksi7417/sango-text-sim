@@ -811,7 +811,7 @@
         "Bonuses applied to gameplay",
         "'tech' command shows tech tree"
       ],
-      "status": "pending",
+      "status": "passed",
       "depends_on": [
         "p3-08"
       ],
