@@ -716,7 +716,7 @@
         "Combat applies relationship bonuses",
         "Loyalty calculation uses relationships"
       ],
-      "status": "pending",
+      "status": "passed",
       "depends_on": [
         "p3-04",
         "p1-05"
