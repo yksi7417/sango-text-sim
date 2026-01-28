@@ -45,6 +45,8 @@ def render_council(council: Council) -> str:
         lines.append(f"  [{icon}] {idx}. {item.title}")
         lines.append(f"      {i18n.t('council.presenter_label', default='Presenter')}: {item.presenter}")
         lines.append(f"      {item.recommendation}")
+        if item.dialogue:
+            lines.append(f"      \"{item.dialogue}\"")
         lines.append("")
 
     lines.append(render_separator(60, "single"))

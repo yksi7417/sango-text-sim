@@ -12,6 +12,7 @@ from enum import Enum
 from typing import List, Optional
 from ..models import GameState, Officer
 from i18n import i18n
+from .dialogue import generate_dialogue
 
 
 class AgendaCategory(Enum):
@@ -30,6 +31,7 @@ class AgendaItem:
     title: str
     recommendation: str
     data: dict = field(default_factory=dict)
+    dialogue: str = ""
 
 
 @dataclass
@@ -228,5 +230,13 @@ def generate_council_agenda(game_state: GameState) -> Council:
     council.agenda.extend(_check_military_issues(game_state))
     council.agenda.extend(_check_diplomatic_issues(game_state))
     council.agenda.extend(_check_personnel_issues(game_state))
+
+    # Add dialogue flavor to agenda items
+    for item in council.agenda:
+        presenter = game_state.officers.get(item.presenter)
+        if presenter:
+            item.dialogue = generate_dialogue(presenter, "advice")
+        else:
+            item.dialogue = ""
 
     return council
