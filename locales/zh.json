@@ -528,6 +528,23 @@
     "advantage": "{attacker}剋制{defender}！(+20%%)",
     "disadvantage": "{attacker}被{defender}剋制。(-20%%)"
   },
+  "events": {
+    "bumper_harvest": {"title": "豐收！", "desc": "今季田地豐收。", "choice1": "全數儲糧（+200糧草）", "choice2": "與民同慶（+100糧草，+5士氣）"},
+    "merchant_caravan": {"title": "商隊過境", "desc": "富商隊伍途經此地。", "choice1": "收取過路費（+150金）", "choice2": "建立貿易（+50金，+3商業）"},
+    "bandit_raid": {"title": "山賊來襲！", "desc": "山賊襲擊城郊。", "choice1": "出兵剿匪（-20兵，+5士氣）", "choice2": "花錢消災（-50金）"},
+    "plague": {"title": "瘟疫！", "desc": "瘟疫爆發。", "choice1": "撥款醫治（-100金，+3士氣）", "choice2": "隔離病患（-30兵，-5士氣）"},
+    "wandering_scholar": {"title": "雲遊學者", "desc": "學者獻上知識。", "choice1": "聘為顧問（+5技術）", "choice2": "虛心學習（+3智力）"},
+    "flood": {"title": "洪水！", "desc": "暴雨導致洪災。", "choice1": "承受損失（-150糧，-5農業）", "choice2": "緊急修繕（-100金，-50糧）"},
+    "drought_relief": {"title": "旱災救濟", "desc": "旱災導致民眾受苦。", "choice1": "分發物資（-80金，+8士氣）", "choice2": "不予理會（-3士氣）"},
+    "weapon_cache": {"title": "武器庫", "desc": "發現隱藏武器庫。", "choice1": "武裝新兵（+30兵）", "choice2": "加強防禦（+5防禦）"},
+    "peasant_revolt": {"title": "農民起義！", "desc": "農民揭竿而起。", "choice1": "鎮壓叛亂（-40兵，+10士氣）", "choice2": "解決民怨（-100金，+15士氣）"},
+    "festival": {"title": "春節", "desc": "百姓歡慶春天。", "choice1": "盛大慶典（-50金，+10士氣）", "choice2": "簡樸慶祝（+3士氣）"},
+    "defector_arrives": {"title": "叛軍來歸", "desc": "敵軍士兵投誠。", "choice1": "收編（-30金，+50兵）", "choice2": "索取酬金（+30金）"},
+    "earthquake": {"title": "地震！", "desc": "地震破壞建築。", "choice1": "重建城牆（-50金，-10城牆）", "choice2": "簡單修補（-5城牆，-5士氣）"},
+    "trade_boom": {"title": "貿易繁榮", "desc": "商路興旺。", "choice1": "收取關稅（+200金）", "choice2": "投資市場（+100金，+5商業）"},
+    "spy_caught": {"title": "捕獲敵探", "desc": "衛兵捕獲敵方間諜。", "choice1": "公開處決（+5士氣）", "choice2": "索取贖金（+50金）"},
+    "winter_storm": {"title": "暴風雪", "desc": "猛烈暴風雪侵襲。", "choice1": "堅守不出（-80糧，-10兵）", "choice2": "緊急應對（-60金，-40糧）"}
+  },
   "council": {
     "title": "朝會",
     "no_agenda": "主公，目前無緊急事務需要商議。",

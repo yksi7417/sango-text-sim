@@ -527,6 +527,23 @@
     "advantage": "{attacker} has advantage over {defender}! (+20%%)",
     "disadvantage": "{attacker} is at disadvantage against {defender}. (-20%%)"
   },
+  "events": {
+    "bumper_harvest": {"title": "Bumper Harvest!", "desc": "The fields have yielded an exceptional harvest.", "choice1": "Store all grain (+200 food)", "choice2": "Celebrate (+100 food, +5 morale)"},
+    "merchant_caravan": {"title": "Merchant Caravan", "desc": "A wealthy caravan seeks passage.", "choice1": "Charge toll (+150 gold)", "choice2": "Trade deal (+50 gold, +3 commerce)"},
+    "bandit_raid": {"title": "Bandit Raid!", "desc": "Bandits attack the outskirts.", "choice1": "Fight them (-20 troops, +5 morale)", "choice2": "Pay them off (-50 gold)"},
+    "plague": {"title": "Plague!", "desc": "A plague breaks out.", "choice1": "Fund treatment (-100 gold, +3 morale)", "choice2": "Quarantine (-30 troops, -5 morale)"},
+    "wandering_scholar": {"title": "Wandering Scholar", "desc": "A scholar offers knowledge.", "choice1": "Employ (+5 tech)", "choice2": "Learn (+3 intelligence)"},
+    "flood": {"title": "Flooding!", "desc": "Heavy rains cause floods.", "choice1": "Accept losses (-150 food, -5 agri)", "choice2": "Repairs (-100 gold, -50 food)"},
+    "drought_relief": {"title": "Drought Relief", "desc": "The drought causes suffering.", "choice1": "Distribute supplies (-80 gold, +8 morale)", "choice2": "Ignore (-3 morale)"},
+    "weapon_cache": {"title": "Weapon Cache", "desc": "A hidden weapons cache found.", "choice1": "Arm recruits (+30 troops)", "choice2": "Fortify (+5 defense)"},
+    "peasant_revolt": {"title": "Peasant Revolt!", "desc": "Peasants rise up.", "choice1": "Crush revolt (-40 troops, +10 morale)", "choice2": "Address grievances (-100 gold, +15 morale)"},
+    "festival": {"title": "Spring Festival", "desc": "The people wish to celebrate.", "choice1": "Grand festivities (-50 gold, +10 morale)", "choice2": "Modest celebration (+3 morale)"},
+    "defector_arrives": {"title": "Defector Arrives", "desc": "Enemy soldiers seek to join.", "choice1": "Welcome them (-30 gold, +50 troops)", "choice2": "Demand payment (+30 gold)"},
+    "earthquake": {"title": "Earthquake!", "desc": "An earthquake damages structures.", "choice1": "Rebuild walls (-50 gold, -10 walls)", "choice2": "Minimal repairs (-5 walls, -5 morale)"},
+    "trade_boom": {"title": "Trade Boom", "desc": "Trade routes flourish.", "choice1": "Collect tariffs (+200 gold)", "choice2": "Invest in markets (+100 gold, +5 commerce)"},
+    "spy_caught": {"title": "Enemy Spy Caught", "desc": "Guards captured an enemy spy.", "choice1": "Execute publicly (+5 morale)", "choice2": "Ransom back (+50 gold)"},
+    "winter_storm": {"title": "Winter Storm", "desc": "A fierce storm batters the city.", "choice1": "Hunker down (-80 food, -10 troops)", "choice2": "Emergency measures (-60 gold, -40 food)"}
+  },
   "council": {
     "title": "Morning Council",
     "no_agenda": "No pressing matters to discuss, my lord.",

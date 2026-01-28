@@ -1,0 +1,184 @@
+{
+  "events": [
+    {
+      "id": "bumper_harvest",
+      "type": "positive",
+      "probability": 0.08,
+      "conditions": {"season": "autumn"},
+      "title_key": "events.bumper_harvest.title",
+      "description_key": "events.bumper_harvest.desc",
+      "choices": [
+        {"label_key": "events.bumper_harvest.choice1", "effects": {"food": 200}},
+        {"label_key": "events.bumper_harvest.choice2", "effects": {"food": 100, "morale": 5}}
+      ]
+    },
+    {
+      "id": "merchant_caravan",
+      "type": "positive",
+      "probability": 0.10,
+      "conditions": {},
+      "title_key": "events.merchant_caravan.title",
+      "description_key": "events.merchant_caravan.desc",
+      "choices": [
+        {"label_key": "events.merchant_caravan.choice1", "effects": {"gold": 150}},
+        {"label_key": "events.merchant_caravan.choice2", "effects": {"gold": 50, "commerce": 3}}
+      ]
+    },
+    {
+      "id": "bandit_raid",
+      "type": "negative",
+      "probability": 0.08,
+      "conditions": {},
+      "title_key": "events.bandit_raid.title",
+      "description_key": "events.bandit_raid.desc",
+      "choices": [
+        {"label_key": "events.bandit_raid.choice1", "effects": {"troops": -20, "morale": 5}},
+        {"label_key": "events.bandit_raid.choice2", "effects": {"gold": -50}}
+      ]
+    },
+    {
+      "id": "plague",
+      "type": "negative",
+      "probability": 0.05,
+      "conditions": {"season": "summer"},
+      "title_key": "events.plague.title",
+      "description_key": "events.plague.desc",
+      "choices": [
+        {"label_key": "events.plague.choice1", "effects": {"gold": -100, "morale": 3}},
+        {"label_key": "events.plague.choice2", "effects": {"troops": -30, "morale": -5}}
+      ]
+    },
+    {
+      "id": "wandering_scholar",
+      "type": "positive",
+      "probability": 0.07,
+      "conditions": {},
+      "title_key": "events.wandering_scholar.title",
+      "description_key": "events.wandering_scholar.desc",
+      "choices": [
+        {"label_key": "events.wandering_scholar.choice1", "effects": {"tech": 5}},
+        {"label_key": "events.wandering_scholar.choice2", "effects": {"intelligence_boost": 3}}
+      ]
+    },
+    {
+      "id": "flood",
+      "type": "negative",
+      "probability": 0.06,
+      "conditions": {"season": "summer"},
+      "title_key": "events.flood.title",
+      "description_key": "events.flood.desc",
+      "choices": [
+        {"label_key": "events.flood.choice1", "effects": {"food": -150, "agri": -5}},
+        {"label_key": "events.flood.choice2", "effects": {"gold": -100, "food": -50}}
+      ]
+    },
+    {
+      "id": "drought_relief",
+      "type": "neutral",
+      "probability": 0.06,
+      "conditions": {"weather": "drought"},
+      "title_key": "events.drought_relief.title",
+      "description_key": "events.drought_relief.desc",
+      "choices": [
+        {"label_key": "events.drought_relief.choice1", "effects": {"gold": -80, "morale": 8}},
+        {"label_key": "events.drought_relief.choice2", "effects": {"morale": -3}}
+      ]
+    },
+    {
+      "id": "weapon_cache",
+      "type": "positive",
+      "probability": 0.06,
+      "conditions": {},
+      "title_key": "events.weapon_cache.title",
+      "description_key": "events.weapon_cache.desc",
+      "choices": [
+        {"label_key": "events.weapon_cache.choice1", "effects": {"troops": 30}},
+        {"label_key": "events.weapon_cache.choice2", "effects": {"defense": 5}}
+      ]
+    },
+    {
+      "id": "peasant_revolt",
+      "type": "negative",
+      "probability": 0.05,
+      "conditions": {"morale_below": 40},
+      "title_key": "events.peasant_revolt.title",
+      "description_key": "events.peasant_revolt.desc",
+      "choices": [
+        {"label_key": "events.peasant_revolt.choice1", "effects": {"troops": -40, "morale": 10}},
+        {"label_key": "events.peasant_revolt.choice2", "effects": {"gold": -100, "morale": 15}}
+      ]
+    },
+    {
+      "id": "festival",
+      "type": "positive",
+      "probability": 0.08,
+      "conditions": {"season": "spring"},
+      "title_key": "events.festival.title",
+      "description_key": "events.festival.desc",
+      "choices": [
+        {"label_key": "events.festival.choice1", "effects": {"gold": -50, "morale": 10}},
+        {"label_key": "events.festival.choice2", "effects": {"morale": 3}}
+      ]
+    },
+    {
+      "id": "defector_arrives",
+      "type": "positive",
+      "probability": 0.05,
+      "conditions": {},
+      "title_key": "events.defector_arrives.title",
+      "description_key": "events.defector_arrives.desc",
+      "choices": [
+        {"label_key": "events.defector_arrives.choice1", "effects": {"troops": 50, "gold": -30}},
+        {"label_key": "events.defector_arrives.choice2", "effects": {"gold": 30}}
+      ]
+    },
+    {
+      "id": "earthquake",
+      "type": "negative",
+      "probability": 0.03,
+      "conditions": {},
+      "title_key": "events.earthquake.title",
+      "description_key": "events.earthquake.desc",
+      "choices": [
+        {"label_key": "events.earthquake.choice1", "effects": {"walls": -10, "gold": -50}},
+        {"label_key": "events.earthquake.choice2", "effects": {"walls": -5, "morale": -5}}
+      ]
+    },
+    {
+      "id": "trade_boom",
+      "type": "positive",
+      "probability": 0.07,
+      "conditions": {},
+      "title_key": "events.trade_boom.title",
+      "description_key": "events.trade_boom.desc",
+      "choices": [
+        {"label_key": "events.trade_boom.choice1", "effects": {"gold": 200}},
+        {"label_key": "events.trade_boom.choice2", "effects": {"gold": 100, "commerce": 5}}
+      ]
+    },
+    {
+      "id": "spy_caught",
+      "type": "neutral",
+      "probability": 0.06,
+      "conditions": {},
+      "title_key": "events.spy_caught.title",
+      "description_key": "events.spy_caught.desc",
+      "choices": [
+        {"label_key": "events.spy_caught.choice1", "effects": {"morale": 5}},
+        {"label_key": "events.spy_caught.choice2", "effects": {"gold": 50}}
+      ]
+    },
+    {
+      "id": "winter_storm",
+      "type": "negative",
+      "probability": 0.10,
+      "conditions": {"season": "winter"},
+      "title_key": "events.winter_storm.title",
+      "description_key": "events.winter_storm.desc",
+      "choices": [
+        {"label_key": "events.winter_storm.choice1", "effects": {"food": -80, "troops": -10}},
+        {"label_key": "events.winter_storm.choice2", "effects": {"gold": -60, "food": -40}}
+      ]
+    }
+  ]
+}
