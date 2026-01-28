@@ -14,6 +14,8 @@ from src.display import map_view
 from src.display import reports
 from src.display import duel_view
 from src.systems.duel import DuelAction
+from src.systems.council import generate_council_agenda
+from src.display.council_view import render_council
 
 # =================== Data Models ===================
 # Models have been moved to src/models.py
@@ -545,6 +547,12 @@ def battle_action_cmd(action):
         say("  5. Retreat - Withdraw from battle")
         say("")
         say("Use 'battle_action <number>' to choose your tactic")
+
+@when("council")
+def council_cmd():
+    council = generate_council_agenda(STATE)
+    output = render_council(council)
+    say(output)
 
 @when("end")
 def end_turn_cmd():

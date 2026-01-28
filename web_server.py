@@ -15,6 +15,8 @@ from src.models import GameState, get_current_season
 from src import utils, engine, world, persistence
 from src.display import map_view, reports, duel_view
 from src.systems.duel import DuelAction
+from src.systems.council import generate_council_agenda
+from src.display.council_view import render_council
 from i18n import i18n
 
 app = Flask(__name__)
@@ -740,6 +742,33 @@ def api_battle_action():
         }
 
     return jsonify(response)
+
+
+@app.route('/api/council', methods=['GET'])
+def api_council():
+    """Get council meeting agenda."""
+    if 'session_id' not in session:
+        return jsonify({'error': 'No active session'})
+
+    session_id = session['session_id']
+    gs = get_or_create_game_state(session_id)
+
+    council = generate_council_agenda(gs)
+    display = render_council(council)
+
+    return jsonify({
+        'council_display': display,
+        'agenda_count': len(council.agenda),
+        'items': [
+            {
+                'category': item.category.value,
+                'presenter': item.presenter,
+                'title': item.title,
+                'recommendation': item.recommendation
+            }
+            for item in council.agenda
+        ]
+    })
 
 
 @app.route('/health')
