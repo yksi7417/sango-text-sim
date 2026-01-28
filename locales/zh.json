@@ -132,6 +132,15 @@
     "not_yours": "此俘虜非汝所有。",
     "no_prisoners": "無俘虜在押。"
   },
+  "naval": {
+    "not_coastal": "只有沿海或沿河城市才能建造船隻。",
+    "need_food": "建造船隻需要{amount}糧草。",
+    "built": "在{city}建造了{count}艘船！艦隊就緒！",
+    "insufficient_ships": "需要運輸{needed}名士兵，但只有{capacity}的運輸能力。建造更多船隻！",
+    "fleet_status": "{city}艦隊：{ships}艘船（運輸能力：{capacity}名士兵）",
+    "no_fleet": "無可用海軍力量。",
+    "fire_on_water": "火攻摧毀敵軍艦隊！"
+  },
   "cmd_feedback": {
     "assigned": "{name} 受命於 {city} 執行 {task}。（{desc}）",
     "relocated": "{name} 駐守 {city}。",
@@ -544,6 +553,7 @@
     "infantry": "步兵",
     "cavalry": "騎兵",
     "archer": "弓兵",
+    "navy": "水軍",
     "advantage": "{attacker}剋制{defender}！(+20%%)",
     "disadvantage": "{attacker}被{defender}剋制。(-20%%)"
   },

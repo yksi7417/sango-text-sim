@@ -132,6 +132,15 @@
     "not_yours": "This prisoner is not yours.",
     "no_prisoners": "No prisoners held."
   },
+  "naval": {
+    "not_coastal": "Ships can only be built in coastal or river cities.",
+    "need_food": "Need {amount} food to build ships.",
+    "built": "Built {count} ship(s) in {city}. Fleet ready!",
+    "insufficient_ships": "Need to transport {needed} troops but only have capacity for {capacity}. Build more ships!",
+    "fleet_status": "Fleet at {city}: {ships} ships (capacity: {capacity} troops)",
+    "no_fleet": "No naval forces available.",
+    "fire_on_water": "Fire attack devastates the enemy fleet!"
+  },
   "cmd_feedback": {
     "assigned": "{name} assigned to {task} in {city}. ({desc})",
     "relocated": "{name} relocated to {city}.",
@@ -543,6 +552,7 @@
     "infantry": "Infantry",
     "cavalry": "Cavalry",
     "archer": "Archers",
+    "navy": "Navy",
     "advantage": "{attacker} has advantage over {defender}! (+20%%)",
     "disadvantage": "{attacker} is at disadvantage against {defender}. (-20%%)"
   },

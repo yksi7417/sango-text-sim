@@ -203,3 +203,13 @@ COASTAL_NAVAL_DEFENSE_BONUS = 1.15  # +15% defense against non-naval attacks
 # River terrain - crossing penalty
 RIVER_CROSSING_PENALTY = 0.85  # -15% attack effectiveness when crossing river
 RIVER_CROSSING_ATTRITION = 0.02  # 2% troop loss when crossing
+
+# =================== Naval Combat ===================
+SHIP_BUILD_COST_GOLD = 100  # Gold per ship
+SHIP_BUILD_COST_FOOD = 50  # Food per ship
+SHIP_TRANSPORT_CAPACITY = 50  # Troops per ship
+NAVAL_FIRE_ATTACK_BONUS = 1.50  # +50% fire attack on water
+NAVAL_COMBAT_BONUS = 1.25  # +25% combat bonus for naval-equipped forces on water
+NAVAL_DEFENSE_BONUS = 1.20  # +20% defense for naval-equipped forces on water
+NO_SHIPS_WATER_PENALTY = 0.50  # -50% combat for forces without ships on water
+NAVAL_TERRAIN_TYPES = ["coastal", "river"]  # Terrains where naval matters

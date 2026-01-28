@@ -13,7 +13,7 @@ class TestUnitTypeEnum:
         assert UnitType.ARCHER.value == "archer"
 
     def test_unit_type_count(self):
-        assert len(UnitType) == 3
+        assert len(UnitType) == 4
 
 
 class TestCityUnitComposition:

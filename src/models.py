@@ -55,6 +55,7 @@ class UnitType(Enum):
     INFANTRY = "infantry"
     CAVALRY = "cavalry"
     ARCHER = "archer"
+    NAVY = "navy"
 
 
 class WeatherType(Enum):
@@ -304,6 +305,7 @@ class City:
         "infantry": 0, "cavalry": 0, "archer": 0
     })
     buildings: List[str] = field(default_factory=list)  # IDs of constructed buildings
+    ships: int = 0  # Naval units (only coastal/river cities can build)
 
     def __post_init__(self):
         """Initialize unit composition from troops if not set."""
