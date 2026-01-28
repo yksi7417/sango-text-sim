@@ -344,6 +344,7 @@ class GameState:
     active_battle: Optional['BattleState'] = None  # Current ongoing tactical battle
     weather: WeatherType = WeatherType.CLEAR
     weather_turns_remaining: int = 0
+    pending_event: Optional[Dict[str, Any]] = None  # Pending random event awaiting player choice
 
     def log(self, msg: str):
         """Add a message to the game log"""

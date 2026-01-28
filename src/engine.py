@@ -1070,6 +1070,21 @@ def end_turn(game_state: GameState) -> List[TurnEvent]:
         category = categorize_message(msg)
         events.append(TurnEvent(category=category, message=msg, data={}))
 
+    # Check for random events
+    from .systems.events import check_event_triggers
+    triggered = check_event_triggers(game_state)
+    if triggered:
+        event = triggered["event"]
+        city = triggered["city"]
+        game_state.pending_event = {
+            "event_id": event.id,
+            "event_type": event.event_type,
+            "title_key": event.title_key,
+            "description_key": event.description_key,
+            "city": city,
+            "choices": [{"label_key": c.label_key, "effects": c.effects} for c in event.choices]
+        }
+
     # Update weather
     update_weather(game_state, events)
 

@@ -16,6 +16,8 @@ from src.display import duel_view
 from src.systems.duel import DuelAction
 from src.systems.council import generate_council_agenda
 from src.display.council_view import render_council
+from src.systems.events import load_random_events, apply_event_choice, GameEvent, EventChoice
+from src.display.event_view import render_event, render_event_outcome
 
 # =================== Data Models ===================
 # Models have been moved to src/models.py
@@ -569,11 +571,43 @@ def end_turn_cmd():
     turn_report = reports.generate_turn_report(events, current_season)
     say(turn_report)
 
+    # Show pending event if any
+    if STATE.pending_event:
+        pe = STATE.pending_event
+        # Reconstruct GameEvent for display
+        event = GameEvent(
+            id=pe["event_id"], event_type=pe["event_type"],
+            probability=0, conditions={},
+            title_key=pe["title_key"], description_key=pe["description_key"],
+            choices=[EventChoice(label_key=c["label_key"], effects=c["effects"]) for c in pe["choices"]]
+        )
+        say(render_event(event, pe["city"]))
+        say("Use 'event_choice <number>' to respond.")
+
     # Show strategic map at start of new turn
     map_display = map_view.render_strategic_map(STATE)
     say(map_display)
     if check_victory():
         say("help / load FILE")
+
+@when("event_choice NUMBER", number=int)
+def event_choice_cmd(number):
+    if not STATE.pending_event:
+        say("No pending event.")
+        return
+    pe = STATE.pending_event
+    event = GameEvent(
+        id=pe["event_id"], event_type=pe["event_type"],
+        probability=0, conditions={},
+        title_key=pe["title_key"], description_key=pe["description_key"],
+        choices=[EventChoice(label_key=c["label_key"], effects=c["effects"]) for c in pe["choices"]]
+    )
+    result = apply_event_choice(STATE, event, number - 1, pe["city"])
+    if "error" in result:
+        say(result["error"])
+    else:
+        say(render_event_outcome(result, pe["city"]))
+    STATE.pending_event = None
 
 # =================== Save/Load ===================
 # Persistence has been moved to src/persistence.py

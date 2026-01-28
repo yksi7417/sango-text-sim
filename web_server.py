@@ -17,6 +17,8 @@ from src.display import map_view, reports, duel_view
 from src.systems.duel import DuelAction
 from src.systems.council import generate_council_agenda
 from src.display.council_view import render_council
+from src.systems.events import apply_event_choice, GameEvent, EventChoice
+from src.display.event_view import render_event, render_event_outcome
 from i18n import i18n
 
 app = Flask(__name__)
@@ -768,6 +770,37 @@ def api_council():
             }
             for item in council.agenda
         ]
+    })
+
+
+@app.route('/api/event/choice', methods=['POST'])
+def api_event_choice():
+    """Make a choice for a pending event."""
+    if 'session_id' not in session:
+        return jsonify({'error': 'No active session'})
+
+    session_id = session['session_id']
+    gs = get_or_create_game_state(session_id)
+
+    if not gs.pending_event:
+        return jsonify({'error': 'No pending event'})
+
+    data = request.get_json() or {}
+    choice_index = data.get('choice', 0)
+
+    pe = gs.pending_event
+    event = GameEvent(
+        id=pe["event_id"], event_type=pe["event_type"],
+        probability=0, conditions={},
+        title_key=pe["title_key"], description_key=pe["description_key"],
+        choices=[EventChoice(label_key=c["label_key"], effects=c["effects"]) for c in pe["choices"]]
+    )
+    result = apply_event_choice(gs, event, choice_index, pe["city"])
+    gs.pending_event = None
+
+    return jsonify({
+        'result': result,
+        'outcome_display': render_event_outcome(result, pe["city"])
     })
 
 
