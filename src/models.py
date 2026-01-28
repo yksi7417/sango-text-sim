@@ -50,6 +50,15 @@ def get_current_season(month: int) -> Season:
         return Season.WINTER
 
 
+class WeatherType(Enum):
+    """Weather conditions that affect battles and movement."""
+    CLEAR = "clear"
+    RAIN = "rain"
+    SNOW = "snow"
+    FOG = "fog"
+    DROUGHT = "drought"
+
+
 class TerrainType(Enum):
     """
     Terrain types that affect combat and movement.
@@ -251,6 +260,8 @@ class GameState:
     active_duel: Optional[Any] = None  # Will be Duel from systems.duel
     pending_duel_challenge: Optional[Dict[str, Any]] = None  # For async challenge/response flow
     active_battle: Optional['BattleState'] = None  # Current ongoing tactical battle
+    weather: WeatherType = WeatherType.CLEAR
+    weather_turns_remaining: int = 0
 
     def log(self, msg: str):
         """Add a message to the game log"""

@@ -337,6 +337,25 @@
     "autumn_desc": "Golden harvests fill the granaries. A time of plenty. (+15%% harvest)",
     "winter_desc": "Snow blankets the land. Movement slows, troops shiver. (-30%% movement)"
   },
+  "weather": {
+    "clear": "Clear",
+    "rain": "Rain",
+    "snow": "Snow",
+    "fog": "Fog",
+    "drought": "Drought",
+    "change": {
+      "clear": "The skies clear. Fine weather ahead.",
+      "rain": "Dark clouds gather. Rain begins to fall.",
+      "snow": "Snow begins to fall, blanketing the land.",
+      "fog": "A thick fog rolls in, obscuring the landscape.",
+      "drought": "The sun scorches the earth. Drought grips the land."
+    },
+    "status": "Weather: {weather}",
+    "effect_rain": "-20%% fire attack, -10%% movement",
+    "effect_snow": "-30%% movement, troop attrition",
+    "effect_fog": "+30%% ambush, -20%% archer",
+    "effect_drought": "+50%% fire attack"
+  },
   "reports": {
     "season_title": "Season",
     "category_economy": "Economy",

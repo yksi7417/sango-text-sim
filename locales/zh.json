@@ -338,6 +338,25 @@
     "autumn_desc": "金色豐收滿倉。豐收之時。(+15% 收穫)",
     "winter_desc": "白雪覆蓋大地。行軍緩慢，士兵瑟瑟發抖。(-30% 移動)"
   },
+  "weather": {
+    "clear": "晴",
+    "rain": "雨",
+    "snow": "雪",
+    "fog": "霧",
+    "drought": "旱",
+    "change": {
+      "clear": "天空放晴，萬里無雲。",
+      "rain": "烏雲密布，大雨傾盆。",
+      "snow": "大雪紛飛，白雪覆蓋大地。",
+      "fog": "濃霧瀰漫，遮蔽視野。",
+      "drought": "烈日炙烤，旱災來襲。"
+    },
+    "status": "天氣：{weather}",
+    "effect_rain": "火攻-20%，移動-10%",
+    "effect_snow": "移動-30%，部隊損耗",
+    "effect_fog": "伏擊+30%，弓箭-20%",
+    "effect_drought": "火攻+50%"
+  },
   "reports": {
     "season_title": "季節",
     "category_economy": "經濟",

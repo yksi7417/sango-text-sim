@@ -11,7 +11,7 @@ import json
 import os
 from dataclasses import asdict
 from typing import Optional
-from .models import Officer, City, Faction, GameState, TerrainType, BattleState
+from .models import Officer, City, Faction, GameState, TerrainType, BattleState, WeatherType
 
 
 def save_game(game_state: GameState, filepath: str) -> bool:
@@ -56,6 +56,10 @@ def save_game(game_state: GameState, filepath: str) -> bool:
             for k, f in game_state.factions.items()
         }
         data["officers"] = {k: asdict(v) for k, v in game_state.officers.items()}
+
+        # Convert WeatherType enum to string
+        if isinstance(data.get('weather'), WeatherType):
+            data['weather'] = data['weather'].value
 
         # Save active battle state
         if game_state.active_battle:
@@ -132,6 +136,12 @@ def load_game(game_state: GameState, filepath: str) -> Optional[str]:
         
         # Restore map adjacency
         game_state.adj = {k: v for k, v in data["adj"].items()}
+
+        # Restore weather
+        weather_str = data.get("weather", "clear")
+        if isinstance(weather_str, str):
+            game_state.weather = WeatherType(weather_str)
+        game_state.weather_turns_remaining = data.get("weather_turns_remaining", 0)
 
         # Restore active battle state
         if data.get("active_battle"):

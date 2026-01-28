@@ -574,7 +574,8 @@ def api_command():
             'year': gs.year,
             'month': gs.month,
             'faction': gs.player_faction,
-            'game_started': game_started
+            'game_started': game_started,
+            'weather': gs.weather.value
         },
         'menu_state': {
             'current_menu': session_state.get('current_menu', 'pregame'),

@@ -552,6 +552,10 @@ def end_turn_cmd():
     events = end_turn()
     STATE.log(i18n.t("game.begin", year=STATE.year, month=STATE.month))
 
+    # Show weather
+    weather_name = i18n.t(f"weather.{STATE.weather.value}")
+    say(i18n.t("weather.status", weather=weather_name))
+
     # Generate and display turn report
     current_season = get_current_season(STATE.month)
     turn_report = reports.generate_turn_report(events, current_season)

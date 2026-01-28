@@ -13,7 +13,7 @@ This module contains the central game logic:
 
 import random
 from typing import Tuple, List, Dict, Any, Optional
-from .models import Officer, City, GameState, Faction, TurnEvent, EventCategory, BattleState
+from .models import Officer, City, GameState, Faction, TurnEvent, EventCategory, BattleState, WeatherType, Season, get_current_season
 from .constants import TASKS
 from . import utils
 from i18n import i18n
@@ -179,9 +179,8 @@ def initiate_tactical_battle(
     # Deduct troops from attacking city
     attacker_city.troops -= attacking_troops
 
-    # Determine weather (simplified - could use seasonal system)
-    weather_options = ["clear", "clear", "clear", "rain", "fog"]
-    weather = random.choice(weather_options)
+    # Use current weather from game state
+    weather = game_state.weather.value
 
     # Create battle state
     battle = create_battle(
@@ -965,6 +964,69 @@ def try_defections(game_state: GameState) -> None:
             game_state.log(i18n.t("game.defect", name=utils.get_officer_name(off.name), new_faction=off.faction))
 
 
+def generate_weather(season: Season) -> tuple:
+    """
+    Generate weather based on the current season.
+
+    Returns:
+        Tuple of (WeatherType, duration in turns 1-3)
+    """
+    roll = random.random()
+    if season == Season.SPRING:
+        if roll < 0.30:
+            weather = WeatherType.RAIN
+        elif roll < 0.40:
+            weather = WeatherType.FOG
+        else:
+            weather = WeatherType.CLEAR
+    elif season == Season.SUMMER:
+        if roll < 0.20:
+            weather = WeatherType.DROUGHT
+        elif roll < 0.30:
+            weather = WeatherType.RAIN
+        else:
+            weather = WeatherType.CLEAR
+    elif season == Season.AUTUMN:
+        if roll < 0.10:
+            weather = WeatherType.FOG
+        elif roll < 0.20:
+            weather = WeatherType.RAIN
+        else:
+            weather = WeatherType.CLEAR
+    else:  # Winter
+        if roll < 0.40:
+            weather = WeatherType.SNOW
+        elif roll < 0.50:
+            weather = WeatherType.FOG
+        else:
+            weather = WeatherType.CLEAR
+
+    duration = random.randint(1, 3)
+    return weather, duration
+
+
+def update_weather(game_state: GameState, events: List[TurnEvent]) -> None:
+    """Update weather state: decrement duration or generate new weather."""
+    if game_state.weather_turns_remaining > 0:
+        game_state.weather_turns_remaining -= 1
+
+    if game_state.weather_turns_remaining <= 0:
+        season = get_current_season(game_state.month)
+        new_weather, duration = generate_weather(season)
+        if new_weather != game_state.weather:
+            game_state.weather = new_weather
+            game_state.weather_turns_remaining = duration
+            weather_msg = i18n.t(f"weather.change.{new_weather.value}")
+            game_state.log(weather_msg)
+            events.append(TurnEvent(
+                category=EventCategory.ECONOMY,
+                message=weather_msg,
+                data={"weather": new_weather.value}
+            ))
+        else:
+            game_state.weather_turns_remaining = duration
+
+
 def end_turn(game_state: GameState) -> List[TurnEvent]:
     """
     Process end-of-turn updates and collect events.
@@ -1004,6 +1066,9 @@ def end_turn(game_state: GameState) -> List[TurnEvent]:
         # Categorize events based on message content
         category = categorize_message(msg)
         events.append(TurnEvent(category=category, message=msg, data={}))
+
+    # Update weather
+    update_weather(game_state, events)
 
     # Time passes
     game_state.month += 1
