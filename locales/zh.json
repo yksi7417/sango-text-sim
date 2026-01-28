@@ -629,5 +629,26 @@
     "zhou_yu_strategy": {"title": "周瑜妙計", "desc": "周瑜運籌帷幄，以奇謀智取敵軍，穩固吳國根基。"},
     "northern_expedition": {"title": "北伐中原", "desc": "諸葛亮揮師北伐，志在興復漢室。"},
     "lu_su_diplomacy": {"title": "魯肅調停", "desc": "魯肅巧妙維繫蜀吳聯盟，確保兩國齊心抗魏。"}
+  },
+  "abilities": {
+    "empty_fort": "空城計",
+    "green_dragon_slash": "青龍偃月刀",
+    "lone_rider": "單騎救主",
+    "serpent_spear": "丈八蛇矛",
+    "heroic_charge": "西涼鐵騎",
+    "veteran_aim": "百步穿楊",
+    "ambush_master": "伏兵之計",
+    "charismatic_speech": "求賢令",
+    "fire_strategy": "火燒連營",
+    "iron_wall": "鐵壁",
+    "fearless_guard": "悍衛",
+    "one_eye_fury": "拔矢啖睛",
+    "naval_command": "水戰指揮",
+    "swift_assault": "奇襲",
+    "diplomatic_finesse": "外交折衝",
+    "brilliant_strategy": "連環計",
+    "mountain_defense": "據險守隘",
+    "rapid_march": "突襲千里",
+    "activated": "{officer}發動{ability}！"
   }
 }

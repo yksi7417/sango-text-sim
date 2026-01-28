@@ -628,5 +628,26 @@
     "zhou_yu_strategy": {"title": "Zhou Yu's Brilliant Strategy", "desc": "Zhou Yu devises a masterful strategy that outmaneuvers the enemy and secures Wu's position."},
     "northern_expedition": {"title": "Northern Expedition", "desc": "Zhuge Liang launches the Northern Expedition against Wei, fulfilling his oath to restore the Han dynasty."},
     "lu_su_diplomacy": {"title": "Lu Su's Diplomacy", "desc": "Lu Su skillfully maintains the Shu-Wu alliance, ensuring continued cooperation against Wei."}
+  },
+  "abilities": {
+    "empty_fort": "Empty Fort Strategy",
+    "green_dragon_slash": "Green Dragon Slash",
+    "lone_rider": "Lone Rider",
+    "serpent_spear": "Serpent Spear",
+    "heroic_charge": "Heroic Charge",
+    "veteran_aim": "Veteran's Aim",
+    "ambush_master": "Ambush Master",
+    "charismatic_speech": "Charismatic Speech",
+    "fire_strategy": "Fire Strategy",
+    "iron_wall": "Iron Wall",
+    "fearless_guard": "Fearless Guard",
+    "one_eye_fury": "One-Eye Fury",
+    "naval_command": "Naval Command",
+    "swift_assault": "Swift Assault",
+    "diplomatic_finesse": "Diplomatic Finesse",
+    "brilliant_strategy": "Brilliant Strategy",
+    "mountain_defense": "Mountain Defense",
+    "rapid_march": "Rapid March",
+    "activated": "{officer} activates {ability}!"
   }
 }

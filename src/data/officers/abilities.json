@@ -1,0 +1,22 @@
+{
+  "abilities": [
+    {"id": "empty_fort", "officer": "ZhugeLiang", "name_key": "abilities.empty_fort", "context": "battle", "cooldown": 3, "effect": {"defense_mult": 2.0, "morale_boost": 10}},
+    {"id": "green_dragon_slash", "officer": "GuanYu", "name_key": "abilities.green_dragon_slash", "context": "duel", "cooldown": 2, "effect": {"damage_mult": 2.5}},
+    {"id": "lone_rider", "officer": "ZhaoYun", "name_key": "abilities.lone_rider", "context": "battle", "cooldown": 3, "effect": {"attack_mult": 1.5, "morale_boost": 5}},
+    {"id": "serpent_spear", "officer": "ZhangFei", "name_key": "abilities.serpent_spear", "context": "duel", "cooldown": 2, "effect": {"damage_mult": 2.0, "stun_chance": 0.3}},
+    {"id": "heroic_charge", "officer": "MaChao", "name_key": "abilities.heroic_charge", "context": "battle", "cooldown": 3, "effect": {"cavalry_mult": 1.8}},
+    {"id": "veteran_aim", "officer": "HuangZhong", "name_key": "abilities.veteran_aim", "context": "duel", "cooldown": 2, "effect": {"damage_mult": 2.2, "hit_rate": 0.95}},
+    {"id": "ambush_master", "officer": "SimaYi", "name_key": "abilities.ambush_master", "context": "battle", "cooldown": 3, "effect": {"ambush_mult": 2.0}},
+    {"id": "charismatic_speech", "officer": "CaoCao", "name_key": "abilities.charismatic_speech", "context": "battle", "cooldown": 3, "effect": {"morale_boost": 15, "loyalty_boost": 5}},
+    {"id": "fire_strategy", "officer": "ZhouYu", "name_key": "abilities.fire_strategy", "context": "battle", "cooldown": 3, "effect": {"fire_mult": 2.5}},
+    {"id": "iron_wall", "officer": "XuChu", "name_key": "abilities.iron_wall", "context": "duel", "cooldown": 2, "effect": {"defense_mult": 2.5}},
+    {"id": "fearless_guard", "officer": "DianWei", "name_key": "abilities.fearless_guard", "context": "duel", "cooldown": 2, "effect": {"damage_mult": 1.8, "counter_damage": 0.5}},
+    {"id": "one_eye_fury", "officer": "XiahouDun", "name_key": "abilities.one_eye_fury", "context": "duel", "cooldown": 2, "effect": {"damage_mult": 2.0, "self_heal": 10}},
+    {"id": "naval_command", "officer": "GanNing", "name_key": "abilities.naval_command", "context": "battle", "cooldown": 3, "effect": {"coastal_mult": 2.0}},
+    {"id": "swift_assault", "officer": "LuXun", "name_key": "abilities.swift_assault", "context": "battle", "cooldown": 3, "effect": {"attack_mult": 1.5, "fire_mult": 1.5}},
+    {"id": "diplomatic_finesse", "officer": "LuSu", "name_key": "abilities.diplomatic_finesse", "context": "battle", "cooldown": 4, "effect": {"morale_boost": 10, "enemy_morale_drop": 10}},
+    {"id": "brilliant_strategy", "officer": "PangTong", "name_key": "abilities.brilliant_strategy", "context": "battle", "cooldown": 3, "effect": {"attack_mult": 1.3, "defense_mult": 1.3}},
+    {"id": "mountain_defense", "officer": "JiangWei", "name_key": "abilities.mountain_defense", "context": "battle", "cooldown": 3, "effect": {"defense_mult": 1.8}},
+    {"id": "rapid_march", "officer": "ZhangLiao", "name_key": "abilities.rapid_march", "context": "battle", "cooldown": 3, "effect": {"attack_mult": 1.6, "morale_boost": 5}}
+  ]
+}

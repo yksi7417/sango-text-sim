@@ -94,6 +94,17 @@ class RelationshipType(Enum):
 
 
 @dataclass
+class Ability:
+    """A special ability for an officer."""
+    id: str
+    officer: str
+    name_key: str
+    context: str  # "battle" or "duel"
+    cooldown: int
+    effect: Dict[str, Any] = field(default_factory=dict)
+
+
+@dataclass
 class Technology:
     """A technology that can be researched."""
     id: str
