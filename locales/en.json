@@ -162,6 +162,12 @@
     "line_cut": "Supply line to {city} has been cut!",
     "line_intact": "Supply line intact."
   },
+  "population": {
+    "famine": "Famine in {city}! Population declining.",
+    "growth": "{city} population grew by {growth}.",
+    "migration": "{count} people migrated from {from_city} to {to_city}.",
+    "war_losses": "{city} lost {losses} people due to war."
+  },
   "cmd_feedback": {
     "assigned": "{name} assigned to {task} in {city}. ({desc})",
     "relocated": "{name} relocated to {city}.",

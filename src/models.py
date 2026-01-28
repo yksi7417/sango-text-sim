@@ -306,6 +306,7 @@ class City:
     })
     buildings: List[str] = field(default_factory=list)  # IDs of constructed buildings
     ships: int = 0  # Naval units (only coastal/river cities can build)
+    population: int = 10000  # City population (affects recruitment and production)
 
     def __post_init__(self):
         """Initialize unit composition from troops if not set."""

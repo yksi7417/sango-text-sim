@@ -162,6 +162,12 @@
     "line_cut": "通往{city}的補給線被切斷！",
     "line_intact": "補給線暢通。"
   },
+  "population": {
+    "famine": "{city}發生饑荒！人口減少。",
+    "growth": "{city}人口增長了{growth}。",
+    "migration": "{count}人從{from_city}遷移至{to_city}。",
+    "war_losses": "{city}因戰爭損失了{losses}人口。"
+  },
   "cmd_feedback": {
     "assigned": "{name} 受命於 {city} 執行 {task}。（{desc}）",
     "relocated": "{name} 駐守 {city}。",
