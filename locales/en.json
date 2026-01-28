@@ -614,5 +614,19 @@
     "watchtower": "Watchtower",
     "temple": "Temple",
     "hospital": "Hospital"
+  },
+  "historical": {
+    "peach_garden_oath": {"title": "Peach Garden Oath", "desc": "Liu Bei, Guan Yu, and Zhang Fei swear an oath of brotherhood in a peach garden, vowing to live and die together."},
+    "red_cliff": {"title": "Battle of Red Cliffs", "desc": "The allied forces of Shu and Wu face the mighty Wei army at the Red Cliffs. Fire sweeps across the river, changing the fate of the realm."},
+    "three_visits": {"title": "Three Visits to the Thatched Cottage", "desc": "Liu Bei visits Zhuge Liang three times to request his service. The Sleeping Dragon finally agrees to serve."},
+    "burning_new_fields": {"title": "Zhuge Liang's Innovations", "desc": "Zhuge Liang introduces new agricultural and military techniques, advancing Shu's capabilities."},
+    "five_tiger_generals": {"title": "Five Tiger Generals", "desc": "The five greatest warriors of Shu are recognized: Guan Yu, Zhang Fei, Zhao Yun, Ma Chao, and Huang Zhong."},
+    "wei_succession": {"title": "Ambitions in Wei", "desc": "Sima Yi's ambitions grow as he accumulates power within the Wei court. Whispers of treachery spread."},
+    "wu_naval_mastery": {"title": "Wu's Naval Supremacy", "desc": "The Kingdom of Wu strengthens its naval forces, establishing dominance over the waterways."},
+    "guan_yu_flood": {"title": "Guan Yu's Flood Attack", "desc": "Guan Yu uses the flooded waters to devastating effect, earning legendary status."},
+    "cao_cao_poetry": {"title": "Cao Cao's Poetry", "desc": "Cao Cao composes verse on the eve of battle, inspiring his troops with visions of a united realm."},
+    "zhou_yu_strategy": {"title": "Zhou Yu's Brilliant Strategy", "desc": "Zhou Yu devises a masterful strategy that outmaneuvers the enemy and secures Wu's position."},
+    "northern_expedition": {"title": "Northern Expedition", "desc": "Zhuge Liang launches the Northern Expedition against Wei, fulfilling his oath to restore the Han dynasty."},
+    "lu_su_diplomacy": {"title": "Lu Su's Diplomacy", "desc": "Lu Su skillfully maintains the Shu-Wu alliance, ensuring continued cooperation against Wei."}
   }
 }

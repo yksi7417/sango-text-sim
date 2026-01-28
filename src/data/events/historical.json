@@ -1,0 +1,150 @@
+{
+  "events": [
+    {
+      "id": "peach_garden_oath",
+      "year_range": [208, 210],
+      "conditions": {"officers_in_faction": ["LiuBei", "GuanYu", "ZhangFei"], "faction": "Shu"},
+      "title_key": "historical.peach_garden_oath.title",
+      "description_key": "historical.peach_garden_oath.desc",
+      "effects": {
+        "relationships": [
+          {"officer1": "LiuBei", "officer2": "GuanYu", "type": "sworn_brother"},
+          {"officer1": "LiuBei", "officer2": "ZhangFei", "type": "sworn_brother"},
+          {"officer1": "GuanYu", "officer2": "ZhangFei", "type": "sworn_brother"}
+        ],
+        "loyalty_boost": {"LiuBei": 20, "GuanYu": 20, "ZhangFei": 20}
+      },
+      "one_time": true
+    },
+    {
+      "id": "red_cliff",
+      "year_range": [208, 209],
+      "conditions": {"factions_exist": ["Shu", "Wu", "Wei"]},
+      "title_key": "historical.red_cliff.title",
+      "description_key": "historical.red_cliff.desc",
+      "effects": {
+        "relations_change": {"Shu_Wu": 20, "Shu_Wei": -15, "Wu_Wei": -15},
+        "morale_boost": {"Shu": 10, "Wu": 10}
+      },
+      "one_time": true
+    },
+    {
+      "id": "three_visits",
+      "year_range": [208, 212],
+      "conditions": {"officers_in_faction": ["LiuBei", "ZhugeLiang"], "faction": "Shu"},
+      "title_key": "historical.three_visits.title",
+      "description_key": "historical.three_visits.desc",
+      "effects": {
+        "relationships": [
+          {"officer1": "LiuBei", "officer2": "ZhugeLiang", "type": "lord"}
+        ],
+        "loyalty_boost": {"ZhugeLiang": 30}
+      },
+      "one_time": true
+    },
+    {
+      "id": "burning_new_fields",
+      "year_range": [208, 215],
+      "conditions": {"officer_exists": "ZhugeLiang", "faction": "Shu"},
+      "title_key": "historical.burning_new_fields.title",
+      "description_key": "historical.burning_new_fields.desc",
+      "effects": {
+        "tech_boost": {"Shu": 5}
+      },
+      "one_time": true
+    },
+    {
+      "id": "five_tiger_generals",
+      "year_range": [210, 220],
+      "conditions": {"officers_in_faction": ["GuanYu", "ZhangFei", "ZhaoYun", "MaChao", "HuangZhong"], "faction": "Shu"},
+      "title_key": "historical.five_tiger_generals.title",
+      "description_key": "historical.five_tiger_generals.desc",
+      "effects": {
+        "loyalty_boost": {"GuanYu": 15, "ZhangFei": 15, "ZhaoYun": 15, "MaChao": 15, "HuangZhong": 15},
+        "morale_boost": {"Shu": 15}
+      },
+      "one_time": true
+    },
+    {
+      "id": "wei_succession",
+      "year_range": [215, 225],
+      "conditions": {"officer_exists": "SimaYi", "faction_has_officer": {"faction": "Wei", "officer": "SimaYi"}},
+      "title_key": "historical.wei_succession.title",
+      "description_key": "historical.wei_succession.desc",
+      "effects": {
+        "loyalty_boost": {"SimaYi": -10}
+      },
+      "one_time": true
+    },
+    {
+      "id": "wu_naval_mastery",
+      "year_range": [208, 220],
+      "conditions": {"factions_exist": ["Wu"]},
+      "title_key": "historical.wu_naval_mastery.title",
+      "description_key": "historical.wu_naval_mastery.desc",
+      "effects": {
+        "tech_boost": {"Wu": 5},
+        "morale_boost": {"Wu": 5}
+      },
+      "one_time": true
+    },
+    {
+      "id": "guan_yu_flood",
+      "year_range": [215, 222],
+      "conditions": {"officer_exists": "GuanYu", "faction_has_officer": {"faction": "Shu", "officer": "GuanYu"}},
+      "title_key": "historical.guan_yu_flood.title",
+      "description_key": "historical.guan_yu_flood.desc",
+      "effects": {
+        "loyalty_boost": {"GuanYu": 10},
+        "morale_boost": {"Shu": 5}
+      },
+      "one_time": true
+    },
+    {
+      "id": "cao_cao_poetry",
+      "year_range": [208, 220],
+      "conditions": {"officer_exists": "CaoCao", "faction_has_officer": {"faction": "Wei", "officer": "CaoCao"}},
+      "title_key": "historical.cao_cao_poetry.title",
+      "description_key": "historical.cao_cao_poetry.desc",
+      "effects": {
+        "morale_boost": {"Wei": 8}
+      },
+      "one_time": true
+    },
+    {
+      "id": "zhou_yu_strategy",
+      "year_range": [208, 212],
+      "conditions": {"officer_exists": "ZhouYu", "faction_has_officer": {"faction": "Wu", "officer": "ZhouYu"}},
+      "title_key": "historical.zhou_yu_strategy.title",
+      "description_key": "historical.zhou_yu_strategy.desc",
+      "effects": {
+        "tech_boost": {"Wu": 3},
+        "loyalty_boost": {"ZhouYu": 10}
+      },
+      "one_time": true
+    },
+    {
+      "id": "northern_expedition",
+      "year_range": [225, 235],
+      "conditions": {"officer_exists": "ZhugeLiang", "faction_has_officer": {"faction": "Shu", "officer": "ZhugeLiang"}},
+      "title_key": "historical.northern_expedition.title",
+      "description_key": "historical.northern_expedition.desc",
+      "effects": {
+        "morale_boost": {"Shu": 10},
+        "relations_change": {"Shu_Wei": -20}
+      },
+      "one_time": true
+    },
+    {
+      "id": "lu_su_diplomacy",
+      "year_range": [208, 217],
+      "conditions": {"officer_exists": "LuSu", "faction_has_officer": {"faction": "Wu", "officer": "LuSu"}},
+      "title_key": "historical.lu_su_diplomacy.title",
+      "description_key": "historical.lu_su_diplomacy.desc",
+      "effects": {
+        "relations_change": {"Shu_Wu": 15}
+      },
+      "one_time": true
+    }
+  ]
+}

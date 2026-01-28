@@ -615,5 +615,19 @@
     "watchtower": "瞭望塔",
     "temple": "寺廟",
     "hospital": "醫館"
+  },
+  "historical": {
+    "peach_garden_oath": {"title": "桃園結義", "desc": "劉備、關羽、張飛於桃園結為異姓兄弟，誓同生死。"},
+    "red_cliff": {"title": "赤壁之戰", "desc": "蜀吳聯軍於赤壁迎戰強大的魏軍。大火橫掃江面，改寫天下命運。"},
+    "three_visits": {"title": "三顧茅廬", "desc": "劉備三訪諸葛亮，懇請其出山相助。臥龍終允出仕。"},
+    "burning_new_fields": {"title": "諸葛亮革新", "desc": "諸葛亮引進新農業與軍事技術，提升蜀國實力。"},
+    "five_tiger_generals": {"title": "五虎上將", "desc": "蜀國五大猛將受封：關羽、張飛、趙雲、馬超、黃忠。"},
+    "wei_succession": {"title": "魏國暗流", "desc": "司馬懿野心漸長，在魏國朝中積蓄勢力。篡權之議暗潮洶湧。"},
+    "wu_naval_mastery": {"title": "吳國水師稱霸", "desc": "東吳強化水軍，確立水域霸權。"},
+    "guan_yu_flood": {"title": "關羽水淹七軍", "desc": "關羽以洪水之計大破敵軍，威震華夏。"},
+    "cao_cao_poetry": {"title": "曹操賦詩", "desc": "曹操於戰前吟詩，以一統天下之志激勵三軍。"},
+    "zhou_yu_strategy": {"title": "周瑜妙計", "desc": "周瑜運籌帷幄，以奇謀智取敵軍，穩固吳國根基。"},
+    "northern_expedition": {"title": "北伐中原", "desc": "諸葛亮揮師北伐，志在興復漢室。"},
+    "lu_su_diplomacy": {"title": "魯肅調停", "desc": "魯肅巧妙維繫蜀吳聯盟，確保兩國齊心抗魏。"}
   }
 }

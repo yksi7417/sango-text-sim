@@ -1202,8 +1202,18 @@ def end_turn(game_state: GameState) -> List[TurnEvent]:
         category = categorize_message(msg)
         events.append(TurnEvent(category=category, message=msg, data={}))
 
+    # Check for historical events
+    from .systems.events import check_event_triggers, check_historical_events
+    hist_result = check_historical_events(game_state, game_state.triggered_historical_events)
+    if hist_result:
+        game_state.triggered_historical_events.append(hist_result["event"].id)
+        events.append(TurnEvent(
+            category=EventCategory.DIPLOMATIC,
+            message=hist_result["message"],
+            data={"historical_event": hist_result["event"].id}
+        ))
+
     # Check for random events
-    from .systems.events import check_event_triggers
     triggered = check_event_triggers(game_state)
     if triggered:
         event = triggered["event"]
