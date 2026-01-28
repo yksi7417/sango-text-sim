@@ -155,6 +155,13 @@
     "expired": "{type} alliance between {faction_a} and {faction_b} has expired.",
     "no_alliances": "No active alliances."
   },
+  "supply": {
+    "attrition": "Supply shortage! {losses} troops lost to attrition.",
+    "enemy_territory": "Cannot forage in enemy territory.",
+    "foraged": "Foraging in {city} recovered {days} supply days.",
+    "line_cut": "Supply line to {city} has been cut!",
+    "line_intact": "Supply line intact."
+  },
   "cmd_feedback": {
     "assigned": "{name} assigned to {task} in {city}. ({desc})",
     "relocated": "{name} relocated to {city}.",

@@ -155,6 +155,13 @@
     "expired": "{faction_a}與{faction_b}的{type}同盟已到期。",
     "no_alliances": "無有效同盟。"
   },
+  "supply": {
+    "attrition": "補給不足！{losses}名士兵因缺糧損失。",
+    "enemy_territory": "無法在敵方領土徵糧。",
+    "foraged": "在{city}徵糧，恢復{days}天補給。",
+    "line_cut": "通往{city}的補給線被切斷！",
+    "line_intact": "補給線暢通。"
+  },
   "cmd_feedback": {
     "assigned": "{name} 受命於 {city} 執行 {task}。（{desc}）",
     "relocated": "{name} 駐守 {city}。",
