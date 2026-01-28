@@ -688,5 +688,63 @@
     "enemy_threat": "{enemy}對{city}構成威脅（{troops}兵）",
     "low_food": "{city}糧草告急",
     "low_gold": "{city}國庫將空"
+  },
+  "dialogue": {
+    "brave": {
+      "greeting": "末將隨時準備出戰！",
+      "advice": "趁敵軍虛弱，應立即出擊！",
+      "battle_start": "殺！擋我者死！",
+      "victory": "哈哈！又一場大勝！",
+      "defeat": "此敗不過小挫，來日再戰！"
+    },
+    "scholar": {
+      "greeting": "主公，臣已仔細研究局勢。",
+      "advice": "忍耐與智慧勝過蠻力。",
+      "battle_start": "敵陣已露破綻。",
+      "victory": "果如預料，謀略勝於武力。",
+      "defeat": "須從此敗中汲取教訓。"
+    },
+    "charismatic": {
+      "greeting": "能效忠明主，萬分榮幸！",
+      "advice": "眾志成城，萬事可成。百姓信任我等。",
+      "battle_start": "為家園、為親人、為未來而戰！",
+      "victory": "此勝歸功於所有將士！",
+      "defeat": "勿失信心，吾等之志必將實現。"
+    },
+    "merchant": {
+      "greeting": "主公，今日市況甚佳。",
+      "advice": "充裕的國庫比強大的軍隊更能贏得戰爭。",
+      "battle_start": "務求效率，每一兵一卒皆有用處。",
+      "victory": "戰利品將資助我們的下次出征。",
+      "defeat": "需及時止損，重整旗鼓。"
+    },
+    "engineer": {
+      "greeting": "主公，城防工事進展順利。",
+      "advice": "城牆與攻城器械乃我方優勢所在。",
+      "battle_start": "地形有利於我方，請妥善部署。",
+      "victory": "精良的工事決定了勝負。",
+      "defeat": "下次需加強防禦工事。"
+    },
+    "strict": {
+      "greeting": "主公，軍紀乃力量之基。",
+      "advice": "務必嚴明紀律，賞罰分明。",
+      "battle_start": "保持陣形！紀律贏得戰爭！",
+      "victory": "嚴明的紀律帶來了勝利。",
+      "defeat": "軍紀鬆弛乃敗因。"
+    },
+    "benevolent": {
+      "greeting": "主公，百姓感念您的恩德。",
+      "advice": "善待百姓，他們自會甘心效力。",
+      "battle_start": "我等為保護無辜而戰，能饒則饒。",
+      "victory": "應對敗者施以仁慈。",
+      "defeat": "先照顧傷員，安撫軍眷。"
+    },
+    "default": {
+      "greeting": "主公，末將聽候差遣。",
+      "advice": "臣盡力為主公出謀劃策。",
+      "battle_start": "為主公效命！衝啊！",
+      "victory": "我軍大勝！",
+      "defeat": "他日必將捲土重來。"
+    }
   }
 }

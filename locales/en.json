@@ -687,5 +687,63 @@
     "enemy_threat": "Enemy threat near {city} from {enemy} ({troops} troops)",
     "low_food": "{city} food critically low",
     "low_gold": "{city} treasury nearly empty"
+  },
+  "dialogue": {
+    "brave": {
+      "greeting": "I stand ready for battle, my lord!",
+      "advice": "We should strike now while the enemy is weak!",
+      "battle_start": "Forward! Let none stand in our way!",
+      "victory": "Ha! Another glorious victory!",
+      "defeat": "This setback means nothing. We will fight again!"
+    },
+    "scholar": {
+      "greeting": "My lord, I have been studying the situation carefully.",
+      "advice": "Patience and wisdom will prevail over brute force.",
+      "battle_start": "The enemy's formation reveals their weakness.",
+      "victory": "As predicted, strategy triumphs over strength.",
+      "defeat": "We must learn from this and plan more carefully."
+    },
+    "charismatic": {
+      "greeting": "It is an honor to serve such a worthy lord!",
+      "advice": "Together, we can accomplish anything. The people believe in us.",
+      "battle_start": "Fight for our homes, our families, our future!",
+      "victory": "This victory belongs to all of us!",
+      "defeat": "Do not lose heart. Our cause is just, and we shall prevail."
+    },
+    "merchant": {
+      "greeting": "The markets are favorable today, my lord.",
+      "advice": "A strong treasury wins more wars than a strong army.",
+      "battle_start": "Let us be efficient. Every soldier counts.",
+      "victory": "The spoils of war will fund our next campaign.",
+      "defeat": "We must cut our losses and regroup."
+    },
+    "engineer": {
+      "greeting": "My lord, the fortifications are progressing well.",
+      "advice": "Our walls and siege engines give us the advantage.",
+      "battle_start": "The terrain favors our position. Deploy accordingly.",
+      "victory": "Superior engineering won the day.",
+      "defeat": "We need better fortifications next time."
+    },
+    "strict": {
+      "greeting": "My lord, discipline is the foundation of our strength.",
+      "advice": "Order must be maintained. Enforce the rules strictly.",
+      "battle_start": "Hold formation! Discipline wins battles!",
+      "victory": "Discipline and order brought us victory.",
+      "defeat": "We failed because discipline broke down."
+    },
+    "benevolent": {
+      "greeting": "My lord, the people are grateful for your kindness.",
+      "advice": "Care for the people and they will fight for you willingly.",
+      "battle_start": "We fight to protect the innocent. Be merciful where you can.",
+      "victory": "Let us show mercy to the defeated.",
+      "defeat": "We must tend to our wounded and comfort the families."
+    },
+    "default": {
+      "greeting": "My lord, I am at your service.",
+      "advice": "I shall do my best to counsel you wisely.",
+      "battle_start": "For our lord! Charge!",
+      "victory": "We are victorious!",
+      "defeat": "We shall return stronger."
+    }
   }
 }
