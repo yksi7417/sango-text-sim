@@ -572,5 +572,29 @@
       "no_officer_title": "No officers stationed at {city}",
       "no_officer_rec": "Transfer an officer to {city} to manage affairs."
     }
+  },
+  "tech": {
+    "iron_weapons": "Iron Weapons",
+    "steel_armor": "Steel Armor",
+    "cavalry_tactics": "Cavalry Tactics",
+    "archery_mastery": "Archery Mastery",
+    "siege_engines": "Siege Engines",
+    "naval_warfare": "Naval Warfare",
+    "fire_arrows": "Fire Arrows",
+    "elite_guards": "Elite Guards",
+    "irrigation": "Irrigation",
+    "crop_rotation": "Crop Rotation",
+    "trade_routes": "Trade Routes",
+    "silk_road": "Silk Road",
+    "granary_expansion": "Granary Expansion",
+    "taxation_reform": "Taxation Reform",
+    "advanced_farming": "Advanced Farming",
+    "sun_tzu_art": "Art of War",
+    "fire_attack_mastery": "Fire Attack Mastery",
+    "espionage_network": "Espionage Network",
+    "medicine": "Medicine",
+    "diplomacy_arts": "Diplomacy Arts",
+    "war_drums": "War Drums",
+    "fortification": "Fortification"
   }
 }

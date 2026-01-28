@@ -93,6 +93,18 @@ class RelationshipType(Enum):
     MENTOR = "mentor"
 
 
+@dataclass
+class Technology:
+    """A technology that can be researched."""
+    id: str
+    category: str  # military, economy, special
+    name_key: str
+    cost: int
+    turns: int
+    prerequisites: List[str] = field(default_factory=list)
+    effects: Dict[str, Any] = field(default_factory=dict)
+
+
 class EventCategory(Enum):
     """Categories for turn events."""
     ECONOMY = "economy"
@@ -308,6 +320,7 @@ class Faction:
     cities: List[str] = field(default_factory=list)
     officers: List[str] = field(default_factory=list)
     ruler: str = ""
+    technologies: List[str] = field(default_factory=list)  # IDs of researched techs
 
 
 @dataclass

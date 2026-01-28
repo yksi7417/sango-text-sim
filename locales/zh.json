@@ -573,5 +573,29 @@
       "no_officer_title": "{city}無官員駐守",
       "no_officer_rec": "請調派官員至{city}管理事務。"
     }
+  },
+  "tech": {
+    "iron_weapons": "鐵製兵器",
+    "steel_armor": "鋼甲",
+    "cavalry_tactics": "騎兵戰術",
+    "archery_mastery": "射術精通",
+    "siege_engines": "攻城器械",
+    "naval_warfare": "水戰",
+    "fire_arrows": "火箭",
+    "elite_guards": "精銳親衛",
+    "irrigation": "灌溉",
+    "crop_rotation": "輪耕",
+    "trade_routes": "商路",
+    "silk_road": "絲綢之路",
+    "granary_expansion": "糧倉擴建",
+    "taxation_reform": "稅制改革",
+    "advanced_farming": "先進農業",
+    "sun_tzu_art": "孫子兵法",
+    "fire_attack_mastery": "火攻精通",
+    "espionage_network": "間諜網絡",
+    "medicine": "醫術",
+    "diplomacy_arts": "外交術",
+    "war_drums": "戰鼓",
+    "fortification": "築城術"
   }
 }

@@ -1,0 +1,26 @@
+{
+  "technologies": [
+    {"id": "iron_weapons", "category": "military", "name_key": "tech.iron_weapons", "cost": 200, "turns": 3, "prerequisites": [], "effects": {"attack_bonus": 5}},
+    {"id": "steel_armor", "category": "military", "name_key": "tech.steel_armor", "cost": 300, "turns": 4, "prerequisites": ["iron_weapons"], "effects": {"defense_bonus": 5}},
+    {"id": "cavalry_tactics", "category": "military", "name_key": "tech.cavalry_tactics", "cost": 250, "turns": 3, "prerequisites": [], "effects": {"cavalry_bonus": 10}},
+    {"id": "archery_mastery", "category": "military", "name_key": "tech.archery_mastery", "cost": 250, "turns": 3, "prerequisites": [], "effects": {"archer_bonus": 10}},
+    {"id": "siege_engines", "category": "military", "name_key": "tech.siege_engines", "cost": 400, "turns": 5, "prerequisites": ["iron_weapons"], "effects": {"siege_bonus": 15}},
+    {"id": "naval_warfare", "category": "military", "name_key": "tech.naval_warfare", "cost": 350, "turns": 4, "prerequisites": [], "effects": {"naval_bonus": 10}},
+    {"id": "fire_arrows", "category": "military", "name_key": "tech.fire_arrows", "cost": 300, "turns": 3, "prerequisites": ["archery_mastery"], "effects": {"fire_attack_bonus": 10}},
+    {"id": "elite_guards", "category": "military", "name_key": "tech.elite_guards", "cost": 500, "turns": 6, "prerequisites": ["steel_armor", "cavalry_tactics"], "effects": {"elite_troops": true}},
+    {"id": "irrigation", "category": "economy", "name_key": "tech.irrigation", "cost": 150, "turns": 2, "prerequisites": [], "effects": {"food_production": 10}},
+    {"id": "crop_rotation", "category": "economy", "name_key": "tech.crop_rotation", "cost": 200, "turns": 3, "prerequisites": ["irrigation"], "effects": {"food_production": 15}},
+    {"id": "trade_routes", "category": "economy", "name_key": "tech.trade_routes", "cost": 200, "turns": 3, "prerequisites": [], "effects": {"gold_production": 10}},
+    {"id": "silk_road", "category": "economy", "name_key": "tech.silk_road", "cost": 350, "turns": 4, "prerequisites": ["trade_routes"], "effects": {"gold_production": 20}},
+    {"id": "granary_expansion", "category": "economy", "name_key": "tech.granary_expansion", "cost": 180, "turns": 2, "prerequisites": [], "effects": {"food_storage": 200}},
+    {"id": "taxation_reform", "category": "economy", "name_key": "tech.taxation_reform", "cost": 250, "turns": 3, "prerequisites": ["trade_routes"], "effects": {"tax_bonus": 15}},
+    {"id": "advanced_farming", "category": "economy", "name_key": "tech.advanced_farming", "cost": 400, "turns": 5, "prerequisites": ["crop_rotation", "irrigation"], "effects": {"agri_bonus": 20}},
+    {"id": "sun_tzu_art", "category": "special", "name_key": "tech.sun_tzu_art", "cost": 300, "turns": 4, "prerequisites": [], "effects": {"strategy_bonus": 10}},
+    {"id": "fire_attack_mastery", "category": "special", "name_key": "tech.fire_attack_mastery", "cost": 350, "turns": 4, "prerequisites": ["fire_arrows"], "effects": {"fire_mastery": true}},
+    {"id": "espionage_network", "category": "special", "name_key": "tech.espionage_network", "cost": 300, "turns": 4, "prerequisites": [], "effects": {"spy_bonus": 15}},
+    {"id": "medicine", "category": "special", "name_key": "tech.medicine", "cost": 200, "turns": 3, "prerequisites": [], "effects": {"recovery_bonus": 10}},
+    {"id": "diplomacy_arts", "category": "special", "name_key": "tech.diplomacy_arts", "cost": 250, "turns": 3, "prerequisites": [], "effects": {"diplomacy_bonus": 10}},
+    {"id": "war_drums", "category": "special", "name_key": "tech.war_drums", "cost": 200, "turns": 2, "prerequisites": [], "effects": {"morale_bonus": 5}},
+    {"id": "fortification", "category": "special", "name_key": "tech.fortification", "cost": 300, "turns": 4, "prerequisites": ["siege_engines"], "effects": {"wall_bonus": 10}}
+  ]
+}
