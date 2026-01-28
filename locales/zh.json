@@ -113,6 +113,14 @@
   "spy": {
     "report": "密探回報 {name}：主={owner}，兵={troops}，防={defense}，士氣={morale}，農={agri}，商={commerce}，科={tech}，城牆={walls}"
   },
+  "espionage": {
+    "invalid_mission": "無效任務。可選：偵查、破壞、煽動、偷竊",
+    "own_city": "不能對己方城池進行間諜活動",
+    "caught": "密探被捕！外交關係惡化。",
+    "sabotage_success": "破壞成功！{city}：-{food}糧草，-{defense}防禦",
+    "incite_success": "煽動成功！{city}中{count}名武將忠誠下降。",
+    "steal_success": "偷竊成功！從{city}竊得{gold}金。"
+  },
   "cmd_feedback": {
     "assigned": "{name} 受命於 {city} 執行 {task}。（{desc}）",
     "relocated": "{name} 駐守 {city}。",

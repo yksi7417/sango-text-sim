@@ -113,6 +113,14 @@
   "spy": {
     "report": "Spy on {name}: owner={owner}, troops={troops}, def={defense}, morale={morale}, agri={agri}, commerce={commerce}, tech={tech}, walls={walls}"
   },
+  "espionage": {
+    "invalid_mission": "Invalid mission. Options: scout, sabotage, incite, steal",
+    "own_city": "Cannot spy on your own city",
+    "caught": "Your spy was caught! Diplomatic relations worsen.",
+    "sabotage_success": "Sabotage successful! {city}: -{food} food, -{defense} defense",
+    "incite_success": "Incitement successful! {count} officers in {city} have lowered loyalty.",
+    "steal_success": "Theft successful! Stole {gold} gold from {city}."
+  },
   "cmd_feedback": {
     "assigned": "{name} assigned to {task} in {city}. ({desc})",
     "relocated": "{name} relocated to {city}.",

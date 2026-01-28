@@ -22,6 +22,7 @@ from src.tech import load_technologies, get_available_techs
 from src.engine import start_research, start_construction
 from src.buildings import load_buildings, get_available_buildings
 from src.systems.achievements import load_achievements
+from src.systems.espionage import execute_spy_mission
 
 # =================== Data Models ===================
 # Models have been moved to src/models.py
@@ -608,6 +609,12 @@ def buildings_cmd(city):
 def build_cmd(building, city):
     city_name = city.title()
     result = start_construction(STATE, city_name, building)
+    say(result["message"])
+
+@when("spy CITY MISSION with OFFICER")
+def spy_mission_cmd(city, mission, officer):
+    city_name = city.title()
+    result = execute_spy_mission(STATE, officer, city_name, mission.lower())
     say(result["message"])
 
 @when("achievements")
