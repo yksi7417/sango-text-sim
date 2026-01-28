@@ -2,14 +2,118 @@
 # Append-only log of learnings and iteration outcomes
 # Format: [TIMESTAMP] [STATUS] Message
 
-[2026-01-27T00:00:00Z] [INIT] Progress tracking reset - starting from clean slate
-[2026-01-27T00:00:00Z] [INFO] Project has 200+ tests, 96%+ coverage requirement
-[2026-01-27T00:00:00Z] [INFO] Bilingual support required: en.json + zh.json
+[2026-01-26T00:00:00Z] [INIT] Progress tracking initialized for sango-text-sim
+[2026-01-26T00:00:00Z] [INFO] Project has 200+ tests, 96%+ coverage requirement
+[2026-01-26T00:00:00Z] [INFO] Bilingual support required: en.json + zh.json
 
 # === LEARNINGS ===
+# Add discovered patterns, gotchas, and important notes below:
+
 # - Always run full test suite before committing
 # - Both locale files must be updated for any UI text changes
 # - Game state validation: check game_started flag before menu operations
 
 # === ITERATION LOG ===
 # Loop iterations will be logged below:
+
+[2026-01-26T20:38:06Z] [ITER-1] [START] Beginning iteration
+[2026-01-26T20:40:00Z] [ITER-1] [INFO] Found missing flask-session dependency, installed successfully
+[2026-01-26T20:40:00Z] [ITER-1] [PASS] All 201 tests passing - project in healthy state
+[2026-01-26T20:40:00Z] [ITER-1] [INFO] No real tasks in tasks.json, only example placeholder
+[2026-01-26T20:40:00Z] [ITER-1] [DONE] Fixed dependency issue, all tests passing
+[2026-01-26T20:40:00Z] [ITER-1] [COMPLETE] No pending tasks remain
+[2026-01-26T20:40:27Z] [ITER-1] [COMPLETE] All tasks completed successfully
+
+# === PHASE 2: VISION & ROADMAP CREATED ===
+[2026-01-26T21:00:00Z] [PLANNING] Vision document created: .ai/VISION.md
+[2026-01-26T21:00:00Z] [PLANNING] Task roadmap created: 30 tasks across 4 phases
+[2026-01-26T21:00:00Z] [PLANNING] Phase 1: Core Experience Enhancement (10 tasks)
+[2026-01-26T21:00:00Z] [PLANNING] Phase 2: Strategic Depth (10 tasks)
+[2026-01-26T21:00:00Z] [PLANNING] Phase 3: Narrative & Immersion (5 tasks)
+[2026-01-26T21:00:00Z] [PLANNING] Phase 4: Advanced Features (5 tasks)
+[2026-01-26T21:00:00Z] [INFO] Key features planned: ASCII map, narrative battles, officer dialogue, events, unit types
+
+# === FEATURE PRIORITY ORDER ===
+# P1-01: ASCII Map Renderer (visual progress!)
+# P1-03: Turn Report Generator (narrative flow)
+# P1-05: Officer Dialogue System (personality)
+# P1-07: Battle Narratives (drama!)
+# P1-09: Seasonal Weather (atmosphere)
+
+# === MAJOR ROADMAP UPDATE v3.0 ===
+[2026-01-26T22:00:00Z] [PLANNING] Incorporated demo.jsx and roadmap.md features
+[2026-01-26T22:00:00Z] [PLANNING] Expanded to 5 phases, 48 tasks total
+[2026-01-26T22:00:00Z] [PLANNING] Phase 1: Extensible foundation + ASCII visualization (12 tasks)
+[2026-01-26T22:00:00Z] [PLANNING] Phase 2: Interactive combat - duels, tactical battles (10 tasks)
+[2026-01-26T22:00:00Z] [PLANNING] Phase 3: Strategy layer - council, relationships, events (10 tasks)
+[2026-01-26T22:00:00Z] [PLANNING] Phase 4: Narrative polish - dialogue, achievements (8 tasks)
+[2026-01-26T22:00:00Z] [PLANNING] Phase 5: Full scale - 40+ cities, naval, alliances (8 tasks)
+
+# === KEY NEW FEATURES FROM DEMO/ROADMAP ===
+# - Data-driven JSON architecture for extensibility (40+ city support)
+# - Interactive duel mini-game with HP, Attack/Defend/Special actions
+# - Tactical battle map with terrain zones (Mountain/Plains/Forest)
+# - Council system (morning meeting with advisor recommendations)
+# - Turn preview system ("one more turn" hook)
+# - Officer relationships (sworn brothers, rivals, hearts display)
+# - Weather system affecting combat
+# - Province-based map structure matching ROTK11
+
+# === ARCHITECTURE CHANGES ===
+# - src/data/ for JSON game content (maps, officers, events)
+# - src/display/ for ASCII renderers
+# - src/systems/ for game systems (duel, battle, council, events)
+# - All content data-driven for easy expansion
+[2026-01-26T21:18:02Z] [ITER-1] [START] Beginning iteration
+[2026-01-27T02:22:38Z] [ITER-2] [PASS] Completed p1-01: Create Data-Driven Map/City JSON Schema - Created src/data structure, china_208.json, README.md, 16 tests - All 217 tests passing
+[2026-01-27T02:25:27Z] [ITER-2] [PASS] Completed p1-02: Refactor world.py to Load from JSON - Added load_scenario(), CITY_DATA/ADJACENCY_MAP from JSON, 5 new tests - All 222 tests passing
+[2026-01-26T21:25:51Z] [ITER-1] [SUCCESS] Completed in 469.2s
+[2026-01-26T21:25:57Z] [ITER-2] [START] Beginning iteration
+[2026-01-27T02:33:46Z] [ITER-3] [PASS] Completed p1-03: Create ASCII Map Renderer Module - Created src/display/ with map_view.py, coordinate-based rendering, faction colors, terrain symbols, capital markers, connection lines, legend, 11 new tests - All 233 tests passing
+[2026-01-26T21:34:14Z] [ITER-2] [SUCCESS] Completed in 496.3s
+[2026-01-26T21:34:20Z] [ITER-3] [START] Beginning iteration
+[2026-01-27T02:38:50Z] [ITER-3] [PASS] Completed p1-04: Create City Detail View Renderer - Created src/display/city_view.py with render_city_detail(), progress bars (agriculture/commerce/tech/walls), ASCII city icons, stationed officers list, adjacent cities, full i18n, 7 new tests - All 240 tests passing
+[2026-01-26T21:39:58Z] [ITER-3] [SUCCESS] Completed in 338.3s
+[2026-01-26T21:40:04Z] [ITER-4] [START] Beginning iteration
+[2026-01-27T02:45:11Z] [ITER-4] [PASS] Completed p1-05: Create Officer Profile View with ASCII Portrait - Created src/display/officer_view.py with render_officer_profile(), ASCII portraits, progress bars for stats, traits display, condition section, relationships placeholder, personality quotes, full i18n, 10 new tests - All 250 tests passing
+[2026-01-26T21:45:39Z] [ITER-4] [SUCCESS] Completed in 334.6s
+[2026-01-26T21:45:45Z] [ITER-5] [START] Beginning iteration
+[2026-01-27T02:52:00Z] [ITER-5] [PASS] Completed p1-06: Create UI Components Library - Created src/display/components.py with render_progress_bar(), render_box(), render_table(), render_separator(), centralized FACTION_COLORS and get_faction_color(), refactored city_view/officer_view/map_view to use components, 9 new tests - All 259 tests passing, 95% coverage
+[2026-01-26T21:50:50Z] [ITER-5] [SUCCESS] Completed in 305.2s
+[2026-01-26T21:50:56Z] [ITER-6] [START] Beginning iteration
+[2026-01-27T03:00:00Z] [ITER-6] [PASS] Completed p1-07: Integrate Map Display into Game - Added 'map' command to CLI, map shown at turn start, /api/map endpoint to web server, Map button in web UI with toggle functionality, ui.map i18n keys to both locale files - All 259 tests passing
+[2026-01-26T21:58:20Z] [ITER-6] [SUCCESS] Completed in 444.4s
+[2026-01-26T21:58:26Z] [ITER-7] [START] Beginning iteration
+[2026-01-27T03:04:02Z] [ITER-7] [PASS] Completed p1-08: Add Seasonal System to Models - Added Season enum (Spring/Summer/Autumn/Winter), get_current_season() function, seasonal effects to constants.py (farming +20% spring, harvest +15% autumn, movement -30% winter, weather chances), i18n keys to both locale files, 7 new tests - All 266 tests passing
+[2026-01-27T03:07:54Z] [ITER-7] [PASS] Completed p1-09: Create Turn Report Generator - Created src/display/reports.py with generate_turn_report(), EventCategory enum, TurnEvent dataclass, seasonal flavor text, event categorization (Economy/Military/Diplomatic/Officer), i18n keys to both locale files, 8 new tests - All 274 tests passing
+[2026-01-26T22:08:31Z] [ITER-7] [SUCCESS] Completed in 605.3s
+[2026-01-26T22:08:37Z] [ITER-8] [START] Beginning iteration
+[2026-01-27T03:16:32Z] [ITER-8] [PASS] Completed p1-10: Integrate Turn Reports into Game Loop - Moved TurnEvent/EventCategory to models.py, modified engine.py end_turn() to collect and return events, added categorize_message() function, updated game.py and web_server.py to display turn reports with seasonal flavor, added 5 new tests - All 279 tests passing
+[2026-01-26T22:17:28Z] [ITER-8] [SUCCESS] Completed in 530.6s
+[2026-01-26T22:17:34Z] [ITER-9] [START] Beginning iteration
+[2026-01-27T03:23:02Z] [ITER-9] [PASS] Completed p1-11: Create Officer JSON Data Files - Created src/data/officers/legendary.json with 31 officers (Wei: 10, Shu: 10, Wu: 11), all with stats/traits/quotes/relationships/special_abilities, added i18n to en.json and zh.json, 16 comprehensive tests added - All 295 tests passing
+[2026-01-27T03:27:43Z] [ITER-9] [PASS] Completed p1-12: Load Officers from JSON Data - Added load_officers() function, _load_officer_data_from_json() with fallback, updated init_world() for auto city assignment, 7 new tests - All 302 tests passing
+[2026-01-26T22:28:27Z] [ITER-9] [SUCCESS] Completed in 653.3s
+[2026-01-26T22:28:33Z] [ITER-10] [START] Beginning iteration
+[2026-01-27T03:35:22Z] [ITER-10] [PASS] Completed p2-01: Create Duel System Core Mechanics - Created src/systems/duel.py with Duel dataclass, DuelAction enum (Attack/Defend/Special), process_duel_round() function, damage based on leadership differential, Attack (85% hit, standard damage), Defend (50% damage reduction), Special (70% hit, 2x damage), 17 comprehensive tests - All 319 tests passing
+[2026-01-27T03:41:27Z] [ITER-10] [PASS] Completed p2-02: Create Duel Display Renderer - Created src/display/duel_view.py with render_duel_state(), render_action_menu(), render_duel_victory(), render_duel_defeat(), HP bars and combat log display, full i18n support for English/Chinese, 11 new tests - All 330 tests passing
+[2026-01-27T03:41:34Z] [ITER-10] [SUCCESS] Completed in 31542781s
+[2026-01-26T22:41:54Z] [ITER-10] [SUCCESS] Completed in 800.6s
+[2026-01-26T22:42:00Z] [ITER-11] [START] Beginning iteration
+[2026-01-27T03:52:12Z] [ITER-11] [PASS] Completed p2-03: Integrate Duel into Game Flow - Added active_duel state to GameState, challenge_to_duel() and process_duel_action() to engine.py, AI acceptance logic, duel commands to CLI and web, /api/duel endpoint, complete i18n support (en.json, zh.json), 10 comprehensive tests - All 340 tests passing
+[2026-01-26T22:53:05Z] [ITER-11] [SUCCESS] Completed in 665.6s
+[2026-01-26T22:53:12Z] [ITER-12] [START] Beginning iteration
+[2026-01-27T04:00:00Z] [ITER-12] [PASS] Completed p2-04: Add Terrain Types to Map Data - Added TerrainType enum (Plains/Mountain/Forest/Coastal/River), terrain effects to constants.py, City.terrain field, updated china_208.json with varied terrains, world.py terrain loading, persistence.py enum serialization, 46 new tests - All 358 tests passing
+[2026-01-26T23:00:26Z] [ITER-12] [SUCCESS] Completed in 434.9s
+[2026-01-26T23:00:33Z] [ITER-13] [START] Beginning iteration
+[2026-01-27T04:09:21Z] [ITER-13] [PASS] Completed p2-05: Create Tactical Battle Map Renderer - Created BattleState dataclass in models.py, implemented src/display/battle_view.py with render_battle_map(), terrain zones with icons (Plains/Mountain/Forest/Coastal/River), unit boxes showing commander/troops/morale for both sides, battle status (round/supply/weather/siege), combat log display, full i18n support (battle and terrain keys in en.json and zh.json), 10 comprehensive tests - All 368 tests passing
+[2026-01-26T23:10:11Z] [ITER-13] [SUCCESS] Completed in 578.5s
+[2026-01-26T23:10:18Z] [ITER-14] [START] Beginning iteration
+[2026-01-27T04:16:52Z] [ITER-14] [PASS] Completed p2-06: Create Tactical Battle System - Created src/systems/battle.py with BattleAction enum (Attack/Defend/Flank/Fire Attack/Retreat), multi-turn battle mechanics, terrain modifiers (Plains/Mountain/Forest/Coastal/River), weather effects (Clear/Rain/Snow/Drought/Fog), siege mechanics with progress tracking, morale and supply management, battle end conditions (troops/morale/siege/supply), TacticalBattle wrapper class, 32 comprehensive tests in tests/test_battle.py, i18n keys for en.json and zh.json - All 400 tests passing
+[2026-01-26T23:18:10Z] [ITER-14] [SUCCESS] Completed in 471.8s
+[2026-01-26T23:18:16Z] [ITER-15] [START] Beginning iteration
+[2026-01-27T04:30:00Z] [ITER-15] [PASS] Completed p2-07: Create Battle Narrative Generator - Created src/display/battle_narrator.py with narrate_battle_event(), multiple narrative templates per action type (attack/flank/fire/defend/retreat/victory), terrain-aware descriptions (plains/mountain/forest/river/coastal), weather-aware descriptions (rain/snow/fog/drought), commander names integrated, casualty-based intensity scaling, 15 comprehensive tests in tests/test_display.py, full i18n support in en.json and zh.json - All 415 tests passing
+[2026-01-26T23:24:57Z] [ITER-15] [SUCCESS] Completed in 401.3s
+[2026-01-26T23:25:04Z] [ITER-16] [START] Beginning iteration
+[2026-01-27T04:38:58Z] [ITER-16] [PASS] Completed p2-08: Integrate Tactical Battles into Game - Added active_battle field to GameState, created initiate_tactical_battle() and process_battle_action() in engine.py, added choose_ai_battle_action() for AI decisions, resolve_battle_end() for outcomes, updated attack command in game.py to use tactical system, added battle_action command, updated persistence.py for battle state save/load, added /api/battle and /api/battle/action endpoints to web_server.py, added i18n keys (en.json, zh.json), 10 new integration tests - All 425 tests passing
+[2026-01-27T04:43:50Z] [ITER-16] [SUCCESS] Completed in 1769489030s

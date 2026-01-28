@@ -1,0 +1,446 @@
+{
+  "metadata": {
+    "name": "Legendary Officers of the Three Kingdoms",
+    "roster_id": "legendary",
+    "era": "Three Kingdoms",
+    "description": "Famous generals and strategists from the Three Kingdoms period",
+    "version": "1.0.0"
+  },
+  "officers": [
+    {
+      "id": "LiuBei",
+      "faction": "Shu",
+      "leadership": 86,
+      "intelligence": 80,
+      "politics": 88,
+      "charisma": 96,
+      "loyalty": 90,
+      "traits": ["Benevolent", "Charismatic"],
+      "quote": "I would rather betray the world than let the world betray me... wait, that's not right.",
+      "relationships": {
+        "GuanYu": "sworn_brother",
+        "ZhangFei": "sworn_brother"
+      },
+      "special_ability": "benevolent_rule"
+    },
+    {
+      "id": "GuanYu",
+      "faction": "Shu",
+      "leadership": 98,
+      "intelligence": 79,
+      "politics": 92,
+      "charisma": 84,
+      "loyalty": 85,
+      "traits": ["Brave", "Strict"],
+      "quote": "I shall slay any who stand in my way!",
+      "relationships": {
+        "LiuBei": "sworn_brother",
+        "ZhangFei": "sworn_brother",
+        "LuBu": "rival"
+      },
+      "special_ability": "green_dragon"
+    },
+    {
+      "id": "ZhangFei",
+      "faction": "Shu",
+      "leadership": 97,
+      "intelligence": 65,
+      "politics": 60,
+      "charisma": 82,
+      "loyalty": 75,
+      "traits": ["Brave"],
+      "quote": "Come face me if you dare!",
+      "relationships": {
+        "LiuBei": "sworn_brother",
+        "GuanYu": "sworn_brother"
+      },
+      "special_ability": "roar_of_changban"
+    },
+    {
+      "id": "ZhugeLiang",
+      "faction": "Shu",
+      "leadership": 92,
+      "intelligence": 100,
+      "politics": 96,
+      "charisma": 90,
+      "loyalty": 95,
+      "traits": ["Scholar", "Engineer"],
+      "quote": "I have foreseen this outcome.",
+      "relationships": {
+        "LiuBei": "lord"
+      },
+      "special_ability": "empty_fort"
+    },
+    {
+      "id": "ZhaoYun",
+      "faction": "Shu",
+      "leadership": 96,
+      "intelligence": 82,
+      "politics": 76,
+      "charisma": 88,
+      "loyalty": 92,
+      "traits": ["Brave", "Loyal"],
+      "quote": "I am Zhao Yun of Changshan!",
+      "relationships": {
+        "LiuBei": "lord"
+      },
+      "special_ability": "lone_rider"
+    },
+    {
+      "id": "MaChao",
+      "faction": "Shu",
+      "leadership": 94,
+      "intelligence": 72,
+      "politics": 68,
+      "charisma": 86,
+      "loyalty": 70,
+      "traits": ["Brave"],
+      "quote": "The Xiliang cavalry is unmatched!",
+      "relationships": {},
+      "special_ability": "xiliang_charge"
+    },
+    {
+      "id": "HuangZhong",
+      "faction": "Shu",
+      "leadership": 92,
+      "intelligence": 76,
+      "politics": 65,
+      "charisma": 80,
+      "loyalty": 85,
+      "traits": ["Brave"],
+      "quote": "Age is but a number!",
+      "relationships": {},
+      "special_ability": "veteran_archer"
+    },
+    {
+      "id": "WeiYan",
+      "faction": "Shu",
+      "leadership": 88,
+      "intelligence": 70,
+      "politics": 62,
+      "charisma": 72,
+      "loyalty": 65,
+      "traits": ["Brave"],
+      "quote": "Give me an army and I shall conquer!",
+      "relationships": {},
+      "special_ability": "reckless_assault"
+    },
+    {
+      "id": "JiangWei",
+      "faction": "Shu",
+      "leadership": 90,
+      "intelligence": 92,
+      "politics": 80,
+      "charisma": 84,
+      "loyalty": 90,
+      "traits": ["Scholar", "Brave"],
+      "quote": "I shall carry on my master's legacy.",
+      "relationships": {
+        "ZhugeLiang": "mentor"
+      },
+      "special_ability": "strategic_withdrawal"
+    },
+    {
+      "id": "PangTong",
+      "faction": "Shu",
+      "leadership": 88,
+      "intelligence": 96,
+      "politics": 90,
+      "charisma": 82,
+      "loyalty": 88,
+      "traits": ["Scholar"],
+      "quote": "Beauty lies not in appearance but in strategy.",
+      "relationships": {
+        "ZhugeLiang": "rival"
+      },
+      "special_ability": "linked_ships"
+    },
+    {
+      "id": "CaoCao",
+      "faction": "Wei",
+      "leadership": 92,
+      "intelligence": 94,
+      "politics": 96,
+      "charisma": 90,
+      "loyalty": 90,
+      "traits": ["Charismatic", "Scholar"],
+      "quote": "I would rather betray the world than have the world betray me.",
+      "relationships": {},
+      "special_ability": "treacherous_hero"
+    },
+    {
+      "id": "ZhangLiao",
+      "faction": "Wei",
+      "leadership": 94,
+      "intelligence": 78,
+      "politics": 70,
+      "charisma": 76,
+      "loyalty": 80,
+      "traits": ["Brave"],
+      "quote": "I am Zhang Liao, the Ravager of Jiangdong!",
+      "relationships": {},
+      "special_ability": "raid_on_hefei"
+    },
+    {
+      "id": "XuChu",
+      "faction": "Wei",
+      "leadership": 86,
+      "intelligence": 62,
+      "politics": 54,
+      "charisma": 70,
+      "loyalty": 95,
+      "traits": ["Brave", "Loyal"],
+      "quote": "I will protect my lord with my life!",
+      "relationships": {
+        "CaoCao": "lord"
+      },
+      "special_ability": "tiger_guard"
+    },
+    {
+      "id": "DianWei",
+      "faction": "Wei",
+      "leadership": 85,
+      "intelligence": 58,
+      "politics": 50,
+      "charisma": 68,
+      "loyalty": 98,
+      "traits": ["Brave", "Loyal"],
+      "quote": "While I live, none shall harm my lord!",
+      "relationships": {
+        "CaoCao": "lord"
+      },
+      "special_ability": "last_stand"
+    },
+    {
+      "id": "XiahouDun",
+      "faction": "Wei",
+      "leadership": 90,
+      "intelligence": 72,
+      "politics": 68,
+      "charisma": 78,
+      "loyalty": 88,
+      "traits": ["Brave"],
+      "quote": "An eye for my lord's glory is a worthy trade!",
+      "relationships": {
+        "XiahouYuan": "sworn_brother"
+      },
+      "special_ability": "blind_fury"
+    },
+    {
+      "id": "XiahouYuan",
+      "faction": "Wei",
+      "leadership": 92,
+      "intelligence": 70,
+      "politics": 64,
+      "charisma": 76,
+      "loyalty": 86,
+      "traits": ["Brave"],
+      "quote": "Swift as the wind, fierce as fire!",
+      "relationships": {
+        "XiahouDun": "sworn_brother"
+      },
+      "special_ability": "lightning_march"
+    },
+    {
+      "id": "ZhangHe",
+      "faction": "Wei",
+      "leadership": 88,
+      "intelligence": 76,
+      "politics": 66,
+      "charisma": 74,
+      "loyalty": 82,
+      "traits": ["Brave"],
+      "quote": "Elegance and power are not mutually exclusive.",
+      "relationships": {},
+      "special_ability": "pursuit_tactics"
+    },
+    {
+      "id": "XuHuang",
+      "faction": "Wei",
+      "leadership": 89,
+      "intelligence": 74,
+      "politics": 64,
+      "charisma": 72,
+      "loyalty": 84,
+      "traits": ["Brave"],
+      "quote": "Duty above all else.",
+      "relationships": {},
+      "special_ability": "siege_expert"
+    },
+    {
+      "id": "SimaYi",
+      "faction": "Wei",
+      "leadership": 88,
+      "intelligence": 96,
+      "politics": 94,
+      "charisma": 86,
+      "loyalty": 75,
+      "traits": ["Scholar"],
+      "quote": "Patience is a virtue, and virtue shall be rewarded.",
+      "relationships": {
+        "ZhugeLiang": "rival"
+      },
+      "special_ability": "enduring_patience"
+    },
+    {
+      "id": "GuoJia",
+      "faction": "Wei",
+      "leadership": 76,
+      "intelligence": 98,
+      "politics": 88,
+      "charisma": 82,
+      "loyalty": 88,
+      "traits": ["Scholar"],
+      "quote": "Victory is decided before the battle begins.",
+      "relationships": {},
+      "special_ability": "foresight"
+    },
+    {
+      "id": "SunQuan",
+      "faction": "Wu",
+      "leadership": 86,
+      "intelligence": 80,
+      "politics": 85,
+      "charisma": 92,
+      "loyalty": 88,
+      "traits": ["Charismatic", "Merchant"],
+      "quote": "Jiangdong shall never fall!",
+      "relationships": {},
+      "special_ability": "jiangdong_spirit"
+    },
+    {
+      "id": "ZhouYu",
+      "faction": "Wu",
+      "leadership": 90,
+      "intelligence": 92,
+      "politics": 88,
+      "charisma": 88,
+      "loyalty": 85,
+      "traits": ["Scholar", "Engineer"],
+      "quote": "Let the flames of Red Cliff light our path to victory!",
+      "relationships": {
+        "ZhugeLiang": "rival"
+      },
+      "special_ability": "red_cliff_fire"
+    },
+    {
+      "id": "LuSu",
+      "faction": "Wu",
+      "leadership": 82,
+      "intelligence": 90,
+      "politics": 92,
+      "charisma": 86,
+      "loyalty": 90,
+      "traits": ["Scholar", "Merchant"],
+      "quote": "Diplomacy is the highest form of warfare.",
+      "relationships": {},
+      "special_ability": "diplomatic_acumen"
+    },
+    {
+      "id": "LuMeng",
+      "faction": "Wu",
+      "leadership": 90,
+      "intelligence": 88,
+      "politics": 84,
+      "charisma": 82,
+      "loyalty": 88,
+      "traits": ["Scholar", "Brave"],
+      "quote": "A warrior must also cultivate the mind.",
+      "relationships": {},
+      "special_ability": "scholar_warrior"
+    },
+    {
+      "id": "GanNing",
+      "faction": "Wu",
+      "leadership": 92,
+      "intelligence": 74,
+      "politics": 66,
+      "charisma": 80,
+      "loyalty": 82,
+      "traits": ["Brave"],
+      "quote": "The bell tolls for my enemies!",
+      "relationships": {},
+      "special_ability": "bell_raid"
+    },
+    {
+      "id": "TaishiCi",
+      "faction": "Wu",
+      "leadership": 91,
+      "intelligence": 76,
+      "politics": 68,
+      "charisma": 82,
+      "loyalty": 86,
+      "traits": ["Brave", "Loyal"],
+      "quote": "I seek a worthy opponent!",
+      "relationships": {},
+      "special_ability": "archery_master"
+    },
+    {
+      "id": "HuangGai",
+      "faction": "Wu",
+      "leadership": 88,
+      "intelligence": 78,
+      "politics": 72,
+      "charisma": 80,
+      "loyalty": 92,
+      "traits": ["Brave", "Loyal"],
+      "quote": "For Wu, I would endure any hardship.",
+      "relationships": {},
+      "special_ability": "self_sacrifice"
+    },
+    {
+      "id": "LingTong",
+      "faction": "Wu",
+      "leadership": 86,
+      "intelligence": 72,
+      "politics": 64,
+      "charisma": 76,
+      "loyalty": 88,
+      "traits": ["Brave"],
+      "quote": "I fight for the honor of my father!",
+      "relationships": {},
+      "special_ability": "vengeance"
+    },
+    {
+      "id": "DingFeng",
+      "faction": "Wu",
+      "leadership": 87,
+      "intelligence": 74,
+      "politics": 66,
+      "charisma": 78,
+      "loyalty": 86,
+      "traits": ["Brave"],
+      "quote": "Through the storm, I shall prevail!",
+      "relationships": {},
+      "special_ability": "storm_warrior"
+    },
+    {
+      "id": "LuXun",
+      "faction": "Wu",
+      "leadership": 89,
+      "intelligence": 94,
+      "politics": 90,
+      "charisma": 88,
+      "loyalty": 90,
+      "traits": ["Scholar"],
+      "quote": "Strategy conquers where strength fails.",
+      "relationships": {},
+      "special_ability": "fire_tactics"
+    },
+    {
+      "id": "SunCe",
+      "faction": "Wu",
+      "leadership": 94,
+      "intelligence": 78,
+      "politics": 80,
+      "charisma": 94,
+      "loyalty": 92,
+      "traits": ["Brave", "Charismatic"],
+      "quote": "I am the Little Conqueror!",
+      "relationships": {
+        "SunQuan": "sworn_brother"
+      },
+      "special_ability": "little_conqueror"
+    }
+  ]
+}
