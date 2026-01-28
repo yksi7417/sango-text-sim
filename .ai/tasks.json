@@ -692,7 +692,7 @@
         "get_relationship_bonus() function",
         "Tests for relationship effects"
       ],
-      "status": "pending",
+      "status": "passed",
       "depends_on": [
         "p1-11"
       ],
