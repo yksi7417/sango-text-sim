@@ -23,6 +23,7 @@ from src.engine import start_research, start_construction
 from src.buildings import load_buildings, get_available_buildings
 from src.systems.achievements import load_achievements
 from src.systems.espionage import execute_spy_mission
+from src.systems.capture import recruit_captured, execute_captured, release_captured
 
 # =================== Data Models ===================
 # Models have been moved to src/models.py
@@ -610,6 +611,32 @@ def build_cmd(building, city):
     city_name = city.title()
     result = start_construction(STATE, city_name, building)
     say(result["message"])
+
+@when("recruit captured OFFICER")
+def recruit_captured_cmd(officer):
+    result = recruit_captured(STATE, officer)
+    say(result["message"])
+
+@when("execute captured OFFICER")
+def execute_captured_cmd(officer):
+    result = execute_captured(STATE, officer)
+    say(result["message"])
+
+@when("release captured OFFICER")
+def release_captured_cmd(officer):
+    result = release_captured(STATE, officer)
+    say(result["message"])
+
+@when("prisoners")
+def prisoners_cmd():
+    captured = STATE.captured_officers
+    if not captured:
+        say(i18n.t("capture.no_prisoners", default="No prisoners held."))
+        return
+    say("=== Prisoners ===")
+    for name, info in captured.items():
+        if info["captor"] == STATE.player_faction:
+            say(f"  {name} (from {info['original_faction']})")
 
 @when("spy CITY MISSION with OFFICER")
 def spy_mission_cmd(city, mission, officer):

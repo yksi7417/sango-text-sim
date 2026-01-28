@@ -121,6 +121,17 @@
     "incite_success": "煽動成功！{city}中{count}名武將忠誠下降。",
     "steal_success": "偷竊成功！從{city}竊得{gold}金。"
   },
+  "capture": {
+    "captured": "{officer}被俘！",
+    "refused": "{officer}寧死不降！",
+    "escaped": "{officer}趁亂逃脫。",
+    "recruited": "{officer}歸降！",
+    "executed": "{officer}已被處決。麾下武將心生不安。",
+    "released": "{officer}已被釋放。聲望提升。",
+    "not_captured": "此人並非俘虜。",
+    "not_yours": "此俘虜非汝所有。",
+    "no_prisoners": "無俘虜在押。"
+  },
   "cmd_feedback": {
     "assigned": "{name} 受命於 {city} 執行 {task}。（{desc}）",
     "relocated": "{name} 駐守 {city}。",

@@ -839,7 +839,7 @@
         "Construction takes multiple turns",
         "'build [building] at [city]' command"
       ],
-      "status": "pending",
+      "status": "passed",
       "estimated_files": [
         "src/models.py",
         "src/data/buildings.json",
@@ -862,7 +862,7 @@
         "Events can add officers",
         "Tests for historical triggers"
       ],
-      "status": "pending",
+      "status": "passed",
       "depends_on": [
         "p3-06"
       ],
@@ -888,7 +888,7 @@
         "At least 15 unique abilities",
         "Abilities trigger in combat/duel"
       ],
-      "status": "pending",
+      "status": "passed",
       "depends_on": [
         "p1-11"
       ],
@@ -913,7 +913,7 @@
         "'achievements' command shows progress",
         "Categories: Military, Economic, Diplomatic, Collection"
       ],
-      "status": "pending",
+      "status": "passed",
       "estimated_files": [
         "src/systems/achievements.py",
         "src/data/achievements.json",
@@ -935,7 +935,7 @@
         "Displayed after turn end",
         "'Press ENTER to continue' prompt"
       ],
-      "status": "pending",
+      "status": "passed",
       "depends_on": [
         "p1-10"
       ],
@@ -961,7 +961,7 @@
         "At least 5 contexts: greeting, advice, battle, victory, defeat",
         "i18n for all dialogue templates"
       ],
-      "status": "pending",
+      "status": "passed",
       "estimated_files": [
         "src/systems/dialogue.py",
         "tests/test_dialogue.py",
@@ -982,7 +982,7 @@
         "Victory/defeat speeches",
         "Loyalty warnings in character"
       ],
-      "status": "pending",
+      "status": "passed",
       "depends_on": [
         "p4-05",
         "p3-03",
@@ -1008,7 +1008,7 @@
         "Costs gold",
         "Cooldown between missions"
       ],
-      "status": "pending",
+      "status": "passed",
       "estimated_files": [
         "src/engine.py",
         "game.py",

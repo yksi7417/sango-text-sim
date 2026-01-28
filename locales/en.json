@@ -121,6 +121,17 @@
     "incite_success": "Incitement successful! {count} officers in {city} have lowered loyalty.",
     "steal_success": "Theft successful! Stole {gold} gold from {city}."
   },
+  "capture": {
+    "captured": "{officer} has been captured!",
+    "refused": "{officer} fights to the death rather than surrender!",
+    "escaped": "{officer} escaped during the chaos.",
+    "recruited": "{officer} joins your faction!",
+    "executed": "{officer} has been executed. Your officers are disturbed.",
+    "released": "{officer} has been released. Your reputation improves.",
+    "not_captured": "Officer is not captured.",
+    "not_yours": "This prisoner is not yours.",
+    "no_prisoners": "No prisoners held."
+  },
   "cmd_feedback": {
     "assigned": "{name} assigned to {task} in {city}. ({desc})",
     "relocated": "{name} relocated to {city}.",
