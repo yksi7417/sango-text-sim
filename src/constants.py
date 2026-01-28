@@ -169,6 +169,18 @@ DROUGHT_FIRE_ATTACK_BONUS = 1.50  # +50% fire attack effectiveness in drought
 SNOW_MOVEMENT_PENALTY = 0.70  # -30% movement in snow
 SNOW_ATTRITION_RATE = 0.03  # 3% troop loss in snow
 
+# =================== Unit Type Effects ===================
+# Rock-paper-scissors combat: Cavalry > Archers > Infantry > Cavalry
+UNIT_TYPE_ADVANTAGE = 1.20  # +20% damage when unit has advantage
+UNIT_TYPE_DISADVANTAGE = 0.80  # -20% damage when unit has disadvantage
+
+# Unit type matchups: key beats value
+UNIT_ADVANTAGE_MAP = {
+    "cavalry": "archer",    # Cavalry charges archers
+    "archer": "infantry",   # Archers rain on infantry
+    "infantry": "cavalry",  # Infantry braces against cavalry
+}
+
 # =================== Terrain Effects ===================
 # Terrain type affects combat effectiveness
 # TerrainType enum is defined in models.py

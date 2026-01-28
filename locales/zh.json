@@ -513,5 +513,12 @@
     "forest": "森林",
     "coastal": "沿海",
     "river": "渡河"
+  },
+  "units": {
+    "infantry": "步兵",
+    "cavalry": "騎兵",
+    "archer": "弓兵",
+    "advantage": "{attacker}剋制{defender}！(+20%%)",
+    "disadvantage": "{attacker}被{defender}剋制。(-20%%)"
   }
 }

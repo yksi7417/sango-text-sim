@@ -50,6 +50,13 @@ def get_current_season(month: int) -> Season:
         return Season.WINTER
 
 
+class UnitType(Enum):
+    """Military unit types with rock-paper-scissors combat dynamics."""
+    INFANTRY = "infantry"
+    CAVALRY = "cavalry"
+    ARCHER = "archer"
+
+
 class WeatherType(Enum):
     """Weather conditions that affect battles and movement."""
     CLEAR = "clear"
@@ -207,6 +214,28 @@ class City:
     tech: int = 40
     walls: int = 50
     terrain: TerrainType = TerrainType.PLAINS
+    unit_composition: Dict[str, int] = field(default_factory=lambda: {
+        "infantry": 0, "cavalry": 0, "archer": 0
+    })
+
+    def __post_init__(self):
+        """Initialize unit composition from troops if not set."""
+        total_units = sum(self.unit_composition.values())
+        if total_units == 0 and self.troops > 0:
+            # Default split: 50% infantry, 25% cavalry, 25% archer
+            self.unit_composition = {
+                "infantry": self.troops // 2,
+                "cavalry": self.troops // 4,
+                "archer": self.troops - self.troops // 2 - self.troops // 4
+            }
+
+    def get_units(self, unit_type: 'UnitType') -> int:
+        """Get count of a specific unit type."""
+        return self.unit_composition.get(unit_type.value, 0)
+
+    def sync_troops(self):
+        """Sync total troops from unit composition."""
+        self.troops = sum(self.unit_composition.values())
 
 
 @dataclass

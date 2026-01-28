@@ -765,6 +765,9 @@ def assignment_effect(game_state: GameState, off: Officer, city: City) -> None:
     
     elif task == "train":
         city.troops += 10
+        # Distribute new troops across unit types
+        unit_type = random.choice(["infantry", "cavalry", "archer"])
+        city.unit_composition[unit_type] = city.unit_composition.get(unit_type, 0) + 10
         off.loyalty = utils.clamp(off.loyalty - 1, 0, 100)
     
     elif task == "fortify":

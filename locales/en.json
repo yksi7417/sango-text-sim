@@ -512,5 +512,12 @@
     "forest": "Forest",
     "coastal": "Coastal",
     "river": "River Crossing"
+  },
+  "units": {
+    "infantry": "Infantry",
+    "cavalry": "Cavalry",
+    "archer": "Archers",
+    "advantage": "{attacker} has advantage over {defender}! (+20%%)",
+    "disadvantage": "{attacker} is at disadvantage against {defender}. (-20%%)"
   }
 }
