@@ -567,7 +567,7 @@
         "Drought: +50% fire attack",
         "Weather shown in status"
       ],
-      "status": "pending",
+      "status": "passed",
       "depends_on": [
         "p1-08"
       ],
