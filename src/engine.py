@@ -1243,6 +1243,20 @@ def end_turn(game_state: GameState) -> List[TurnEvent]:
             data={"year": game_state.year}
         ))
 
+    # Check achievements
+    from .systems.achievements import check_achievements
+    new_achievements = check_achievements(game_state, game_state.earned_achievements)
+    for ach in new_achievements:
+        game_state.earned_achievements.append(ach.id)
+        ach_name = i18n.t(ach.name_key, default=ach.id)
+        msg = i18n.t("achievements.earned", name=ach_name, default=f"Achievement earned: {ach_name}")
+        game_state.log(msg)
+        events.append(TurnEvent(
+            category=EventCategory.ECONOMY,
+            message=msg,
+            data={"achievement": ach.id}
+        ))
+
     # Recovery for idle officers
     for off in game_state.officers.values():
         if not off.task:

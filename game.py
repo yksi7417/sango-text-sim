@@ -21,6 +21,7 @@ from src.display.event_view import render_event, render_event_outcome
 from src.tech import load_technologies, get_available_techs
 from src.engine import start_research, start_construction
 from src.buildings import load_buildings, get_available_buildings
+from src.systems.achievements import load_achievements
 
 # =================== Data Models ===================
 # Models have been moved to src/models.py
@@ -608,6 +609,16 @@ def build_cmd(building, city):
     city_name = city.title()
     result = start_construction(STATE, city_name, building)
     say(result["message"])
+
+@when("achievements")
+def achievements_cmd():
+    all_achs = load_achievements()
+    earned = STATE.earned_achievements
+    say(f"=== {i18n.t('achievements.title', default='Achievements')} ({len(earned)}/{len(all_achs)}) ===")
+    for ach in all_achs:
+        name = i18n.t(ach.name_key, default=ach.id)
+        status = "[+]" if ach.id in earned else "[ ]"
+        say(f"  {status} {name}")
 
 @when("council")
 def council_cmd():

@@ -383,6 +383,7 @@ class GameState:
     research_progress: Dict[str, Dict[str, Any]] = field(default_factory=dict)  # faction -> {tech_id, progress, officer, city}
     construction_queue: Dict[str, Dict[str, Any]] = field(default_factory=dict)  # city_name -> {building_id, progress, turns_needed}
     triggered_historical_events: List[str] = field(default_factory=list)  # IDs of triggered historical events
+    earned_achievements: List[str] = field(default_factory=list)  # IDs of earned achievements
 
     def log(self, msg: str):
         """Add a message to the game log"""

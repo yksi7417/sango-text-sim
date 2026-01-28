@@ -1,0 +1,29 @@
+{
+  "achievements": [
+    {"id": "first_battle", "category": "military", "name_key": "achievements.first_battle", "condition": {"battles_won": 1}},
+    {"id": "conqueror", "category": "military", "name_key": "achievements.conqueror", "condition": {"cities_owned": 3}},
+    {"id": "warlord", "category": "military", "name_key": "achievements.warlord", "condition": {"cities_owned": 5}},
+    {"id": "unifier", "category": "military", "name_key": "achievements.unifier", "condition": {"all_cities": true}},
+    {"id": "mighty_army", "category": "military", "name_key": "achievements.mighty_army", "condition": {"total_troops": 2000}},
+    {"id": "duel_champion", "category": "military", "name_key": "achievements.duel_champion", "condition": {"duels_won": 3}},
+    {"id": "iron_defense", "category": "military", "name_key": "achievements.iron_defense", "condition": {"max_defense": 90}},
+    {"id": "wealthy", "category": "economic", "name_key": "achievements.wealthy", "condition": {"total_gold": 2000}},
+    {"id": "prosperous", "category": "economic", "name_key": "achievements.prosperous", "condition": {"total_gold": 5000}},
+    {"id": "granary_full", "category": "economic", "name_key": "achievements.granary_full", "condition": {"total_food": 3000}},
+    {"id": "merchant_prince", "category": "economic", "name_key": "achievements.merchant_prince", "condition": {"max_commerce": 90}},
+    {"id": "breadbasket", "category": "economic", "name_key": "achievements.breadbasket", "condition": {"max_agri": 90}},
+    {"id": "builder", "category": "economic", "name_key": "achievements.builder", "condition": {"buildings_built": 5}},
+    {"id": "diplomat", "category": "diplomatic", "name_key": "achievements.diplomat", "condition": {"max_relations": 50}},
+    {"id": "peacemaker", "category": "diplomatic", "name_key": "achievements.peacemaker", "condition": {"max_relations": 80}},
+    {"id": "feared", "category": "diplomatic", "name_key": "achievements.feared", "condition": {"min_relations": -80}},
+    {"id": "officer_collector", "category": "collection", "name_key": "achievements.officer_collector", "condition": {"officers_count": 8}},
+    {"id": "loyal_court", "category": "collection", "name_key": "achievements.loyal_court", "condition": {"all_loyalty_above": 80}},
+    {"id": "five_tigers", "category": "collection", "name_key": "achievements.five_tigers", "condition": {"officers_in_faction": ["GuanYu", "ZhangFei", "ZhaoYun", "MaChao", "HuangZhong"]}},
+    {"id": "tech_pioneer", "category": "economic", "name_key": "achievements.tech_pioneer", "condition": {"techs_researched": 3}},
+    {"id": "tech_master", "category": "economic", "name_key": "achievements.tech_master", "condition": {"techs_researched": 8}},
+    {"id": "survivor", "category": "military", "name_key": "achievements.survivor", "condition": {"turns_survived": 24}},
+    {"id": "decade", "category": "military", "name_key": "achievements.decade", "condition": {"turns_survived": 120}},
+    {"id": "high_morale", "category": "collection", "name_key": "achievements.high_morale", "condition": {"all_morale_above": 80}},
+    {"id": "scholar_nation", "category": "economic", "name_key": "achievements.scholar_nation", "condition": {"max_tech": 90}}
+  ]
+}
