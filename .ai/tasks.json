@@ -639,7 +639,7 @@
         "Adjourn option to end turn",
         "i18n for all council text"
       ],
-      "status": "pending",
+      "status": "passed",
       "depends_on": [
         "p3-01",
         "p1-06"
