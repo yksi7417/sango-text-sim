@@ -1,0 +1,191 @@
+{
+  "metadata": {
+    "name": "China 200 CE - Battle of Guandu",
+    "scenario_id": "china_200",
+    "year": 200,
+    "month": 1,
+    "description": "Cao Cao consolidates power in the central plains before the decisive battle",
+    "version": "1.0.0"
+  },
+  "provinces": [
+    {
+      "id": "yu",
+      "name": "Yu Province",
+      "region": "central"
+    },
+    {
+      "id": "yi",
+      "name": "Yi Province",
+      "region": "west"
+    },
+    {
+      "id": "yang",
+      "name": "Yang Province",
+      "region": "south"
+    }
+  ],
+  "cities": [
+    {
+      "id": "Xuchang",
+      "province": "yu",
+      "terrain": "plains",
+      "coordinates": {
+        "x": 5,
+        "y": 3
+      },
+      "is_capital": true,
+      "owner": "Cao",
+      "resources": {
+        "gold": 750,
+        "food": 1100,
+        "troops": 500
+      },
+      "development": {
+        "agriculture": 62,
+        "commerce": 65,
+        "technology": 55,
+        "walls": 72
+      },
+      "military": {
+        "defense": 72,
+        "morale": 70
+      },
+      "adjacency": ["Luoyang", "Hanzhong"]
+    },
+    {
+      "id": "Luoyang",
+      "province": "yu",
+      "terrain": "forest",
+      "coordinates": {
+        "x": 4,
+        "y": 2
+      },
+      "is_capital": false,
+      "owner": "Cao",
+      "resources": {
+        "gold": 650,
+        "food": 950,
+        "troops": 420
+      },
+      "development": {
+        "agriculture": 58,
+        "commerce": 60,
+        "technology": 50,
+        "walls": 65
+      },
+      "military": {
+        "defense": 65,
+        "morale": 65
+      },
+      "adjacency": ["Xuchang", "Hanzhong", "Wuchang"]
+    },
+    {
+      "id": "Chengdu",
+      "province": "yi",
+      "terrain": "mountain",
+      "coordinates": {
+        "x": 1,
+        "y": 5
+      },
+      "is_capital": true,
+      "owner": "LiuZhang",
+      "resources": {
+        "gold": 600,
+        "food": 900,
+        "troops": 340
+      },
+      "development": {
+        "agriculture": 60,
+        "commerce": 50,
+        "technology": 45,
+        "walls": 62
+      },
+      "military": {
+        "defense": 62,
+        "morale": 58
+      },
+      "adjacency": ["Hanzhong"]
+    },
+    {
+      "id": "Hanzhong",
+      "province": "yi",
+      "terrain": "mountain",
+      "coordinates": {
+        "x": 2,
+        "y": 4
+      },
+      "is_capital": true,
+      "owner": "ZhangLu",
+      "resources": {
+        "gold": 450,
+        "food": 750,
+        "troops": 280
+      },
+      "development": {
+        "agriculture": 52,
+        "commerce": 44,
+        "technology": 38,
+        "walls": 58
+      },
+      "military": {
+        "defense": 56,
+        "morale": 60
+      },
+      "adjacency": ["Luoyang", "Xuchang", "Chengdu"]
+    },
+    {
+      "id": "Jianye",
+      "province": "yang",
+      "terrain": "coastal",
+      "coordinates": {
+        "x": 7,
+        "y": 6
+      },
+      "is_capital": true,
+      "owner": "SunCe",
+      "resources": {
+        "gold": 620,
+        "food": 880,
+        "troops": 380
+      },
+      "development": {
+        "agriculture": 58,
+        "commerce": 60,
+        "technology": 50,
+        "walls": 60
+      },
+      "military": {
+        "defense": 62,
+        "morale": 72
+      },
+      "adjacency": ["Wuchang"]
+    },
+    {
+      "id": "Wuchang",
+      "province": "yang",
+      "terrain": "river",
+      "coordinates": {
+        "x": 6,
+        "y": 5
+      },
+      "is_capital": true,
+      "owner": "LiuBiao",
+      "resources": {
+        "gold": 540,
+        "food": 820,
+        "troops": 320
+      },
+      "development": {
+        "agriculture": 55,
+        "commerce": 50,
+        "technology": 42,
+        "walls": 58
+      },
+      "military": {
+        "defense": 58,
+        "morale": 60
+      },
+      "adjacency": ["Jianye", "Luoyang"]
+    }
+  ]
+}

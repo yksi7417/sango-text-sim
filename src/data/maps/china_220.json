@@ -1,0 +1,191 @@
+{
+  "metadata": {
+    "name": "China 220 CE - Three Kingdoms",
+    "scenario_id": "china_220",
+    "year": 220,
+    "month": 1,
+    "description": "The three kingdoms of Wei, Shu, and Wu are formally established",
+    "version": "1.0.0"
+  },
+  "provinces": [
+    {
+      "id": "yu",
+      "name": "Yu Province",
+      "region": "central"
+    },
+    {
+      "id": "yi",
+      "name": "Yi Province",
+      "region": "west"
+    },
+    {
+      "id": "yang",
+      "name": "Yang Province",
+      "region": "south"
+    }
+  ],
+  "cities": [
+    {
+      "id": "Xuchang",
+      "province": "yu",
+      "terrain": "plains",
+      "coordinates": {
+        "x": 5,
+        "y": 3
+      },
+      "is_capital": true,
+      "owner": "Wei",
+      "resources": {
+        "gold": 850,
+        "food": 1200,
+        "troops": 500
+      },
+      "development": {
+        "agriculture": 72,
+        "commerce": 75,
+        "technology": 65,
+        "walls": 80
+      },
+      "military": {
+        "defense": 78,
+        "morale": 70
+      },
+      "adjacency": ["Luoyang", "Hanzhong"]
+    },
+    {
+      "id": "Luoyang",
+      "province": "yu",
+      "terrain": "forest",
+      "coordinates": {
+        "x": 4,
+        "y": 2
+      },
+      "is_capital": false,
+      "owner": "Wei",
+      "resources": {
+        "gold": 750,
+        "food": 1050,
+        "troops": 450
+      },
+      "development": {
+        "agriculture": 68,
+        "commerce": 70,
+        "technology": 62,
+        "walls": 75
+      },
+      "military": {
+        "defense": 72,
+        "morale": 68
+      },
+      "adjacency": ["Xuchang", "Hanzhong", "Wuchang"]
+    },
+    {
+      "id": "Chengdu",
+      "province": "yi",
+      "terrain": "mountain",
+      "coordinates": {
+        "x": 1,
+        "y": 5
+      },
+      "is_capital": true,
+      "owner": "Shu",
+      "resources": {
+        "gold": 780,
+        "food": 1100,
+        "troops": 450
+      },
+      "development": {
+        "agriculture": 72,
+        "commerce": 65,
+        "technology": 60,
+        "walls": 74
+      },
+      "military": {
+        "defense": 72,
+        "morale": 78
+      },
+      "adjacency": ["Hanzhong"]
+    },
+    {
+      "id": "Hanzhong",
+      "province": "yi",
+      "terrain": "mountain",
+      "coordinates": {
+        "x": 2,
+        "y": 4
+      },
+      "is_capital": false,
+      "owner": "Shu",
+      "resources": {
+        "gold": 650,
+        "food": 920,
+        "troops": 400
+      },
+      "development": {
+        "agriculture": 65,
+        "commerce": 58,
+        "technology": 55,
+        "walls": 68
+      },
+      "military": {
+        "defense": 68,
+        "morale": 72
+      },
+      "adjacency": ["Luoyang", "Xuchang", "Chengdu"]
+    },
+    {
+      "id": "Jianye",
+      "province": "yang",
+      "terrain": "coastal",
+      "coordinates": {
+        "x": 7,
+        "y": 6
+      },
+      "is_capital": true,
+      "owner": "Wu",
+      "resources": {
+        "gold": 800,
+        "food": 1100,
+        "troops": 460
+      },
+      "development": {
+        "agriculture": 70,
+        "commerce": 72,
+        "technology": 62,
+        "walls": 72
+      },
+      "military": {
+        "defense": 72,
+        "morale": 74
+      },
+      "adjacency": ["Wuchang"]
+    },
+    {
+      "id": "Wuchang",
+      "province": "yang",
+      "terrain": "river",
+      "coordinates": {
+        "x": 6,
+        "y": 5
+      },
+      "is_capital": false,
+      "owner": "Wu",
+      "resources": {
+        "gold": 680,
+        "food": 950,
+        "troops": 400
+      },
+      "development": {
+        "agriculture": 65,
+        "commerce": 62,
+        "technology": 56,
+        "walls": 66
+      },
+      "military": {
+        "defense": 65,
+        "morale": 68
+      },
+      "adjacency": ["Jianye", "Luoyang"]
+    }
+  ]
+}

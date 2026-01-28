@@ -11,7 +11,7 @@ This module contains functions for initializing the game world:
 import json
 import random
 from pathlib import Path
-from typing import Optional, Dict
+from typing import Optional, Dict, List
 from .models import Officer, City, Faction, GameState
 from i18n import i18n
 
@@ -213,6 +213,28 @@ def load_scenario(scenario_name: str = "china_208") -> Dict:
 
     with open(scenario_path, "r", encoding="utf-8") as f:
         return json.load(f)
+
+
+def list_scenarios() -> List[Dict]:
+    """List all available scenarios."""
+    maps_dir = Path(__file__).parent / "data" / "maps"
+    scenarios = []
+    for f in sorted(maps_dir.glob("china_*.json")):
+        if f.name == "china_208_full.json":
+            continue
+        try:
+            with open(f, "r", encoding="utf-8") as fp:
+                data = json.load(fp)
+            meta = data.get("metadata", {})
+            scenarios.append({
+                "id": meta.get("scenario_id", f.stem),
+                "name": meta.get("name", f.stem),
+                "year": meta.get("year", 0),
+                "description": meta.get("description", "")
+            })
+        except (json.JSONDecodeError, KeyError):
+            pass
+    return scenarios
 
 
 def load_officers(roster_name: str = "legendary") -> Dict:

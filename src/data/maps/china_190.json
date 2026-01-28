@@ -1,0 +1,191 @@
+{
+  "metadata": {
+    "name": "China 190 CE - Anti-Dong Zhuo Coalition",
+    "scenario_id": "china_190",
+    "year": 190,
+    "month": 1,
+    "description": "The coalition of warlords rises against the tyrant Dong Zhuo in Luoyang",
+    "version": "1.0.0"
+  },
+  "provinces": [
+    {
+      "id": "yu",
+      "name": "Yu Province",
+      "region": "central"
+    },
+    {
+      "id": "yi",
+      "name": "Yi Province",
+      "region": "west"
+    },
+    {
+      "id": "yang",
+      "name": "Yang Province",
+      "region": "south"
+    }
+  ],
+  "cities": [
+    {
+      "id": "Xuchang",
+      "province": "yu",
+      "terrain": "plains",
+      "coordinates": {
+        "x": 5,
+        "y": 3
+      },
+      "is_capital": true,
+      "owner": "Coalition",
+      "resources": {
+        "gold": 500,
+        "food": 800,
+        "troops": 450
+      },
+      "development": {
+        "agriculture": 50,
+        "commerce": 48,
+        "technology": 40,
+        "walls": 55
+      },
+      "military": {
+        "defense": 55,
+        "morale": 70
+      },
+      "adjacency": ["Luoyang", "Hanzhong"]
+    },
+    {
+      "id": "Luoyang",
+      "province": "yu",
+      "terrain": "forest",
+      "coordinates": {
+        "x": 4,
+        "y": 2
+      },
+      "is_capital": true,
+      "owner": "DongZhuo",
+      "resources": {
+        "gold": 900,
+        "food": 1200,
+        "troops": 600
+      },
+      "development": {
+        "agriculture": 55,
+        "commerce": 60,
+        "technology": 50,
+        "walls": 80
+      },
+      "military": {
+        "defense": 80,
+        "morale": 50
+      },
+      "adjacency": ["Xuchang", "Hanzhong", "Wuchang"]
+    },
+    {
+      "id": "Chengdu",
+      "province": "yi",
+      "terrain": "mountain",
+      "coordinates": {
+        "x": 1,
+        "y": 5
+      },
+      "is_capital": true,
+      "owner": "LiuYan",
+      "resources": {
+        "gold": 550,
+        "food": 850,
+        "troops": 350
+      },
+      "development": {
+        "agriculture": 55,
+        "commerce": 45,
+        "technology": 40,
+        "walls": 60
+      },
+      "military": {
+        "defense": 60,
+        "morale": 65
+      },
+      "adjacency": ["Hanzhong"]
+    },
+    {
+      "id": "Hanzhong",
+      "province": "yi",
+      "terrain": "mountain",
+      "coordinates": {
+        "x": 2,
+        "y": 4
+      },
+      "is_capital": true,
+      "owner": "ZhangLu",
+      "resources": {
+        "gold": 400,
+        "food": 700,
+        "troops": 300
+      },
+      "development": {
+        "agriculture": 50,
+        "commerce": 40,
+        "technology": 35,
+        "walls": 55
+      },
+      "military": {
+        "defense": 55,
+        "morale": 60
+      },
+      "adjacency": ["Luoyang", "Xuchang", "Chengdu"]
+    },
+    {
+      "id": "Jianye",
+      "province": "yang",
+      "terrain": "coastal",
+      "coordinates": {
+        "x": 7,
+        "y": 6
+      },
+      "is_capital": true,
+      "owner": "SunJian",
+      "resources": {
+        "gold": 480,
+        "food": 750,
+        "troops": 400
+      },
+      "development": {
+        "agriculture": 48,
+        "commerce": 50,
+        "technology": 42,
+        "walls": 55
+      },
+      "military": {
+        "defense": 55,
+        "morale": 72
+      },
+      "adjacency": ["Wuchang"]
+    },
+    {
+      "id": "Wuchang",
+      "province": "yang",
+      "terrain": "river",
+      "coordinates": {
+        "x": 6,
+        "y": 5
+      },
+      "is_capital": true,
+      "owner": "LiuBiao",
+      "resources": {
+        "gold": 520,
+        "food": 800,
+        "troops": 380
+      },
+      "development": {
+        "agriculture": 52,
+        "commerce": 48,
+        "technology": 38,
+        "walls": 58
+      },
+      "military": {
+        "defense": 58,
+        "morale": 60
+      },
+      "adjacency": ["Jianye", "Luoyang"]
+    }
+  ]
+}
