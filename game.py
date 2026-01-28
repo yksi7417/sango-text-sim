@@ -18,6 +18,8 @@ from src.systems.council import generate_council_agenda
 from src.display.council_view import render_council
 from src.systems.events import load_random_events, apply_event_choice, GameEvent, EventChoice
 from src.display.event_view import render_event, render_event_outcome
+from src.tech import load_technologies, get_available_techs
+from src.engine import start_research
 
 # =================== Data Models ===================
 # Models have been moved to src/models.py
@@ -549,6 +551,33 @@ def battle_action_cmd(action):
         say("  5. Retreat - Withdraw from battle")
         say("")
         say("Use 'battle_action <number>' to choose your tactic")
+
+@when("tech")
+def tech_cmd():
+    faction = STATE.factions.get(STATE.player_faction)
+    if not faction:
+        say("No faction.")
+        return
+    say("=== Researched Technologies ===")
+    if faction.technologies:
+        for tid in faction.technologies:
+            say(f"  [+] {i18n.t(f'tech.{tid}', default=tid)}")
+    else:
+        say("  (None)")
+    say("")
+    say("=== Available for Research ===")
+    available = get_available_techs(faction.technologies)
+    for t in available:
+        name = i18n.t(f"tech.{t.id}", default=t.id)
+        say(f"  {t.id}: {name} (Cost: {t.cost}g, {t.turns} turns)")
+    rp = STATE.research_progress.get(STATE.player_faction)
+    if rp:
+        say(f"\nCurrently researching: {rp['tech_id']} ({rp['progress']}/{rp['turns_needed']} turns)")
+
+@when("research TECH at CITY with OFFICER")
+def research_cmd(tech, city, officer):
+    result = start_research(STATE, tech, officer, city)
+    say(result["message"])
 
 @when("council")
 def council_cmd():

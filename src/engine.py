@@ -1030,6 +1030,74 @@ def update_weather(game_state: GameState, events: List[TurnEvent]) -> None:
             game_state.weather_turns_remaining = duration
 
 
+def start_research(game_state: GameState, tech_id: str, officer_name: str, city_name: str) -> Dict[str, Any]:
+    """Start researching a technology."""
+    from .tech import get_technology, get_available_techs
+
+    faction = game_state.factions.get(game_state.player_faction)
+    if not faction:
+        return {"success": False, "message": "No faction"}
+
+    tech = get_technology(tech_id)
+    if not tech:
+        return {"success": False, "message": "Unknown technology"}
+
+    # Check prerequisites
+    if not all(p in faction.technologies for p in tech.prerequisites):
+        return {"success": False, "message": "Prerequisites not met"}
+
+    if tech_id in faction.technologies:
+        return {"success": False, "message": "Already researched"}
+
+    # Check if faction already researching
+    if game_state.player_faction in game_state.research_progress:
+        return {"success": False, "message": "Already researching a technology"}
+
+    # Check officer
+    officer = game_state.officers.get(officer_name)
+    if not officer or officer.faction != game_state.player_faction:
+        return {"success": False, "message": "Officer not available"}
+
+    # Check cost
+    city = game_state.cities.get(city_name)
+    if not city or city.gold < tech.cost:
+        return {"success": False, "message": "Insufficient gold"}
+
+    city.gold -= tech.cost
+    game_state.research_progress[game_state.player_faction] = {
+        "tech_id": tech_id,
+        "progress": 0,
+        "turns_needed": tech.turns,
+        "officer": officer_name,
+        "city": city_name
+    }
+
+    return {"success": True, "message": f"Research started: {tech_id}"}
+
+
+def process_tech_research(game_state: GameState, events: List[TurnEvent]) -> None:
+    """Process ongoing tech research for all factions."""
+    for faction_name in list(game_state.research_progress.keys()):
+        rp = game_state.research_progress[faction_name]
+        rp["progress"] += 1
+
+        if rp["progress"] >= rp["turns_needed"]:
+            # Research complete
+            faction = game_state.factions.get(faction_name)
+            if faction:
+                faction.technologies.append(rp["tech_id"])
+                msg = i18n.t("tech.research_complete",
+                            tech=rp["tech_id"],
+                            default=f"Research complete: {rp['tech_id']}")
+                game_state.log(msg)
+                events.append(TurnEvent(
+                    category=EventCategory.ECONOMY,
+                    message=msg,
+                    data={"tech": rp["tech_id"]}
+                ))
+            del game_state.research_progress[faction_name]
+
+
 def end_turn(game_state: GameState) -> List[TurnEvent]:
     """
     Process end-of-turn updates and collect events.
@@ -1052,6 +1120,9 @@ def end_turn(game_state: GameState) -> List[TurnEvent]:
 
     # Process assignments and collect events
     process_assignments(game_state)
+
+    # Process tech research
+    process_tech_research(game_state, events)
 
     # Process economy and collect events
     monthly_economy(game_state)

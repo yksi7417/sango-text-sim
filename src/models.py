@@ -358,6 +358,7 @@ class GameState:
     weather: WeatherType = WeatherType.CLEAR
     weather_turns_remaining: int = 0
     pending_event: Optional[Dict[str, Any]] = None  # Pending random event awaiting player choice
+    research_progress: Dict[str, Dict[str, Any]] = field(default_factory=dict)  # faction -> {tech_id, progress, officer, city}
 
     def log(self, msg: str):
         """Add a message to the game log"""

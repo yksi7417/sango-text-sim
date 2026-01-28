@@ -596,6 +596,7 @@
     "medicine": "醫術",
     "diplomacy_arts": "外交術",
     "war_drums": "戰鼓",
-    "fortification": "築城術"
+    "fortification": "築城術",
+    "research_complete": "技術研發完成：{tech}！"
   }
 }

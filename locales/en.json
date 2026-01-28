@@ -595,6 +595,7 @@
     "medicine": "Medicine",
     "diplomacy_arts": "Diplomacy Arts",
     "war_drums": "War Drums",
-    "fortification": "Fortification"
+    "fortification": "Fortification",
+    "research_complete": "Technology researched: {tech}!"
   }
 }
