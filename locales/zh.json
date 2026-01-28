@@ -141,6 +141,20 @@
     "no_fleet": "無可用海軍力量。",
     "fire_on_water": "火攻摧毀敵軍艦隊！"
   },
+  "alliance": {
+    "invalid_type": "無效的同盟類型。選項：non_aggression, defensive, offensive",
+    "self": "不能與自己結盟。",
+    "no_faction": "找不到該勢力。",
+    "already_allied": "已與{faction}結盟。",
+    "relations_too_low": "與{faction}的關係太差。需要{required}。",
+    "rejected": "{faction}拒絕了你的提議。",
+    "formed": "與{faction}締結了{type}同盟！",
+    "no_alliance": "與{faction}無同盟關係。",
+    "broken": "與{faction}的同盟已破裂！聲望受損。",
+    "cannot_attack": "不能攻擊{faction}——你們有同盟關係！先解除同盟。",
+    "expired": "{faction_a}與{faction_b}的{type}同盟已到期。",
+    "no_alliances": "無有效同盟。"
+  },
   "cmd_feedback": {
     "assigned": "{name} 受命於 {city} 執行 {task}。（{desc}）",
     "relocated": "{name} 駐守 {city}。",

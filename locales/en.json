@@ -141,6 +141,20 @@
     "no_fleet": "No naval forces available.",
     "fire_on_water": "Fire attack devastates the enemy fleet!"
   },
+  "alliance": {
+    "invalid_type": "Invalid alliance type. Options: non_aggression, defensive, offensive",
+    "self": "Cannot form alliance with yourself.",
+    "no_faction": "Faction not found.",
+    "already_allied": "Already have an alliance with {faction}.",
+    "relations_too_low": "Relations with {faction} too low. Need {required}.",
+    "rejected": "{faction} rejects your proposal.",
+    "formed": "{type} alliance formed with {faction}!",
+    "no_alliance": "No alliance exists with {faction}.",
+    "broken": "Alliance with {faction} broken! Reputation suffers.",
+    "cannot_attack": "Cannot attack {faction} - you have an alliance! Break it first.",
+    "expired": "{type} alliance between {faction_a} and {faction_b} has expired.",
+    "no_alliances": "No active alliances."
+  },
   "cmd_feedback": {
     "assigned": "{name} assigned to {task} in {city}. ({desc})",
     "relocated": "{name} relocated to {city}.",
