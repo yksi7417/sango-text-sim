@@ -1031,7 +1031,7 @@
         "'release [officer]' for reputation",
         "Some officers refuse to surrender"
       ],
-      "status": "pending",
+      "status": "passed",
       "depends_on": [
         "p2-08"
       ],
@@ -1057,7 +1057,7 @@
         "Faction starting positions",
         "Compatible with existing map renderer"
       ],
-      "status": "pending",
+      "status": "passed",
       "depends_on": [
         "p1-01"
       ],
@@ -1106,7 +1106,7 @@
         "Fire attack effective on water",
         "Special naval abilities (Zhou Yu)"
       ],
-      "status": "pending",
+      "status": "passed",
       "depends_on": [
         "p2-10",
         "p2-04"
@@ -1132,7 +1132,7 @@
         "Breaking alliance: reputation penalty",
         "AI considers alliances"
       ],
-      "status": "pending",
+      "status": "passed",
       "estimated_files": [
         "src/models.py",
         "src/systems/diplomacy.py",
@@ -1153,7 +1153,7 @@
         "Foraging in friendly cities",
         "Supply days shown in battle UI"
       ],
-      "status": "pending",
+      "status": "passed",
       "depends_on": [
         "p2-06"
       ],
@@ -1177,7 +1177,7 @@
         "War/famine reduces population",
         "Migration between cities"
       ],
-      "status": "pending",
+      "status": "passed",
       "estimated_files": [
         "src/models.py",
         "src/engine.py",
@@ -1197,7 +1197,7 @@
         "Hostage fate affects relations",
         "AI proposes marriages"
       ],
-      "status": "pending",
+      "status": "passed",
       "depends_on": [
         "p5-04",
         "p3-04"
@@ -1221,7 +1221,7 @@
         "AI personality types (aggressive, defensive, economic)",
         "Difficulty affects AI decision quality"
       ],
-      "status": "pending",
+      "status": "passed",
       "estimated_files": [
         "src/engine.py",
         "src/constants.py",
