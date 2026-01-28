@@ -619,7 +619,7 @@
         "At least 4 agenda types",
         "Tests for agenda generation"
       ],
-      "status": "pending",
+      "status": "passed",
       "estimated_files": [
         "src/systems/council.py",
         "tests/test_council.py"
