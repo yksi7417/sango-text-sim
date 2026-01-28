@@ -75,110 +75,17 @@ Update status to "in_progress"
 Read relevant source files
 Write tests first (tests/test_*.py)
 Implement minimal solution
-Update both locale files if UI text added
-```
 
-### 3. Verify
-```bash
-python -m pytest --no-cov -v
-# Must see: "X passed in Ys"
-# Zero failures allowed
-```
+# CLAUDE.md (reset)
 
-### 4. Complete
-```bash
-# Stage and commit
-git add <specific files>
-git commit -m "feat: <description>
+Welcome to the sango-text-sim project! This file has been reset for a new project start.
 
-Implements task <id>
-- <change 1>
-- <change 2>
+## Instructions
 
-Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>"
-```
+1. Review tasks.json for the current roadmap and tasks.
+2. Begin with foundational tasks in Phase 1.
+3. Update this file with learnings, design notes, and key decisions as you progress.
 
-### 5. Deploy & Verify (MANDATORY)
-After commit is pushed:
-1. Wait for GitHub Actions to complete deployment
-2. Visit https://sango-text-sim.fly.dev/
-3. Play the game briefly to verify the feature works
-4. Only mark task as "passed" after live verification succeeds
+---
 
-**Deployment Pipeline:**
-- Commits auto-push to GitHub
-- GitHub Actions triggers deployment to Fly.dev
-- Live site: https://sango-text-sim.fly.dev/
-
-### 6. Update Status
-In `tasks.json`, change task status to "passed"
-
-### 7. Log Progress
-Append to `progress.txt`:
-```
-[TIMESTAMP] [ITER-N] [PASS] Completed <task-id>: <brief summary>
-```
-
-## File Organization
-
-```
-src/                 - Core game logic
-  models.py          - Data classes (Officer, City, Faction, GameState)
-  engine.py          - Game mechanics (end_turn, attack, etc.)
-  constants.py       - Game balance numbers
-  utils.py           - Helper functions
-  world.py           - Initial game data
-  persistence.py     - Save/load
-
-tests/               - Test suite (mirrors src/)
-  test_*.py          - One test file per module
-
-locales/             - Translations
-  en.json            - English strings
-  zh.json            - Chinese strings
-
-templates/           - Web interface
-  game.html          - Main template
-
-.ai/                 - Automation config
-  tasks.json         - Task tracking
-  progress.txt       - Iteration log
-  VISION.md          - Feature roadmap
-  QUICKSTART.md      - Usage guide
-```
-
-## New Module Pattern
-
-When creating a new module (e.g., `src/map_renderer.py`):
-
-1. Create test file first: `tests/test_map_renderer.py`
-2. Write failing tests
-3. Create source file: `src/map_renderer.py`
-4. Make tests pass
-5. Add i18n keys to both locale files
-6. Verify coverage: `python -m pytest --cov=src/map_renderer`
-
-## Common Gotchas
-
-- **game_started flag**: Check `game_state.game_started` before operations
-- **Locale keys**: Must exist in BOTH en.json and zh.json
-- **Type hints**: Use `Optional[T]` for nullable parameters
-- **Test isolation**: Each test should work independently
-
-## Token Optimization
-
-- Use `haiku` for simple tasks (formatting, small fixes)
-- Use `sonnet` for standard development
-- Reserve `opus` for complex architectural decisions
-- Read only necessary files, not entire codebase
-- Use grep/glob for targeted searches
-
-## Stop Condition
-
-When ALL tasks in tasks.json have `"status": "passed"`:
-
-```
-<promise>COMPLETE</promise>
-```
-
-This signals the loop to stop.
+_This file will be updated as the project advances._

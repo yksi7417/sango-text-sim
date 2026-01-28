@@ -1,9 +1,9 @@
 {
   "metadata": {
     "project": "sango-text-sim",
-    "created": "2026-01-26",
+    "created": "2026-01-27",
     "version": "3.0.0",
-    "updated": "2026-01-26T22:00:00Z",
+    "updated": "2026-01-27T00:00:00Z",
     "vision": "ROTK11-inspired text strategy with extensible 40+ city support",
     "current_phase": 1
   },
@@ -11,31 +11,31 @@
     "1": {
       "name": "Extensible Foundation & Visual Enhancement",
       "goal": "Data-driven architecture and ASCII visualization",
-      "status": "in_progress",
+      "status": "not_started",
       "tasks": 12
     },
     "2": {
       "name": "Interactive Combat Systems",
       "goal": "Duels, tactical battles, and dramatic combat",
-      "status": "pending",
+      "status": "not_started",
       "tasks": 10
     },
     "3": {
       "name": "Deep Strategy Layer",
       "goal": "Council system, relationships, events",
-      "status": "pending",
+      "status": "not_started",
       "tasks": 10
     },
     "4": {
       "name": "Narrative & Polish",
       "goal": "Historical events, achievements, turn preview",
-      "status": "pending",
+      "status": "not_started",
       "tasks": 8
     },
     "5": {
       "name": "Full Game Scale",
       "goal": "40+ cities, naval, alliances, scenarios",
-      "status": "pending",
+      "status": "not_started",
       "tasks": 8
     }
   },
@@ -55,7 +55,7 @@
         "Document JSON schema in src/data/README.md",
         "Tests verify JSON loads correctly"
       ],
-      "status": "passed",
+      "status": "pending",
       "estimated_files": [
         "src/data/maps/china_208.json",
         "src/data/README.md",
@@ -76,7 +76,7 @@
         "All 201+ tests still pass",
         "Easy to add new scenarios/maps"
       ],
-      "status": "passed",
+      "status": "pending",
       "depends_on": [
         "p1-01"
       ],
@@ -101,7 +101,7 @@
         "Tests in tests/test_display.py",
         "Works with both 6-city and planned 40-city maps"
       ],
-      "status": "passed",
+      "status": "pending",
       "depends_on": [
         "p1-02"
       ],
@@ -126,7 +126,7 @@
         "ASCII city icon based on walls level",
         "i18n support for all labels"
       ],
-      "status": "passed",
+      "status": "pending",
       "depends_on": [
         "p1-03"
       ],
@@ -153,7 +153,7 @@
         "Officer quote based on personality",
         "i18n support"
       ],
-      "status": "passed",
+      "status": "pending",
       "depends_on": [
         "p1-03"
       ],
@@ -179,7 +179,7 @@
         "All components tested",
         "Used by map_view, city_view, officer_view"
       ],
-      "status": "passed",
+      "status": "pending",
       "estimated_files": [
         "src/display/components.py",
         "tests/test_display.py"
@@ -199,7 +199,7 @@
         "i18n keys for map legend",
         "All existing tests pass"
       ],
-      "status": "passed",
+      "status": "pending",
       "depends_on": [
         "p1-03",
         "p1-06"
@@ -229,7 +229,7 @@
         "i18n for season names and descriptions",
         "Tests for season calculations"
       ],
-      "status": "passed",
+      "status": "pending",
       "estimated_files": [
         "src/models.py",
         "src/constants.py",
@@ -254,7 +254,7 @@
         "i18n for all narrative text",
         "Tests verify report generation"
       ],
-      "status": "passed",
+      "status": "pending",
       "depends_on": [
         "p1-08"
       ],
@@ -279,7 +279,7 @@
         "Seasonal description shown",
         "Existing tests updated and passing"
       ],
-      "status": "passed",
+      "status": "pending",
       "depends_on": [
         "p1-09"
       ],
@@ -305,7 +305,7 @@
         "Special ability placeholders",
         "i18n names in locales"
       ],
-      "status": "passed",
+      "status": "pending",
       "depends_on": [
         "p1-01"
       ],
@@ -328,7 +328,7 @@
         "Existing OFFICER_DATA still works as fallback",
         "All tests pass"
       ],
-      "status": "passed",
+      "status": "pending",
       "depends_on": [
         "p1-11",
         "p1-02"
@@ -355,7 +355,7 @@
         "Duel ends when HP <= 0",
         "Tests for all action combinations"
       ],
-      "status": "passed",
+      "status": "pending",
       "estimated_files": [
         "src/systems/__init__.py",
         "src/systems/duel.py",
@@ -377,7 +377,7 @@
         "Victory/defeat screen",
         "i18n support"
       ],
-      "status": "passed",
+      "status": "pending",
       "depends_on": [
         "p2-01",
         "p1-06"
@@ -404,7 +404,7 @@
         "Web shows duel UI with buttons",
         "Enemy AI decides whether to accept"
       ],
-      "status": "passed",
+      "status": "pending",
       "depends_on": [
         "p2-02"
       ],
@@ -432,7 +432,7 @@
         "River: crossing penalty",
         "Tests for terrain loading"
       ],
-      "status": "passed",
+      "status": "pending",
       "depends_on": [
         "p1-01"
       ],
@@ -459,7 +459,7 @@
         "Weather indicator",
         "i18n support"
       ],
-      "status": "passed",
+      "status": "pending",
       "depends_on": [
         "p2-04",
         "p1-06"
@@ -487,7 +487,7 @@
         "Siege mechanics for walled cities",
         "Tests for all battle scenarios"
       ],
-      "status": "passed",
+      "status": "pending",
       "depends_on": [
         "p2-04"
       ],
@@ -511,7 +511,7 @@
         "Special abilities get dramatic description",
         "i18n for all narrative templates"
       ],
-      "status": "passed",
+      "status": "pending",
       "depends_on": [
         "p2-06"
       ],
@@ -537,7 +537,7 @@
         "Save/load preserves battle state",
         "AI makes tactical decisions"
       ],
-      "status": "passed",
+      "status": "pending",
       "depends_on": [
         "p2-06",
         "p2-05",
@@ -564,7 +564,6 @@
         "Rain: -20% fire attack, -10% movement",
         "Snow: -30% movement, attrition",
         "Fog: +30% ambush, -20% archer",
-        "Drought: +50% fire attack",
         "Weather shown in status"
       ],
       "status": "pending",
@@ -641,7 +640,6 @@
       ],
       "status": "pending",
       "depends_on": [
-        "p3-01",
         "p1-06"
       ],
       "estimated_files": [
@@ -885,8 +883,7 @@
         "Guan Yu: Green Dragon Slash",
         "Zhao Yun: Lone Rider",
         "Lu Bu: Unstoppable",
-        "At least 15 unique abilities",
-        "Abilities trigger in combat/duel"
+        "At least 15 unique abilities"
       ],
       "status": "pending",
       "depends_on": [
@@ -1229,13 +1226,5 @@
       ]
     }
   ],
-  "completed": [
-    {
-      "id": "iter1-dependency-fix",
-      "title": "Fixed missing flask-session dependency",
-      "description": "Installed flask-session package that was preventing tests from running",
-      "completed_at": "2026-01-26T20:40:00Z",
-      "notes": "All 201 tests now passing"
-    }
-  ]
+  "completed": []
 }
