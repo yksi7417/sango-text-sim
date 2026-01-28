@@ -181,6 +181,14 @@
     "returned": "{officer} has been returned. Relations improved.",
     "no_hostages": "No hostages held."
   },
+  "difficulty": {
+    "easy": "Easy - Player bonuses, AI penalties",
+    "normal": "Normal - Balanced gameplay",
+    "hard": "Hard - AI gets bonuses",
+    "very_hard": "Very Hard - Significant AI advantages",
+    "set": "Difficulty set to {level}.",
+    "current": "Current difficulty: {level}"
+  },
   "cmd_feedback": {
     "assigned": "{name} assigned to {task} in {city}. ({desc})",
     "relocated": "{name} relocated to {city}.",

@@ -181,6 +181,14 @@
     "returned": "{officer}已被送回。關係改善。",
     "no_hostages": "無質子在押。"
   },
+  "difficulty": {
+    "easy": "簡單 - 玩家加成，AI減弱",
+    "normal": "普通 - 平衡遊玩",
+    "hard": "困難 - AI獲得加成",
+    "very_hard": "極難 - AI大幅加強",
+    "set": "難度已設為{level}。",
+    "current": "當前難度：{level}"
+  },
   "cmd_feedback": {
     "assigned": "{name} 受命於 {city} 執行 {task}。（{desc}）",
     "relocated": "{name} 駐守 {city}。",
