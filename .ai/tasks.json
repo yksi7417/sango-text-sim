@@ -37,6 +37,12 @@
       "goal": "40+ cities, naval, alliances, scenarios",
       "status": "pending",
       "tasks": 8
+    },
+    "6": {
+      "name": "Comprehensive Integration Tests",
+      "goal": "ROTK11-style deep gameplay validation based on 3KYuYun analysis",
+      "status": "pending",
+      "tasks": 20
     }
   },
   "tasks": [
@@ -1226,6 +1232,424 @@
         "src/engine.py",
         "src/constants.py",
         "tests/test_engine.py"
+      ]
+    },
+    {
+      "id": "p6-01",
+      "phase": 6,
+      "priority": 49,
+      "title": "Integration Test: Unit Type Combat Matrix",
+      "description": "Test rock-paper-scissors unit combat (Infantry beats Cavalry, Cavalry beats Archers, Archers beat Infantry). Verify bonuses apply correctly across all matchups including naval units.",
+      "acceptance_criteria": [
+        "Test all 6 unit type combinations",
+        "Verify 20% advantage/disadvantage applies",
+        "Test mixed army compositions",
+        "Test naval vs land unit interactions",
+        "Verify terrain modifiers stack with unit bonuses"
+      ],
+      "status": "pending",
+      "estimated_files": [
+        "tests/test_integration_combat.py"
+      ]
+    },
+    {
+      "id": "p6-02",
+      "phase": 6,
+      "priority": 50,
+      "title": "Integration Test: Fire Attack Conditions",
+      "description": "Test fire attack effectiveness based on weather (drought +50%, rain -20%), terrain (forest +25%), and naval combat (+50%). Based on 3KYuYun's fire deity/ghost gate analysis.",
+      "acceptance_criteria": [
+        "Test fire attack in drought weather",
+        "Test fire attack in rain weather",
+        "Test fire attack on forest terrain",
+        "Test fire attack on water (naval)",
+        "Test combined conditions (drought + forest)",
+        "Verify fire abilities apply correctly"
+      ],
+      "status": "pending",
+      "estimated_files": [
+        "tests/test_integration_fire.py"
+      ]
+    },
+    {
+      "id": "p6-03",
+      "phase": 6,
+      "priority": 51,
+      "title": "Integration Test: Duel System with Abilities",
+      "description": "Test duel mini-game with special abilities triggering. Verify WAR stat affects damage, test all duel actions (Attack, Defend, Special), and ability effects.",
+      "acceptance_criteria": [
+        "Test WAR stat damage scaling",
+        "Test all 3 duel actions",
+        "Test special ability triggers",
+        "Test duel victory effects on morale",
+        "Test officer capture on duel defeat",
+        "Test loyalist death-before-capture"
+      ],
+      "status": "pending",
+      "depends_on": [
+        "p2-01",
+        "p4-02"
+      ],
+      "estimated_files": [
+        "tests/test_integration_duel.py"
+      ]
+    },
+    {
+      "id": "p6-04",
+      "phase": 6,
+      "priority": 52,
+      "title": "Integration Test: Officer Ability Rankings",
+      "description": "Verify top-tier officer abilities work as expected. Test combat abilities (Hegemon, Brave General, Flying General, Divine General, Fighting God) and strategist abilities (Divine Calculation, Deep Strategy, Reality and Illusion) effectiveness.",
+      "acceptance_criteria": [
+        "Test all combat-type abilities",
+        "Test all strategist abilities",
+        "Verify ability cooldowns and costs",
+        "Test ability synergies",
+        "Verify ability effectiveness rankings match design"
+      ],
+      "status": "pending",
+      "depends_on": [
+        "p4-02"
+      ],
+      "estimated_files": [
+        "tests/test_integration_abilities.py"
+      ]
+    },
+    {
+      "id": "p6-05",
+      "phase": 6,
+      "priority": 53,
+      "title": "Integration Test: Deputy General Synergy",
+      "description": "Test deputy general mechanics. Verify stat combinations, ability sharing, and formation bonuses when officers serve as deputies.",
+      "acceptance_criteria": [
+        "Test deputy stat contribution",
+        "Test ability inheritance/sharing",
+        "Test formation bonus calculation",
+        "Verify best deputy pairings",
+        "Test troop command limits"
+      ],
+      "status": "pending",
+      "estimated_files": [
+        "tests/test_integration_deputy.py"
+      ]
+    },
+    {
+      "id": "p6-06",
+      "phase": 6,
+      "priority": 54,
+      "title": "Integration Test: Naval Combat Superiority",
+      "description": "Test naval warfare mechanics including blocking water routes (economic sanctions concept). Based on 3KYuYun's water combat analysis.",
+      "acceptance_criteria": [
+        "Test naval combat bonuses (+25%)",
+        "Test non-naval penalty on water (-50%)",
+        "Test coastal city naval attacks",
+        "Test water route blocking mechanics",
+        "Test fire attack naval bonus (+50%)",
+        "Test top naval commanders effectiveness"
+      ],
+      "status": "pending",
+      "depends_on": [
+        "p5-03"
+      ],
+      "estimated_files": [
+        "tests/test_integration_naval.py"
+      ]
+    },
+    {
+      "id": "p6-07",
+      "phase": 6,
+      "priority": 55,
+      "title": "Integration Test: City Defense Mechanics",
+      "description": "Test defensive city mechanics including wall bonuses, terrain advantages, and siege attrition. Based on 3KYuYun's 'easy to defend, hard to attack' city analysis.",
+      "acceptance_criteria": [
+        "Test wall defense bonus",
+        "Test mountain terrain defense",
+        "Test siege progress mechanics",
+        "Test supply attrition during siege",
+        "Test defender morale vs attacker",
+        "Verify strong defensive positions"
+      ],
+      "status": "pending",
+      "depends_on": [
+        "p2-06"
+      ],
+      "estimated_files": [
+        "tests/test_integration_siege.py"
+      ]
+    },
+    {
+      "id": "p6-08",
+      "phase": 6,
+      "priority": 56,
+      "title": "Integration Test: Capture and Recruitment",
+      "description": "Test capture mechanics including capture probability calculation, loyalist refusal, and recruitment of captured officers.",
+      "acceptance_criteria": [
+        "Test capture probability formula",
+        "Test loyalist death-before-capture",
+        "Test captured officer recruitment",
+        "Test execution loyalty impact",
+        "Test release reputation bonus",
+        "Verify capture ability bonus"
+      ],
+      "status": "pending",
+      "depends_on": [
+        "p4-08"
+      ],
+      "estimated_files": [
+        "tests/test_integration_capture.py"
+      ]
+    },
+    {
+      "id": "p6-09",
+      "phase": 6,
+      "priority": 57,
+      "title": "Integration Test: Sworn Brotherhood Mechanics",
+      "description": "Test sworn brotherhood mechanics including loyalty bonuses, combat bonuses, and emotional triggers. Based on 3KYuYun's brotherhood analysis.",
+      "acceptance_criteria": [
+        "Test sworn brother loyalty bonus (+30%)",
+        "Test combat bonus when together",
+        "Test morale effect on brother death",
+        "Test sworn brother formation bonus",
+        "Verify historic brothers (Liu/Guan/Zhang)"
+      ],
+      "status": "pending",
+      "depends_on": [
+        "p3-04"
+      ],
+      "estimated_files": [
+        "tests/test_integration_brotherhood.py"
+      ]
+    },
+    {
+      "id": "p6-10",
+      "phase": 6,
+      "priority": 58,
+      "title": "Integration Test: Marriage and Family",
+      "description": "Test marriage system mechanics including spouse loyalty, alliance effects, and helpmeet bonuses.",
+      "acceptance_criteria": [
+        "Test marriage proposal success rate",
+        "Test spouse loyalty bonus (+25%)",
+        "Test marriage alliance relations boost",
+        "Test internal affairs bonus from spouse",
+        "Test historical marriages"
+      ],
+      "status": "pending",
+      "depends_on": [
+        "p5-07"
+      ],
+      "estimated_files": [
+        "tests/test_integration_marriage.py"
+      ]
+    },
+    {
+      "id": "p6-11",
+      "phase": 6,
+      "priority": 59,
+      "title": "Integration Test: Technology Research Path",
+      "description": "Test technology tree progression including prerequisites, research time, and effect application.",
+      "acceptance_criteria": [
+        "Test tech prerequisite checking",
+        "Test research progress calculation",
+        "Test tech effect application",
+        "Test optimal research paths",
+        "Verify tech bonuses in combat"
+      ],
+      "status": "pending",
+      "depends_on": [
+        "p3-09"
+      ],
+      "estimated_files": [
+        "tests/test_integration_technology.py"
+      ]
+    },
+    {
+      "id": "p6-12",
+      "phase": 6,
+      "priority": 60,
+      "title": "Integration Test: Building Construction ROI",
+      "description": "Test building system cost/benefit including construction time, bonuses, and optimal build orders. Based on 3KYuYun's economic efficiency analysis.",
+      "acceptance_criteria": [
+        "Test building construction progress",
+        "Test building bonus application",
+        "Test construction cost/time",
+        "Test optimal build priority",
+        "Verify building synergies"
+      ],
+      "status": "pending",
+      "depends_on": [
+        "p3-10"
+      ],
+      "estimated_files": [
+        "tests/test_integration_buildings.py"
+      ]
+    },
+    {
+      "id": "p6-13",
+      "phase": 6,
+      "priority": 61,
+      "title": "Integration Test: Full Campaign Conquest",
+      "description": "Test complete game from start to unification. Verify all systems integrate correctly over extended play.",
+      "acceptance_criteria": [
+        "Start with single faction",
+        "Progress through 50+ turns",
+        "Capture multiple cities",
+        "Use all combat systems",
+        "Achieve victory condition",
+        "Verify no state corruption"
+      ],
+      "status": "pending",
+      "estimated_files": [
+        "tests/test_integration_campaign.py"
+      ]
+    },
+    {
+      "id": "p6-14",
+      "phase": 6,
+      "priority": 62,
+      "title": "Integration Test: AI Difficulty Scaling",
+      "description": "Test AI behavior across difficulty levels. Based on 3KYuYun's PvP vs PvE analysis.",
+      "acceptance_criteria": [
+        "Test Easy AI bonuses/penalties",
+        "Test Normal balanced play",
+        "Test Hard AI advantages",
+        "Test Very Hard AI strength",
+        "Test AI personality types",
+        "Verify AI decision quality scaling"
+      ],
+      "status": "pending",
+      "depends_on": [
+        "p5-08"
+      ],
+      "estimated_files": [
+        "tests/test_integration_ai_difficulty.py"
+      ]
+    },
+    {
+      "id": "p6-15",
+      "phase": 6,
+      "priority": 63,
+      "title": "Integration Test: Weather-Season Chain",
+      "description": "Test weather and season system interactions across multiple turns.",
+      "acceptance_criteria": [
+        "Test seasonal weather probabilities",
+        "Test weather persistence",
+        "Test weather combat effects",
+        "Test season farming/harvest bonuses",
+        "Test winter attrition",
+        "Verify weather event triggers"
+      ],
+      "status": "pending",
+      "depends_on": [
+        "p1-08",
+        "p2-09"
+      ],
+      "estimated_files": [
+        "tests/test_integration_weather.py"
+      ]
+    },
+    {
+      "id": "p6-16",
+      "phase": 6,
+      "priority": 64,
+      "title": "Integration Test: Supply Line Warfare",
+      "description": "Test supply system including line calculation, foraging, and attrition when cut off.",
+      "acceptance_criteria": [
+        "Test supply consumption rate",
+        "Test supply line path finding",
+        "Test foraging in friendly cities",
+        "Test attrition when cut off",
+        "Test supply days in battle UI",
+        "Verify supply strategy importance"
+      ],
+      "status": "pending",
+      "depends_on": [
+        "p5-05"
+      ],
+      "estimated_files": [
+        "tests/test_integration_supply.py"
+      ]
+    },
+    {
+      "id": "p6-17",
+      "phase": 6,
+      "priority": 65,
+      "title": "Integration Test: Historical Event Triggers",
+      "description": "Test historical event system including trigger conditions, effects, and chaining.",
+      "acceptance_criteria": [
+        "Test Peach Garden Oath trigger",
+        "Test Red Cliff conditions",
+        "Test Three Visits event",
+        "Test event relationship effects",
+        "Test event officer additions",
+        "Verify event narrative display"
+      ],
+      "status": "pending",
+      "depends_on": [
+        "p4-01"
+      ],
+      "estimated_files": [
+        "tests/test_integration_historical_events.py"
+      ]
+    },
+    {
+      "id": "p6-18",
+      "phase": 6,
+      "priority": 66,
+      "title": "Integration Test: Multi-Front War",
+      "description": "Test managing simultaneous conflicts on multiple fronts.",
+      "acceptance_criteria": [
+        "Test 2-front war management",
+        "Test resource allocation",
+        "Test officer deployment",
+        "Test AI reaction to weakness",
+        "Test strategic retreat and regroup",
+        "Verify faction survival mechanics"
+      ],
+      "status": "pending",
+      "estimated_files": [
+        "tests/test_integration_multifront.py"
+      ]
+    },
+    {
+      "id": "p6-19",
+      "phase": 6,
+      "priority": 67,
+      "title": "Integration Test: Diplomatic Alliance Chain",
+      "description": "Test alliance system including formation, coordination, and dissolution.",
+      "acceptance_criteria": [
+        "Test non-aggression pact",
+        "Test defensive alliance",
+        "Test offensive alliance",
+        "Test alliance breaking penalty",
+        "Test AI alliance decisions",
+        "Verify diplomatic relation effects"
+      ],
+      "status": "pending",
+      "depends_on": [
+        "p5-04"
+      ],
+      "estimated_files": [
+        "tests/test_integration_alliances.py"
+      ]
+    },
+    {
+      "id": "p6-20",
+      "phase": 6,
+      "priority": 68,
+      "title": "Integration Test: Complete Web Interface Flow",
+      "description": "Test all gameplay features through web interface end-to-end.",
+      "acceptance_criteria": [
+        "Test game initialization",
+        "Test all command inputs",
+        "Test battle interface",
+        "Test duel interface",
+        "Test council interface",
+        "Test save/load through web",
+        "Verify i18n display (EN/ZH)"
+      ],
+      "status": "pending",
+      "estimated_files": [
+        "tests/test_integration_web.py"
       ]
     }
   ],

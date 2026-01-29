@@ -12,7 +12,9 @@
       "Bash(python:*)",
       "Bash(pip install:*)",
       "Bash(C:UsersanthoAppDataRoamingPythonPython38Scriptsplaywright install chromium)",
-      "Bash(pip uninstall:*)"
+      "Bash(pip uninstall:*)",
+      "WebFetch(domain:www.youtube.com)",
+      "WebSearch"
     ]
   }
 }
