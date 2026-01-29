@@ -1369,7 +1369,7 @@
         "Test defender morale vs attacker",
         "Verify strong defensive positions"
       ],
-      "status": "pending",
+      "status": "passed",
       "depends_on": [
         "p2-06"
       ],
@@ -1391,7 +1391,7 @@
         "Test release reputation bonus",
         "Verify capture ability bonus"
       ],
-      "status": "pending",
+      "status": "passed",
       "depends_on": [
         "p4-08"
       ],
