@@ -1647,7 +1647,7 @@
         "Test save/load through web",
         "Verify i18n display (EN/ZH)"
       ],
-      "status": "pending",
+      "status": "passed",
       "estimated_files": [
         "tests/test_integration_web.py"
       ]
