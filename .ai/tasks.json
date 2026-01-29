@@ -1247,7 +1247,7 @@
         "Test naval vs land unit interactions",
         "Verify terrain modifiers stack with unit bonuses"
       ],
-      "status": "pending",
+      "status": "passed",
       "estimated_files": [
         "tests/test_integration_combat.py"
       ]
