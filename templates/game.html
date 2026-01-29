@@ -4,7 +4,177 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sango Text Sim - Three Kingdoms Strategy</title>
+    <style>
+        body {
+            background: #18181b;
+            color: #f3f3f3;
+            font-family: 'Fira Mono', 'Consolas', 'Menlo', monospace;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 700px;
+            margin: 32px auto;
+            background: #23232b;
+            border-radius: 12px;
+            box-shadow: 0 2px 16px #0008;
+            padding: 32px 24px 24px 24px;
+        }
+        .tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 18px;
+            justify-content: center;
+        }
+        .tab-btn {
+            background: #33384d;
+            color: #f3f3f3;
+            border: none;
+            border-radius: 6px;
+            padding: 8px 18px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .tab-btn.active {
+            background: #facc15;
+            color: #23232b;
+            font-weight: bold;
+        }
+        .game-output {
+            background: #18181b;
+            border-radius: 8px;
+            min-height: 320px;
+            padding: 18px;
+            font-size: 0.98rem;
+            white-space: pre-wrap;
+            font-family: inherit;
+        }
+        .input-row {
+            display: flex;
+            gap: 8px;
+            margin-top: 18px;
+        }
+        .input-row input {
+            flex: 1;
+            padding: 8px;
+            border-radius: 6px;
+            border: 1px solid #444;
+            background: #23232b;
+            color: #f3f3f3;
+            font-size: 1rem;
+        }
+        .input-row button {
+            background: #facc15;
+            color: #23232b;
+            border: none;
+            border-radius: 6px;
+            padding: 8px 18px;
+            font-size: 1rem;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .status-bar {
+            margin-top: 24px;
+            background: #23232b;
+            border-radius: 6px;
+            padding: 8px 12px;
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.95rem;
+            color: #facc15;
+        }
+        .footer {
+            margin-top: 32px;
+            text-align: center;
+            color: #888;
+            font-size: 0.9rem;
+        }
+    </style>
 </head>
-<body>    
+<body>
+    <div class="container">
+        <h1 style="text-align:center; color:#facc15; margin-bottom:8px;">三國志 TEXT SIM</h1>
+        <div style="text-align:center; color:#aaa; margin-bottom:18px;">ROTK11-Inspired Strategy Game Demo</div>
+        <div class="tabs">
+            <button class="tab-btn active" data-tab="map">🗺️ Map</button>
+            <button class="tab-btn" data-tab="city">🏰 City</button>
+            <button class="tab-btn" data-tab="officer">👤 Officer</button>
+            <button class="tab-btn" data-tab="battle">⚔️ Battle</button>
+            <button class="tab-btn" data-tab="duel">🤺 Duel</button>
+        </div>
+        <div class="game-output" id="game-output">
+            Loading map...
+        </div>
+        <div class="input-row">
+            <input id="game-input" type="text" placeholder="Type a command (e.g. start, choose Shu, menu)...">
+            <button id="send-btn">Send</button>
+        </div>
+        <div class="status-bar">
+            <span>蜀 SHU │ Cities: 2 │ Officers: 12</span>
+            <span>💰 5,400 │ 🍚 23,000 │ ⚔️ 35,000</span>
+            <span>Spring 194 AD</span>
+        </div>
+        <div class="footer">
+            <p>This is a demo of the enhanced UI. Click the tabs to explore different views!</p>
+            <p>The Duel tab is interactive - try fighting Xiahou Dun!</p>
+        </div>
+    </div>
+    <script>
+        // Tab switching (demo only, not yet wired to backend)
+        const tabs = document.querySelectorAll('.tab-btn');
+        const output = document.getElementById('game-output');
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                tabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                // Demo: just show placeholder for each tab
+                switch(tab.dataset.tab) {
+                    case 'map':
+                        output.textContent = 'Loading map...';
+                        fetch('/api/map').then(r => r.text()).then(t => output.textContent = t);
+                        break;
+                    case 'city':
+                        output.textContent = 'Loading city view...';
+                        fetch('/api/city').then(r => r.text()).then(t => output.textContent = t);
+                        break;
+                    case 'officer':
+                        output.textContent = 'Loading officer view...';
+                        fetch('/api/officer').then(r => r.text()).then(t => output.textContent = t);
+                        break;
+                    case 'battle':
+                        output.textContent = 'Loading battle view...';
+                        fetch('/api/battle').then(r => r.text()).then(t => output.textContent = t);
+                        break;
+                    case 'duel':
+                        output.textContent = 'Loading duel view...';
+                        fetch('/api/duel').then(r => r.text()).then(t => output.textContent = t);
+                        break;
+                }
+            });
+        });
+        // Command input
+        document.getElementById('send-btn').onclick = sendCommand;
+        document.getElementById('game-input').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') sendCommand();
+        });
+        function sendCommand() {
+            const val = document.getElementById('game-input').value;
+            if (!val.trim()) return;
+            output.textContent = 'Processing...';
+            fetch('/api/command', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({command: val})
+            })
+            .then(r => r.text())
+            .then(t => {
+                output.textContent = t;
+                document.getElementById('game-input').value = '';
+            });
+        }
+        // Load map on first load
+        fetch('/api/map').then(r => r.text()).then(t => output.textContent = t);
+    </script>
 </body>
 </html>
