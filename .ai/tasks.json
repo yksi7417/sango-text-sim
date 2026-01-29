@@ -1605,7 +1605,7 @@
         "Test strategic retreat and regroup",
         "Verify faction survival mechanics"
       ],
-      "status": "pending",
+      "status": "passed",
       "estimated_files": [
         "tests/test_integration_multifront.py"
       ]
