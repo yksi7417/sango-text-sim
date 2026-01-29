@@ -1266,7 +1266,7 @@
         "Test combined conditions (drought + forest)",
         "Verify fire abilities apply correctly"
       ],
-      "status": "pending",
+      "status": "passed",
       "estimated_files": [
         "tests/test_integration_fire.py"
       ]
@@ -1285,7 +1285,7 @@
         "Test officer capture on duel defeat",
         "Test loyalist death-before-capture"
       ],
-      "status": "pending",
+      "status": "passed",
       "depends_on": [
         "p2-01",
         "p4-02"
