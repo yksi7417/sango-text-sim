@@ -1538,7 +1538,7 @@
         "Test winter attrition",
         "Verify weather event triggers"
       ],
-      "status": "pending",
+      "status": "passed",
       "depends_on": [
         "p1-08",
         "p2-09"
