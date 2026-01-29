@@ -750,13 +750,63 @@ def load_cmd_with_file(file):
 def load_cmd():
     _do_load(persistence.get_default_save_path())
 
+@when("scenarios")
+def scenarios_cmd():
+    """List available scenarios"""
+    scenarios = world.list_scenarios()
+    say(i18n.t("scenario.header", default="=== Available Scenarios ==="))
+    for s in scenarios:
+        say(f"  {s['id']}: {s['name']} ({s['year']} CE)")
+        if s['description']:
+            say(f"    {s['description']}")
+    say("")
+    say(i18n.t("scenario.usage", default="Use 'choose <faction> in <scenario>' to start"))
+
 @when("choose FACTION")
 def choose_cmd(faction):
     name = faction.title()
-    if name not in ["Wei","Shu","Wu"]:
+    # For backward compatibility, use default scenario (china_208) with Wei/Shu/Wu
+    if name not in ["Wei", "Shu", "Wu"]:
         say("Wei/Shu/Wu")
         return
-    init_world(player_choice=name)
+    world.init_world(STATE, player_choice=name, scenario="china_208")
+    say(i18n.t("game.time", year=STATE.year, month=STATE.month))
+
+@when("choose FACTION in SCENARIO")
+def choose_scenario_cmd(faction, scenario):
+    """Start a new game with specified faction and scenario"""
+    scenario_name = scenario.lower().strip()
+
+    # Load scenario to get available factions
+    try:
+        scenario_data = world.load_scenario(scenario_name)
+    except (FileNotFoundError, json.JSONDecodeError):
+        say(i18n.t("scenario.not_found", default=f"Scenario '{scenario_name}' not found. Use 'scenarios' to list available."))
+        return
+
+    # Get factions from scenario
+    scenario_factions = scenario_data.get("factions", {})
+    if not scenario_factions:
+        say(i18n.t("scenario.no_factions", default="This scenario has no playable factions."))
+        return
+
+    faction_name = faction.title()
+    if faction_name not in scenario_factions:
+        # Try to find a matching faction
+        for f in scenario_factions.keys():
+            if f.lower() == faction.lower():
+                faction_name = f
+                break
+        else:
+            available = ", ".join(scenario_factions.keys())
+            say(i18n.t("scenario.invalid_faction", default=f"Invalid faction. Available: {available}"))
+            return
+
+    world.init_world(STATE, player_choice=faction_name, scenario=scenario_name)
+    say(i18n.t("game.time", year=STATE.year, month=STATE.month))
+    # Show the map
+    map_display = map_view.render_strategic_map(STATE)
+    say(map_display)
 
 @when("start")
 def start_cmd():

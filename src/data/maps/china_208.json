@@ -7,6 +7,26 @@
     "description": "The era of Red Cliff, with three kingdoms vying for supremacy",
     "version": "1.0.0"
   },
+  "factions": {
+    "Wei": {
+      "ruler": "CaoCao",
+      "description": "The kingdom of Wei under Cao Cao"
+    },
+    "Shu": {
+      "ruler": "LiuBei",
+      "description": "The kingdom of Shu under Liu Bei"
+    },
+    "Wu": {
+      "ruler": "SunQuan",
+      "description": "The kingdom of Wu under Sun Quan"
+    }
+  },
+  "officer_availability": [
+    "LiuBei", "GuanYu", "ZhangFei", "ZhugeLiang", "ZhaoYun", "MaChao", "HuangZhong",
+    "WeiYan", "PangTong", "CaoCao", "ZhangLiao", "XuChu", "XiahouDun", "XiahouYuan",
+    "ZhangHe", "XuHuang", "SimaYi", "GuoJia", "SunQuan", "ZhouYu", "LuSu", "LuMeng",
+    "GanNing", "TaishiCi", "HuangGai", "LingTong", "DingFeng", "LuXun"
+  ],
   "provinces": [
     {
       "id": "yu",

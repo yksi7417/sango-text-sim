@@ -7,6 +7,26 @@
     "description": "The three kingdoms of Wei, Shu, and Wu are formally established",
     "version": "1.0.0"
   },
+  "factions": {
+    "Wei": {
+      "ruler": "CaoPi",
+      "description": "The kingdom of Wei under Cao Pi"
+    },
+    "Shu": {
+      "ruler": "LiuBei",
+      "description": "The kingdom of Shu under Liu Bei"
+    },
+    "Wu": {
+      "ruler": "SunQuan",
+      "description": "The kingdom of Wu under Sun Quan"
+    }
+  },
+  "officer_availability": [
+    "LiuBei", "GuanYu", "ZhangFei", "ZhugeLiang", "ZhaoYun", "MaChao", "HuangZhong",
+    "WeiYan", "JiangWei", "CaoCao", "ZhangLiao", "XuChu", "XiahouDun", "XiahouYuan",
+    "ZhangHe", "XuHuang", "SimaYi", "SunQuan", "ZhouYu", "LuSu", "LuMeng", "GanNing",
+    "TaishiCi", "HuangGai", "LingTong", "DingFeng", "LuXun"
+  ],
   "provinces": [
     {
       "id": "yu",

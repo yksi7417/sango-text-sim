@@ -7,6 +7,36 @@
     "description": "The coalition of warlords rises against the tyrant Dong Zhuo in Luoyang",
     "version": "1.0.0"
   },
+  "factions": {
+    "Coalition": {
+      "ruler": "CaoCao",
+      "description": "The coalition of warlords"
+    },
+    "DongZhuo": {
+      "ruler": "DongZhuo",
+      "description": "The tyrant's forces"
+    },
+    "LiuYan": {
+      "ruler": "LiuYan",
+      "description": "The governor of Yi Province"
+    },
+    "ZhangLu": {
+      "ruler": "ZhangLu",
+      "description": "The Five Pecks of Rice leader"
+    },
+    "SunJian": {
+      "ruler": "SunJian",
+      "description": "The Tiger of Jiangdong"
+    },
+    "LiuBiao": {
+      "ruler": "LiuBiao",
+      "description": "The governor of Jing Province"
+    }
+  },
+  "officer_availability": [
+    "LiuBei", "GuanYu", "ZhangFei", "CaoCao", "ZhangLiao", "XuChu", "DianWei",
+    "XiahouDun", "XiahouYuan", "ZhouYu", "HuangGai", "GanNing", "TaishiCi", "SunCe"
+  ],
   "provinces": [
     {
       "id": "yu",

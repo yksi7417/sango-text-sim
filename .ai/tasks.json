@@ -1086,7 +1086,7 @@
         "Officer availability varies by year",
         "Scenario selection at game start"
       ],
-      "status": "pending",
+      "status": "passed",
       "depends_on": [
         "p5-01",
         "p1-12"

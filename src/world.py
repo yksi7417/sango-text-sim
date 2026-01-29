@@ -369,35 +369,67 @@ def add_officer(game_state: GameState, officer: Officer) -> None:
     game_state.factions[officer.faction].officers.append(officer.name)
 
 
-def init_world(game_state: GameState, player_choice: Optional[str] = None, seed: Optional[int] = 42) -> None:
+def init_world(game_state: GameState, player_choice: Optional[str] = None, seed: Optional[int] = 42, scenario: str = "china_208") -> None:
     """
     Initialize the game world with cities, factions, and officers.
-    
+
     Creates:
-    - Three factions (Wei, Shu, Wu) with rulers
-    - Six cities with resources and troops
-    - Seven legendary officers with unique traits
+    - Factions with rulers based on scenario
+    - Cities with resources and troops from scenario
+    - Officers available in the scenario
     - Map adjacency relationships
     - Initial diplomatic relations
-    
+
     Args:
         game_state: Game state to initialize
-        player_choice: Which faction the player controls (Wei, Shu, or Wu)
+        player_choice: Which faction the player controls
         seed: Random seed for reproducible initialization
+        scenario: Scenario to load (default: "china_208")
     """
     if seed is not None:
         random.seed(seed)
-    
-    factions = ["Wei", "Shu", "Wu"]
-    
+
+    # Load scenario data
+    try:
+        scenario_data = load_scenario(scenario)
+    except (FileNotFoundError, json.JSONDecodeError):
+        # Fall back to default scenario
+        scenario_data = load_scenario("china_208")
+
+    # Get factions from scenario, or use defaults
+    scenario_factions = scenario_data.get("factions", {})
+    if not scenario_factions:
+        # Default factions for backward compatibility
+        scenario_factions = {
+            "Wei": {"ruler": "CaoCao", "description": "Wei"},
+            "Shu": {"ruler": "LiuBei", "description": "Shu"},
+            "Wu": {"ruler": "SunQuan", "description": "Wu"}
+        }
+
+    faction_names = list(scenario_factions.keys())
+
+    # Build faction rulers map from scenario
+    faction_rulers = {name: data.get("ruler", name) for name, data in scenario_factions.items()}
+
     # Set player faction
-    if player_choice and player_choice in factions:
+    if player_choice and player_choice in faction_names:
         game_state.player_faction = player_choice
-    game_state.player_ruler = FACTION_RULERS[game_state.player_faction]
-    
+    elif faction_names:
+        # Default to first faction if player_faction not in scenario
+        if game_state.player_faction not in faction_names:
+            game_state.player_faction = faction_names[0]
+
+    game_state.player_ruler = faction_rulers.get(game_state.player_faction, game_state.player_faction)
+
+    # Load city data from scenario
+    city_data, adjacency_map = _load_city_data_from_json(scenario)
+    if city_data is None:
+        city_data = CITY_DATA
+        adjacency_map = ADJACENCY_MAP
+
     # Create cities
     cities = {}
-    for city_name, data in CITY_DATA.items():
+    for city_name, data in city_data.items():
         # Import TerrainType here to avoid circular import
         from .models import TerrainType
 
@@ -419,52 +451,79 @@ def init_world(game_state: GameState, player_choice: Optional[str] = None, seed:
             walls=data["walls"],
             terrain=terrain
         )
-    
+
     # Set adjacency map
-    adj = ADJACENCY_MAP.copy()
-    
-    # Create factions
-    factions_map: Dict[str, Faction] = {f: Faction(name=f) for f in factions}
-    
+    adj = adjacency_map.copy()
+
+    # Create factions - include all factions that own cities plus scenario factions
+    all_faction_names = set(faction_names)
+    for city in cities.values():
+        all_faction_names.add(city.owner)
+
+    factions_map: Dict[str, Faction] = {f: Faction(name=f) for f in all_faction_names}
+
     # Assign cities to factions
     for city in cities.values():
-        factions_map[city.owner].cities.append(city.name)
-    
+        if city.owner in factions_map:
+            factions_map[city.owner].cities.append(city.name)
+
     # Set up diplomatic relations and rulers
-    for f in factions:
+    for f in all_faction_names:
         factions_map[f].relations = {
-            g: (0 if f == g else random.randint(-20, 10)) for g in factions
+            g: (0 if f == g else random.randint(-20, 10)) for g in all_faction_names
         }
-        factions_map[f].ruler = FACTION_RULERS[f]
-    
+        factions_map[f].ruler = faction_rulers.get(f, f)
+
     # Update game state
     game_state.cities = cities
     game_state.adj = adj
     game_state.factions = factions_map
     game_state.officers.clear()
-    
-    # Add officers
-    for officer_data in OFFICER_DATA:
-        # Assign city: use explicit city if provided, otherwise find a capital for their faction
-        if "city" in officer_data:
-            assigned_city = officer_data["city"]
+
+    # Get officer availability from scenario
+    officer_availability = scenario_data.get("officer_availability", None)
+
+    # Filter officers based on scenario availability
+    officers_to_add = OFFICER_DATA
+    if officer_availability:
+        officers_to_add = [o for o in OFFICER_DATA if o["id"] in officer_availability]
+
+    # Map officers to factions that exist in this scenario
+    # If officer's faction doesn't exist, try to find a matching one
+    for officer_data in officers_to_add:
+        officer_faction = officer_data["faction"]
+
+        # Check if officer's faction exists in this scenario
+        if officer_faction not in factions_map:
+            # Try to find a faction that has this officer's ruler
+            # or skip if no matching faction
+            found = False
+            for faction_name, faction in factions_map.items():
+                if faction.ruler == officer_data["id"]:
+                    officer_faction = faction_name
+                    found = True
+                    break
+            if not found:
+                continue  # Skip this officer
+
+        # Find an appropriate city for the officer
+        faction_cities = factions_map[officer_faction].cities
+        assigned_city = None
+        if faction_cities:
+            assigned_city = faction_cities[0]
         else:
-            # Find the capital city for this officer's faction
-            faction_name = officer_data["faction"]
-            faction_cities = factions_map[faction_name].cities
-            # Find capital or use first city
-            assigned_city = None
-            for city_name in faction_cities:
-                if cities[city_name].owner == faction_name:
+            # Find any city owned by this faction
+            for city_name, city in cities.items():
+                if city.owner == officer_faction:
                     assigned_city = city_name
                     break
-            # If no city found (shouldn't happen), use first available city
-            if not assigned_city and faction_cities:
-                assigned_city = faction_cities[0]
+
+        if not assigned_city:
+            continue  # Skip if no city available
 
         officer = Officer(
             name=officer_data["id"],
-            faction=officer_data["faction"],
+            faction=officer_faction,
             leadership=officer_data["leadership"],
             intelligence=officer_data["intelligence"],
             politics=officer_data["politics"],
@@ -475,13 +534,17 @@ def init_world(game_state: GameState, player_choice: Optional[str] = None, seed:
             relationships=officer_data.get("relationships", {})
         )
         add_officer(game_state, officer)
-    
-    # Set initial time
-    game_state.year = 208
-    game_state.month = 1
+
+    # Set initial time from scenario metadata
+    metadata = scenario_data.get("metadata", {})
+    game_state.year = metadata.get("year", 208)
+    game_state.month = metadata.get("month", 1)
     game_state.messages.clear()
-    
+
+    # Mark game as started
+    game_state.game_started = True
+
     # Welcome message with localized ruler name
-    ruler_display_name = i18n.t(f"officers.{game_state.player_ruler}")
+    ruler_display_name = i18n.t(f"officers.{game_state.player_ruler}", default=game_state.player_ruler)
     game_state.log(i18n.t("game.welcome", ruler=ruler_display_name, faction=game_state.player_faction))
     # Don't log time message - it's shown in the UI header

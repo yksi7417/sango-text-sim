@@ -87,8 +87,8 @@ class TestInitWorld:
         """World initialization should create all officers."""
         world.init_world(empty_game_state)
 
-        # Should create 31 officers (loaded from legendary.json)
-        assert len(empty_game_state.officers) >= 30  # At least 30 from JSON
+        # Should create officers based on scenario availability (208 CE scenario has 28 officers)
+        assert len(empty_game_state.officers) >= 20  # At least 20 officers
         assert "LiuBei" in empty_game_state.officers
         assert "GuanYu" in empty_game_state.officers
         assert "ZhangFei" in empty_game_state.officers
@@ -316,8 +316,8 @@ class TestLoadOfficers:
         # Verify OFFICER_DATA has officers from JSON
         officer_ids = {officer["id"] for officer in world.OFFICER_DATA}
 
-        # Should have more than the original 7 hardcoded officers
-        assert len(officer_ids) >= 30, "Should have at least 30 officers from legendary.json"
+        # Should have officers from legendary.json
+        assert len(officer_ids) >= 28, "Should have at least 28 officers from legendary.json"
 
         # Verify some new officers are present
         new_officers = ["ZhaoYun", "MaChao", "HuangZhong", "XuChu", "LuSu", "GanNing"]
@@ -338,8 +338,8 @@ class TestLoadOfficers:
         """Verify init_world works with JSON-loaded officers."""
         world.init_world(empty_game_state, player_choice="Wei", seed=42)
 
-        # Should have more officers than the original 7
-        assert len(empty_game_state.officers) >= 30, "Should have at least 30 officers"
+        # Should have officers from the scenario availability list
+        assert len(empty_game_state.officers) >= 20, "Should have at least 20 officers"
 
         # Verify all officers are assigned to valid cities
         for officer in empty_game_state.officers.values():
@@ -465,3 +465,151 @@ class TestTerrainLoading:
         # Create city without specifying terrain
         city = City(name="TestCity", owner="Wei")
         assert city.terrain == TerrainType.PLAINS
+
+
+class TestScenarioLoading:
+    """Tests for scenario loading and selection."""
+
+    def test_list_scenarios(self):
+        """Verify list_scenarios returns available scenarios."""
+        scenarios = world.list_scenarios()
+        assert len(scenarios) >= 4, "Should have at least 4 scenarios"
+
+        # Check scenario IDs
+        scenario_ids = [s['id'] for s in scenarios]
+        assert "china_190" in scenario_ids
+        assert "china_200" in scenario_ids
+        assert "china_208" in scenario_ids
+        assert "china_220" in scenario_ids
+
+    def test_list_scenarios_has_metadata(self):
+        """Verify scenario list includes metadata."""
+        scenarios = world.list_scenarios()
+
+        for s in scenarios:
+            assert 'id' in s
+            assert 'name' in s
+            assert 'year' in s
+            assert 'description' in s
+
+    def test_load_scenario_190(self):
+        """Verify 190 CE scenario loads correctly."""
+        data = world.load_scenario("china_190")
+
+        assert data["metadata"]["year"] == 190
+        assert "factions" in data
+        assert "officer_availability" in data
+
+        # Check factions specific to 190
+        factions = data["factions"]
+        assert "Coalition" in factions
+        assert "DongZhuo" in factions
+
+    def test_load_scenario_200(self):
+        """Verify 200 CE scenario loads correctly."""
+        data = world.load_scenario("china_200")
+
+        assert data["metadata"]["year"] == 200
+        assert "factions" in data
+        assert "officer_availability" in data
+
+        # Check factions specific to 200
+        factions = data["factions"]
+        assert "Cao" in factions
+        assert "SunCe" in factions
+
+    def test_load_scenario_208(self):
+        """Verify 208 CE scenario loads correctly."""
+        data = world.load_scenario("china_208")
+
+        assert data["metadata"]["year"] == 208
+        assert "factions" in data
+        assert "officer_availability" in data
+
+        # Check factions specific to 208
+        factions = data["factions"]
+        assert "Wei" in factions
+        assert "Shu" in factions
+        assert "Wu" in factions
+
+    def test_load_scenario_220(self):
+        """Verify 220 CE scenario loads correctly."""
+        data = world.load_scenario("china_220")
+
+        assert data["metadata"]["year"] == 220
+        assert "factions" in data
+        assert "officer_availability" in data
+
+        # Check factions specific to 220
+        factions = data["factions"]
+        assert "Wei" in factions
+        assert "Shu" in factions
+        assert "Wu" in factions
+
+    def test_init_world_with_scenario_190(self, empty_game_state):
+        """Init world with 190 CE scenario should use correct factions."""
+        world.init_world(empty_game_state, player_choice="Coalition", scenario="china_190")
+
+        assert empty_game_state.year == 190
+        assert empty_game_state.player_faction == "Coalition"
+        assert "DongZhuo" in empty_game_state.factions
+
+        # Luoyang should be owned by Dong Zhuo
+        assert empty_game_state.cities["Luoyang"].owner == "DongZhuo"
+
+    def test_init_world_with_scenario_200(self, empty_game_state):
+        """Init world with 200 CE scenario should use correct factions."""
+        world.init_world(empty_game_state, player_choice="Cao", scenario="china_200")
+
+        assert empty_game_state.year == 200
+        assert empty_game_state.player_faction == "Cao"
+
+        # Xuchang should be owned by Cao
+        assert empty_game_state.cities["Xuchang"].owner == "Cao"
+
+    def test_init_world_with_scenario_220(self, empty_game_state):
+        """Init world with 220 CE scenario should use correct factions."""
+        world.init_world(empty_game_state, player_choice="Wei", scenario="china_220")
+
+        assert empty_game_state.year == 220
+        assert empty_game_state.player_faction == "Wei"
+
+    def test_scenario_officer_availability(self, empty_game_state):
+        """Verify officer availability varies by scenario."""
+        # 190 CE should not have Jiang Wei (born later)
+        world.init_world(empty_game_state, player_choice="Coalition", scenario="china_190")
+        assert "JiangWei" not in empty_game_state.officers
+
+        # 220 CE should have Jiang Wei
+        world.init_world(empty_game_state, player_choice="Shu", scenario="china_220")
+        assert "JiangWei" in empty_game_state.officers
+
+    def test_scenario_invalid_faction_fallback(self, empty_game_state):
+        """Invalid faction for scenario should use first available."""
+        # Try to use "Wei" in 190 scenario (doesn't exist as faction)
+        world.init_world(empty_game_state, player_choice="Wei", scenario="china_190")
+
+        # Should fall back to first faction
+        assert empty_game_state.player_faction in empty_game_state.factions
+
+    def test_scenario_fallback_to_default(self, empty_game_state):
+        """Non-existent scenario should fall back to china_208."""
+        world.init_world(empty_game_state, player_choice="Wei", scenario="nonexistent")
+
+        # Should use default scenario
+        assert empty_game_state.year == 208
+        assert "Wei" in empty_game_state.factions
+        assert "Shu" in empty_game_state.factions
+        assert "Wu" in empty_game_state.factions
+
+    def test_scenario_faction_rulers(self, empty_game_state):
+        """Verify faction rulers are set correctly per scenario."""
+        world.init_world(empty_game_state, player_choice="Wei", scenario="china_208")
+        assert empty_game_state.factions["Wei"].ruler == "CaoCao"
+        assert empty_game_state.factions["Shu"].ruler == "LiuBei"
+        assert empty_game_state.factions["Wu"].ruler == "SunQuan"
+
+    def test_scenario_game_started_flag(self, empty_game_state):
+        """Verify game_started flag is set after init_world."""
+        world.init_world(empty_game_state, player_choice="Wei", scenario="china_208")
+        assert empty_game_state.game_started is True

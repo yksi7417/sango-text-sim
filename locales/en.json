@@ -1,4 +1,27 @@
 {
+  "scenario": {
+    "header": "=== Available Scenarios ===",
+    "usage": "Use 'choose <faction> in <scenario>' to start a new game",
+    "not_found": "Scenario not found. Use 'scenarios' to list available.",
+    "no_factions": "This scenario has no playable factions.",
+    "invalid_faction": "Invalid faction for this scenario.",
+    "china_190": {
+      "name": "Anti-Dong Zhuo Coalition",
+      "description": "The coalition of warlords rises against the tyrant Dong Zhuo in Luoyang"
+    },
+    "china_200": {
+      "name": "Battle of Guandu",
+      "description": "Cao Cao consolidates power in the central plains before the decisive battle"
+    },
+    "china_208": {
+      "name": "Red Cliff Era",
+      "description": "The era of Red Cliff, with three kingdoms vying for supremacy"
+    },
+    "china_220": {
+      "name": "Three Kingdoms",
+      "description": "The three kingdoms of Wei, Shu, and Wu are formally established"
+    }
+  },
   "game": {
     "welcome": "Welcome, {ruler} of {faction}! Type 'help' for commands.",
     "time": "Time: {year}-{month:02d}. Taxes: Commerce in January, Agriculture in July.",
@@ -43,7 +66,14 @@
     "LingTong": "Ling Tong",
     "DingFeng": "Ding Feng",
     "LuXun": "Lu Xun",
-    "SunCe": "Sun Ce"
+    "SunCe": "Sun Ce",
+    "SunJian": "Sun Jian",
+    "DongZhuo": "Dong Zhuo",
+    "LiuYan": "Liu Yan",
+    "ZhangLu": "Zhang Lu",
+    "LiuBiao": "Liu Biao",
+    "LiuZhang": "Liu Zhang",
+    "CaoPi": "Cao Pi"
   },
   "lang": {
     "set": "Language set to {lang}.",

@@ -1,4 +1,27 @@
 {
+  "scenario": {
+    "header": "=== 可選劇本 ===",
+    "usage": "使用 'choose <勢力> in <劇本>' 開始新遊戲",
+    "not_found": "找不到該劇本。使用 'scenarios' 查看可用列表。",
+    "no_factions": "此劇本沒有可選勢力。",
+    "invalid_faction": "此勢力不在該劇本中。",
+    "china_190": {
+      "name": "討伐董卓",
+      "description": "諸侯聯軍起兵討伐洛陽的暴君董卓"
+    },
+    "china_200": {
+      "name": "官渡之戰",
+      "description": "曹操在決定性戰役前鞏固中原勢力"
+    },
+    "china_208": {
+      "name": "赤壁之戰",
+      "description": "赤壁時代，三國鼎立爭霸天下"
+    },
+    "china_220": {
+      "name": "三國鼎立",
+      "description": "魏、蜀、吳三國正式建立"
+    }
+  },
   "game": {
     "welcome": "歡迎，{faction}之{ruler}！輸入 'help' 以查看指令。",
     "time": "時間：{year}年{month:02d}月。稅賦：一月商稅、七月農稅。",
@@ -43,7 +66,14 @@
     "LingTong": "凌統",
     "DingFeng": "丁奉",
     "LuXun": "陸遜",
-    "SunCe": "孫策"
+    "SunCe": "孫策",
+    "SunJian": "孫堅",
+    "DongZhuo": "董卓",
+    "LiuYan": "劉焉",
+    "ZhangLu": "張魯",
+    "LiuBiao": "劉表",
+    "LiuZhang": "劉璋",
+    "CaoPi": "曹丕"
   },
   "lang": {
     "set": "語言已切換為 {lang}。",

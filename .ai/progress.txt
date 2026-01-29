@@ -125,3 +125,5 @@
 [2026-01-27T09:00:00Z] [ITER-21] [PASS] Completed Phase 5 (p5-01 through p5-08) - Full 40+ city map, 4 scenarios (190/200/208/220), naval combat, alliance system, supply lines, population system, marriage/hostage, difficulty settings with AI personalities - All 785 tests passing
 [2026-01-27T09:00:00Z] [COMPLETE] ALL 48 TASKS COMPLETE across 5 phases. 785 tests passing.
 [2026-01-27T23:29:46Z] [ITER-1] [COMPLETE] All tasks completed successfully
+[2026-01-28T22:05:56Z] [ITER-1] [START] Beginning iteration
+[2026-01-28T22:35:00Z] [ITER-1] [PASS] Completed p5-02: Create Multiple Scenarios - Added factions and officer_availability to all 4 scenario JSONs (china_190/200/208/220), updated world.py init_world() to accept scenario parameter and load factions/officers per scenario, added 'scenarios' and 'choose FACTION in SCENARIO' commands to game.py, i18n keys for all 4 scenarios in en.json and zh.json (scenario.header, scenario.china_*), 16 new tests in test_world.py (TestScenarioLoading class) - All 810 tests passing

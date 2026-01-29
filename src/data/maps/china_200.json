@@ -7,6 +7,33 @@
     "description": "Cao Cao consolidates power in the central plains before the decisive battle",
     "version": "1.0.0"
   },
+  "factions": {
+    "Cao": {
+      "ruler": "CaoCao",
+      "description": "Cao Cao's forces in the central plains"
+    },
+    "LiuZhang": {
+      "ruler": "LiuZhang",
+      "description": "The governor of Yi Province"
+    },
+    "ZhangLu": {
+      "ruler": "ZhangLu",
+      "description": "The Five Pecks of Rice leader"
+    },
+    "SunCe": {
+      "ruler": "SunCe",
+      "description": "The Little Conqueror"
+    },
+    "LiuBiao": {
+      "ruler": "LiuBiao",
+      "description": "The governor of Jing Province"
+    }
+  },
+  "officer_availability": [
+    "LiuBei", "GuanYu", "ZhangFei", "ZhugeLiang", "ZhaoYun", "CaoCao", "ZhangLiao",
+    "XuChu", "DianWei", "XiahouDun", "XiahouYuan", "ZhangHe", "XuHuang", "GuoJia",
+    "SunCe", "ZhouYu", "LuSu", "HuangGai", "GanNing", "TaishiCi"
+  ],
   "provinces": [
     {
       "id": "yu",
