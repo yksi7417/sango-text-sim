@@ -1328,7 +1328,7 @@
         "Verify best deputy pairings",
         "Test troop command limits"
       ],
-      "status": "pending",
+      "status": "passed",
       "estimated_files": [
         "tests/test_integration_deputy.py"
       ]
