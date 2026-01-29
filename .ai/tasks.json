@@ -1307,7 +1307,7 @@
         "Test ability synergies",
         "Verify ability effectiveness rankings match design"
       ],
-      "status": "pending",
+      "status": "passed",
       "depends_on": [
         "p4-02"
       ],
