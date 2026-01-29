@@ -1475,7 +1475,7 @@
         "Test optimal build priority",
         "Verify building synergies"
       ],
-      "status": "pending",
+      "status": "passed",
       "depends_on": [
         "p3-10"
       ],
