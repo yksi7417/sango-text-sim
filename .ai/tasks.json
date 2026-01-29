@@ -1433,7 +1433,7 @@
         "Test internal affairs bonus from spouse",
         "Test historical marriages"
       ],
-      "status": "pending",
+      "status": "passed",
       "depends_on": [
         "p5-07"
       ],
