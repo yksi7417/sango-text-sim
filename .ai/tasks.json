@@ -1561,7 +1561,7 @@
         "Test supply days in battle UI",
         "Verify supply strategy importance"
       ],
-      "status": "pending",
+      "status": "passed",
       "depends_on": [
         "p5-05"
       ],
