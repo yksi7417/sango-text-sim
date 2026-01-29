@@ -1624,7 +1624,7 @@
         "Test AI alliance decisions",
         "Verify diplomatic relation effects"
       ],
-      "status": "pending",
+      "status": "passed",
       "depends_on": [
         "p5-04"
       ],
