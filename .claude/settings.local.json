@@ -9,7 +9,10 @@
       "Bash(git commit:*)",
       "Bash(git push)",
       "WebFetch(domain:sango-text-sim.fly.dev)",
-      "Bash(python:*)"
+      "Bash(python:*)",
+      "Bash(pip install:*)",
+      "Bash(C:UsersanthoAppDataRoamingPythonPython38Scriptsplaywright install chromium)",
+      "Bash(pip uninstall:*)"
     ]
   }
 }
