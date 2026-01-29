@@ -1454,7 +1454,7 @@
         "Test optimal research paths",
         "Verify tech bonuses in combat"
       ],
-      "status": "pending",
+      "status": "passed",
       "depends_on": [
         "p3-09"
       ],
