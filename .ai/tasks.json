@@ -1583,7 +1583,7 @@
         "Test event officer additions",
         "Verify event narrative display"
       ],
-      "status": "pending",
+      "status": "passed",
       "depends_on": [
         "p4-01"
       ],
