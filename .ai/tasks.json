@@ -1347,7 +1347,7 @@
         "Test fire attack naval bonus (+50%)",
         "Test top naval commanders effectiveness"
       ],
-      "status": "pending",
+      "status": "passed",
       "depends_on": [
         "p5-03"
       ],
